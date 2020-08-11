@@ -8,6 +8,7 @@ import Popup from "reactjs-popup";
 class Home extends React.Component {
   state = {
     players: [],
+    hide: true,
     disabled: false,
     fanType: "general",
     playerOrTeam: "player",
@@ -274,6 +275,9 @@ class Home extends React.Component {
   renderModal() {
     return (
       <Popup
+        onClose={() => {
+          this.setState({ hide: false });
+        }}
         defaultOpen={true}
         modal={true}
         disabled={this.state.disabled}
@@ -383,8 +387,6 @@ class Home extends React.Component {
       <form onChange={this.handleSelect}>
         <select>
           {this.state.players[0]?.api.players.map((player) => {
-            let key = 0;
-            key++;
             return (
               <option key={player.id}>
                 {player.firstName} {player.lastName}
@@ -397,11 +399,18 @@ class Home extends React.Component {
   };
 
   render() {
+    if (this.state.hide) {
+      return (
+        <>
+          {this.renderControlBar()}
+          {this.renderModal()}
+        </>
+      );
+    }
     return (
       <>
         {this.renderControlBar()}
         {this.renderButton()}
-        {this.renderModal()}
         {this.renderRadar()}
         {/* {this.renderScatterPlot()} */}
         {this.renderAdvancedOptions()}
