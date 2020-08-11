@@ -1,5 +1,8 @@
 import React from "react";
+
 import { ResponsiveRadar } from "@nivo/radar";
+import { ResponsiveScatterPlot } from "@nivo/scatterplot";
+
 import Popup from "reactjs-popup";
 
 class Home extends React.Component {
