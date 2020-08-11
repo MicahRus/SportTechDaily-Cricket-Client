@@ -8,6 +8,7 @@ class Home extends React.Component {
     disabled: false,
     fanType: "general",
     playerOrTeam: "player",
+    toggleAdvancedOptions: false,
     data: [
       {
         taste: "3pts Made",
@@ -42,6 +43,48 @@ class Home extends React.Component {
     ],
   };
 
+  componentDidMount() {
+    // this.getData();
+  }
+
+  getData = async () => {
+    const response = await fetch(
+      "https://api-nba-v1.p.rapidapi.com/players/country/USA",
+      {
+        method: "GET",
+        headers: {
+          "x-rapidapi-host": "api-nba-v1.p.rapidapi.com",
+          "x-rapidapi-key":
+            "7a5cdcbc39mshe66fcd61b6c65acp103732jsn4cbc50612a05",
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    console.log("hit api");
+    console.log(data);
+    this.setState({ players: [...this.state.players, data] });
+  };
+
+  getPlayerData = async () => {
+    const response = await fetch(
+      "https://api-nba-v1.p.rapidapi.com/statistics/players/playerId/265",
+      {
+        method: "GET",
+        headers: {
+          "x-rapidapi-host": "api-nba-v1.p.rapidapi.com",
+          "x-rapidapi-key":
+            "7a5cdcbc39mshe66fcd61b6c65acp103732jsn4cbc50612a05",
+        },
+      }
+    );
+
+    const data = await response.json();
+    console.log(data);
+    this.setState({ players: data });
+  };
+
   fanTypeClickHandler = (event) => {
     this.setState({ fanType: event.target.value });
   };
@@ -50,8 +93,24 @@ class Home extends React.Component {
     this.setState({ disabled: true, playerOrTeam: event.target.value });
   };
 
-  handleClose = () => {
-    return this.Modal2();
+  toggleAdvancedOptions = () => {
+    this.setState({ toggleAdvancedOptions: !this.state.toggleAdvancedOptions });
+  };
+
+  teamOrPlayerRadioChangeHandler = (event) => {
+    this.setState({ playerOrTeam: event.target.value });
+  };
+
+  fanTypeRadioChangeHandler = (event) => {
+    this.setState({ fanType: event.target.value });
+  };
+
+  handleSelect = (event) => {
+    console.log("hit");
+    console.log(event.target[0]);
+    console.log(event.target);
+    console.log(event);
+    // this.getPlayerData()
   };
 
   renderRadar = () => {
@@ -102,7 +161,51 @@ class Home extends React.Component {
     );
   };
 
-  Modal() {
+  renderAdvancedOptions = () => {
+    if (this.state.toggleAdvancedOptions) {
+      return (
+        <div>
+          <button onClick={this.toggleAdvancedOptions}>
+            {" "}
+            Advanced Options
+          </button>
+          <form>
+            <label>
+              <input type="radio" value="null" />
+              Button
+            </label>
+            <label>
+              <input type="radio" value="null" />
+              Button
+            </label>
+            <label>
+              <input type="radio" value="null" />
+              Button
+            </label>
+            <label>
+              <input type="radio" value="null" />
+              Button
+            </label>
+            <label>
+              <input type="radio" value="null" />
+              Button
+            </label>
+          </form>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <button onClick={this.toggleAdvancedOptions}>
+            {" "}
+            Advanced Options
+          </button>
+        </div>
+      );
+    }
+  };
+
+  renderModal() {
     return (
       <Popup
         defaultOpen={true}
@@ -150,14 +253,6 @@ class Home extends React.Component {
       </Popup>
     );
   }
-
-  teamOrPlayerRadioChangeHandler = (event) => {
-    this.setState({ playerOrTeam: event.target.value });
-  };
-
-  fanTypeRadioChangeHandler = (event) => {
-    this.setState({ fanType: event.target.value });
-  };
 
   renderControlBar = () => {
     return (
@@ -216,18 +311,6 @@ class Home extends React.Component {
     );
   };
 
-  componentDidMount() {
-    // this.getData();
-  }
-
-  handleSelect = (event) => {
-    console.log("hit");
-    console.log(event.target[0]);
-    console.log(event.target);
-    console.log(event);
-    // this.getPlayerData()
-  };
-
   renderButton = () => {
     console.log(this.state);
     return (
@@ -247,51 +330,14 @@ class Home extends React.Component {
     );
   };
 
-  getData = async () => {
-    const response = await fetch(
-      "https://api-nba-v1.p.rapidapi.com/players/country/USA",
-      {
-        method: "GET",
-        headers: {
-          "x-rapidapi-host": "api-nba-v1.p.rapidapi.com",
-          "x-rapidapi-key":
-            "7a5cdcbc39mshe66fcd61b6c65acp103732jsn4cbc50612a05",
-        },
-      }
-    );
-
-    const data = await response.json();
-
-    console.log("hit api");
-    console.log(data);
-    this.setState({ players: [...this.state.players, data] });
-  };
-
-  getPlayerData = async () => {
-    const response = await fetch(
-      "https://api-nba-v1.p.rapidapi.com/statistics/players/playerId/265",
-      {
-        method: "GET",
-        headers: {
-          "x-rapidapi-host": "api-nba-v1.p.rapidapi.com",
-          "x-rapidapi-key":
-            "7a5cdcbc39mshe66fcd61b6c65acp103732jsn4cbc50612a05",
-        },
-      }
-    );
-
-    const data = await response.json();
-    console.log(data);
-    this.setState({ players: data });
-  };
-
   render() {
     return (
       <>
         {this.renderControlBar()}
         {/* {this.renderButton()} */}
-        {this.Modal()}
+        {/* {this.renderModal()} */}
         {this.renderRadar()}
+        {this.renderAdvancedOptions()}
       </>
     );
   }
