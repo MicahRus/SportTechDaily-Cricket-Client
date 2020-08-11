@@ -6,31 +6,33 @@ class Home extends React.Component {
   state = {
     players: [],
     disabled: false,
+    fanType: "general",
+    playerOrTeam: "player",
     data: [
       {
         taste: "3pts Made",
-        "Lebron James": 72,
-        "Steph Curry": 64,
+        "Lebron James": 6,
+        "Stephen Curry": 9,
       },
       {
         taste: "2pts Made",
         "Lebron James": 15,
-        "Steph Curry": 10,
+        "Stephen Curry": 10,
       },
       {
         taste: "Free Throws Made",
         "Lebron James": 7,
-        "Steph Curry": 13,
+        "Stephen Curry": 13,
       },
       {
         taste: "Rebounds",
         "Lebron James": 12,
-        "Steph Curry": 5,
+        "Stephen Curry": 5,
       },
       {
         taste: "Blocks",
         "Lebron James": 6,
-        "Steph Curry": 1,
+        "Stephen Curry": 1,
       },
       {
         taste: "Assists",
@@ -57,7 +59,7 @@ class Home extends React.Component {
       <div style={{ height: "1000px" }}>
         <ResponsiveRadar
           data={this.state.data}
-          keys={["Lebron James", "Steph Curry"]}
+          keys={["Lebron James", "Stephen Curry"]}
           indexBy="taste"
           maxValue="auto"
           margin={{ top: 70, right: 80, bottom: 40, left: 80 }}
