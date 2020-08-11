@@ -1,5 +1,6 @@
 import React from "react";
 import { ResponsiveRadar } from "@nivo/radar";
+import { Modal, Button } from "react-bootstrap";
 
 class Home extends React.Component {
   state = {
@@ -38,8 +39,27 @@ class Home extends React.Component {
     ],
   };
 
+  initialDisplay() {
+    return (
+      <Modal.Dialog>
+        <Modal.Header closeButton>
+          <Modal.Title>Modal title</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <p>Modal body text goes here.</p>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary">Close</Button>
+          <Button variant="primary">Save changes</Button>
+        </Modal.Footer>
+      </Modal.Dialog>
+    );
+  }
+
   componentDidMount() {
-    this.getData();
+    // this.getData();
   }
 
   handleSelect = (event) => {
@@ -109,50 +129,53 @@ class Home extends React.Component {
 
   render() {
     return (
-      <div style={{ height: "1000px" }}>
-        {this.renderButton()}
-        <ResponsiveRadar
-          data={this.state.data}
-          keys={["Lebron James", "Steph Curry"]}
-          indexBy="taste"
-          maxValue="auto"
-          margin={{ top: 70, right: 80, bottom: 40, left: 80 }}
-          curve="linearClosed"
-          borderWidth={2}
-          borderColor={{ from: "color" }}
-          gridLevels={5}
-          gridShape="circular"
-          gridLabelOffset={36}
-          enableDots={true}
-          dotSize={10}
-          dotColor={{ theme: "background" }}
-          dotBorderWidth={2}
-          dotBorderColor={{ from: "color" }}
-          enableDotLabel={true}
-          dotLabel="value"
-          dotLabelYOffset={-12}
-          colors={{ scheme: "nivo" }}
-          fillOpacity={0.25}
-          blendMode="multiply"
-          animate={true}
-          motionStiffness={90}
-          motionDamping={15}
-          isInteractive={true}
-          legends={[
-            {
-              anchor: "top-left",
-              direction: "column",
-              translateX: -50,
-              translateY: -40,
-              itemWidth: 80,
-              itemHeight: 20,
-              itemTextColor: "#999",
-              symbolSize: 12,
-              symbolShape: "circle",
-            },
-          ]}
-        />
-      </div>
+      this.initialDisplay(),
+      (
+        <div style={{ height: "1000px" }}>
+          {this.renderButton()}
+          <ResponsiveRadar
+            data={this.state.data}
+            keys={["Lebron James", "Steph Curry"]}
+            indexBy="taste"
+            maxValue="auto"
+            margin={{ top: 70, right: 80, bottom: 40, left: 80 }}
+            curve="linearClosed"
+            borderWidth={2}
+            borderColor={{ from: "color" }}
+            gridLevels={5}
+            gridShape="circular"
+            gridLabelOffset={36}
+            enableDots={true}
+            dotSize={10}
+            dotColor={{ theme: "background" }}
+            dotBorderWidth={2}
+            dotBorderColor={{ from: "color" }}
+            enableDotLabel={true}
+            dotLabel="value"
+            dotLabelYOffset={-12}
+            colors={{ scheme: "nivo" }}
+            fillOpacity={0.25}
+            blendMode="multiply"
+            animate={true}
+            motionStiffness={90}
+            motionDamping={15}
+            isInteractive={true}
+            legends={[
+              {
+                anchor: "top-left",
+                direction: "column",
+                translateX: -50,
+                translateY: -40,
+                itemWidth: 80,
+                itemHeight: 20,
+                itemTextColor: "#999",
+                symbolSize: 12,
+                symbolShape: "circle",
+              },
+            ]}
+          />
+        </div>
+      )
     );
   }
 }
