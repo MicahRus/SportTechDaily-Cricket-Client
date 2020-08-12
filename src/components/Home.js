@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 class Home extends React.Component {
   state = {
     players: [],
+    graphData: [],
     hide: true,
     disabled: false,
     fanType: "general",
@@ -17,32 +18,32 @@ class Home extends React.Component {
     toggleAdvancedOptions: false,
     data: [
       {
-        taste: "3pts Made",
+        stat: "3pts Made",
         "Lebron James": 6,
         "Stephen Curry": 9,
       },
       {
-        taste: "2pts Made",
+        stat: "2pts Made",
         "Lebron James": 15,
         "Stephen Curry": 10,
       },
       {
-        taste: "Free Throws Made",
+        stat: "Free Throws Made",
         "Lebron James": 7,
         "Stephen Curry": 13,
       },
       {
-        taste: "Rebounds",
+        stat: "Rebounds",
         "Lebron James": 12,
         "Stephen Curry": 5,
       },
       {
-        taste: "Blocks",
+        stat: "Blocks",
         "Lebron James": 6,
         "Stephen Curry": 1,
       },
       {
-        taste: "Assists",
+        stat: "Assists",
         "Lebron James": 13,
         "Stephen Curry": 10,
       },
@@ -50,14 +51,73 @@ class Home extends React.Component {
   };
 
   componentDidMount() {
-    this.getPlayerData();
+    this.getAllPlayersData();
   }
 
-  getPlayerData = async () => {
+  getAllPlayersData = async () => {
     const response = await fetch("http://localhost:3001/players");
     const data = await response.json();
-    console.log(data.rows);
-    this.setState({ players: data });
+    this.setState({ players: data.rows });
+  };
+
+  getPlayerData = async (playerId, playerName) => {
+    const response = await fetch(
+      `http://localhost:3001/player/id?playerId=${playerId}`
+    );
+    const data = await response.json();
+    this.setState({
+      currentPlayersData: { player1: { playerName, data: data.rows } },
+    });
+    this.setGraphData(playerName);
+  };
+
+  setGraphData = (playerName) => {
+    if (!!this.state.currentPlayersData) {
+      let kicks = 0;
+      let passes = 0;
+      let points = 0;
+      let tackles = 0;
+      let tries = 0;
+      for (let i = 0; i <= 25; i++) {
+        kicks += this.state.currentPlayersData?.player1.data[i].kicks;
+        passes += this.state.currentPlayersData?.player1.data[i].passes;
+        points += this.state.currentPlayersData?.player1.data[i].points;
+        tackles += this.state.currentPlayersData?.player1.data[i].tackles_made;
+        tries += this.state.currentPlayersData?.player1.data[i].tries;
+
+        if (i === 25) {
+          this.setState({
+            graphData: [
+              {
+                stat: "kicks",
+                [playerName]: kicks,
+                default: 7,
+              },
+              {
+                stat: "passes",
+                [playerName]: passes,
+                default: 7,
+              },
+              {
+                stat: "points",
+                [playerName]: points,
+                default: 7,
+              },
+              {
+                stat: "tackles",
+                [playerName]: tackles,
+                default: 7,
+              },
+              {
+                stat: "tries",
+                [playerName]: tries,
+                default: 7,
+              },
+            ],
+          });
+        }
+      }
+    }
   };
 
   fanTypeClickHandler = (event) => {
@@ -80,9 +140,10 @@ class Home extends React.Component {
     this.setState({ fanType: event.target.value });
   };
 
-  handleSelect = (event) => {
+  playerButtonSelectHandler = (event) => {
     let playerId = event.target.value;
-    this.getPlayerData(playerId);
+    let playerName = event.target[event.target.selectedIndex].innerText;
+    this.getPlayerData(playerId, playerName);
   };
 
   renderScatterPlot = () => {
@@ -149,12 +210,13 @@ class Home extends React.Component {
   };
 
   renderRadar = () => {
+    console.log(this.state);
     return (
       <div style={{ height: "1000px" }}>
         <ResponsiveRadar
-          data={this.state.data}
-          keys={["Lebron James", "Stephen Curry"]}
-          indexBy="taste"
+          data={this.state.graphData}
+          keys={[this.state.currentPlayersData?.player1.playerName, "default"]}
+          indexBy="stat"
           maxValue="auto"
           margin={{ top: 70, right: 80, bottom: 40, left: 80 }}
           curve="linearClosed"
@@ -350,19 +412,33 @@ class Home extends React.Component {
   };
 
   renderButton = () => {
-    console.log(this.state);
     return (
-      <form onChange={this.handleSelect}>
-        <select>
-          {this.state.players[0]?.api.players.map((player) => {
-            return (
-              <option key={player.id} value={player.playerId}>
-                {player.firstName} {player.lastName}
-              </option>
-            );
-          })}
-        </select>
-      </form>
+      <div>
+        <span> Player 1</span>
+        <form>
+          <select onChange={this.playerButtonSelectHandler}>
+            {this.state.players?.map((player) => {
+              return (
+                <option key={player.player_id} value={player.player_id}>
+                  {player.first_name} {player.last_name}
+                </option>
+              );
+            })}
+          </select>
+        </form>
+        <span> Player 2</span>
+        <form onChange={this.playerButtonSelectHandler}>
+          <select>
+            {this.state.players?.map((player) => {
+              return (
+                <option key={player.player_id} value={player.playerId}>
+                  {player.first_name} {player.last_name}
+                </option>
+              );
+            })}
+          </select>
+        </form>
+      </div>
     );
   };
 
