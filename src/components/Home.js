@@ -50,45 +50,14 @@ class Home extends React.Component {
   };
 
   componentDidMount() {
-    // this.getData();
+    this.getPlayerData();
   }
 
-  getData = async () => {
-    const response = await fetch(
-      "https://api-nba-v1.p.rapidapi.com/players/country/USA",
-      {
-        method: "GET",
-        headers: {
-          "x-rapidapi-host": "api-nba-v1.p.rapidapi.com",
-          "x-rapidapi-key":
-            "7a5cdcbc39mshe66fcd61b6c65acp103732jsn4cbc50612a05",
-        },
-      }
-    );
-
+  getPlayerData = async () => {
+    const response = await fetch("http://localhost:3001/players");
     const data = await response.json();
-    console.log(data);
-    this.setState({ players: [...this.state.players, data] });
-  };
-
-  getPlayerData = async (playerId) => {
-    console.log(`get player data ${playerId}`);
-    console.log(this.state);
-    const response = await fetch(
-      `https://api-nba-v1.p.rapidapi.com/statistics/players/playerId/${playerId}`,
-      {
-        method: "GET",
-        headers: {
-          "x-rapidapi-host": "api-nba-v1.p.rapidapi.com",
-          "x-rapidapi-key":
-            "7a5cdcbc39mshe66fcd61b6c65acp103732jsn4cbc50612a05",
-        },
-      }
-    );
-
-    const data = await response.json();
-    console.log(data);
-    this.setState({ playerData: data });
+    console.log(data.rows);
+    this.setState({ players: data });
   };
 
   fanTypeClickHandler = (event) => {
