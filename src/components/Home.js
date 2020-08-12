@@ -5,6 +5,8 @@ import { ResponsiveScatterPlot } from "@nivo/scatterplot";
 
 import Popup from "reactjs-popup";
 
+import { motion } from "framer-motion";
+
 class Home extends React.Component {
   state = {
     players: [],
@@ -65,15 +67,15 @@ class Home extends React.Component {
     );
 
     const data = await response.json();
-
-    console.log("hit api");
     console.log(data);
     this.setState({ players: [...this.state.players, data] });
   };
 
-  getPlayerData = async () => {
+  getPlayerData = async (playerId) => {
+    console.log(`get player data ${playerId}`);
+    console.log(this.state);
     const response = await fetch(
-      "https://api-nba-v1.p.rapidapi.com/statistics/players/playerId/265",
+      `https://api-nba-v1.p.rapidapi.com/statistics/players/playerId/${playerId}`,
       {
         method: "GET",
         headers: {
@@ -86,7 +88,7 @@ class Home extends React.Component {
 
     const data = await response.json();
     console.log(data);
-    this.setState({ players: data });
+    this.setState({ playerData: data });
   };
 
   fanTypeClickHandler = (event) => {
@@ -110,11 +112,8 @@ class Home extends React.Component {
   };
 
   handleSelect = (event) => {
-    console.log("hit");
-    console.log(event.target[0]);
-    console.log(event.target);
-    console.log(event);
-    // this.getPlayerData()
+    let playerId = event.target.value;
+    this.getPlayerData(playerId);
   };
 
   renderScatterPlot = () => {
@@ -388,7 +387,7 @@ class Home extends React.Component {
         <select>
           {this.state.players[0]?.api.players.map((player) => {
             return (
-              <option key={player.id}>
+              <option key={player.id} value={player.playerId}>
                 {player.firstName} {player.lastName}
               </option>
             );
@@ -398,18 +397,34 @@ class Home extends React.Component {
     );
   };
 
+  renderMotionDiv = () => {
+    return (
+      <motion.div
+        style={{
+          height: "250px",
+          width: "250px",
+          backgroundColor: "grey",
+          opacity: 0.5,
+        }}
+        animate={{ scale: 0, x: -115, y: -155 }}
+        transition={{ duration: 0.5 }}
+      ></motion.div>
+    );
+  };
+
   render() {
-    if (this.state.hide) {
-      return (
-        <>
-          {this.renderControlBar()}
-          {this.renderModal()}
-        </>
-      );
-    }
+    // if (this.state.hide) {
+    //   return (
+    //     <>
+    //       {this.renderControlBar()}
+    //       {this.renderModal()}
+    //     </>
+    //   );
+    // }
     return (
       <>
         {this.renderControlBar()}
+        {this.renderMotionDiv()}
         {this.renderButton()}
         {this.renderRadar()}
         {/* {this.renderScatterPlot()} */}
