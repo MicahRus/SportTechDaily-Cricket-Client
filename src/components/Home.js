@@ -10,7 +10,6 @@ import { motion } from "framer-motion";
 class Home extends React.Component {
   state = {
     players: [],
-    graphData: [],
     hide: true,
     disabled: false,
     fanType: "general",
@@ -20,6 +19,33 @@ class Home extends React.Component {
       player1: { data: null, playerName: null },
       player2: { data: null, playerName: null },
     },
+    graphData: [
+      {
+        stat: "kicks",
+        player1: 9,
+        player2: 7,
+      },
+      {
+        stat: "passes",
+        player1: 9,
+        player2: 7,
+      },
+      {
+        stat: "points",
+        player1: 9,
+        player2: 7,
+      },
+      {
+        stat: "tackles",
+        player1: 9,
+        player2: 7,
+      },
+      {
+        stat: "tries",
+        player1: 9,
+        player2: 7,
+      },
+    ],
   };
 
   componentDidMount() {
@@ -65,6 +91,9 @@ class Home extends React.Component {
     this.setGraphData(playerName, playerNumber);
   };
 
+  componentDidUpdate() {
+    console.log(this.state);
+  }
   // This function handles setting up the data that the graph will display
   setGraphData = (playerName, playerNumber) => {
     const player = this.state.currentPlayersData?.[playerNumber];
@@ -87,35 +116,38 @@ class Home extends React.Component {
 
       // Ensures the loop gets a maximum of 25 games of stats
       if (i === 25) {
-        this.setState({
-          graphData: [
-            {
-              stat: "kicks",
-              [playerName]: kicks,
-              default: 7,
-            },
-            {
-              stat: "passes",
-              [playerName]: passes,
-              default: 7,
-            },
-            {
-              stat: "points",
-              [playerName]: points,
-              default: 7,
-            },
-            {
-              stat: "tackles",
-              [playerName]: tackles,
-              default: 7,
-            },
-            {
-              stat: "tries",
-              [playerName]: tries,
-              default: 7,
-            },
-          ],
-        });
+        let newData = [];
+        if (playerNumber === "player1") {
+          this.setState((prevState) => {
+            prevState.graphData.map((item) => {
+              let keys = Object.keys(item);
+              let values = Object.values(item);
+              let stat = eval(values[0]);
+              newData.push({
+                stat: values[0],
+                [playerName]: stat,
+                [keys[2]]: values[2],
+              });
+            });
+            return { graphData: newData };
+          });
+        }
+
+        if (playerNumber === "player2") {
+          this.setState((prevState) => {
+            prevState.graphData.map((item) => {
+              let keys = Object.keys(item);
+              let values = Object.values(item);
+              let stat = eval(values[0]);
+              newData.push({
+                stat: values[0],
+                [playerName]: stat,
+                [keys[1]]: values[1],
+              });
+            });
+            return { graphData: newData };
+          });
+        }
       }
     }
   };
