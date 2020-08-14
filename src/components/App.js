@@ -11,12 +11,12 @@ function App() {
   return (
     <BrowserRouter>
       <MainNav />
-      <TabNav />
       <Switch>
-        <Home />
+        <Route exact path ="/" component={Home} />
         <Route exact path="/checkodds" component={CheckOdds} />
       </Switch>
     </BrowserRouter>
+    // <Home />
     // return <DataPage />;
   )
 }
