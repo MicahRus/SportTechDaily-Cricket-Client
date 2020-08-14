@@ -13,6 +13,7 @@ function App() {
   return (
     <BrowserRouter>
       <MainNav />
+      <TabNav />
       <Switch>
         <Route exact path="/" component={Home} />
         <Route exact path="/checkodds" component={CheckOdds} />
