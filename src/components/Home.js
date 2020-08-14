@@ -1,6 +1,9 @@
 import React from "react";
 
-import { Form, Col, Row, Check, ToggleButton } from "react-bootstrap";
+import { Form, Col, Row, Check, Button } from "react-bootstrap";
+
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import { ResponsiveRadar } from "@nivo/radar";
 import { ResponsiveScatterPlot } from "@nivo/scatterplot";
@@ -14,6 +17,8 @@ class Home extends React.Component {
     players: [],
     showPositionButtons: false,
     hide: true,
+    startDate: { date: new Date() },
+    endDate: { date: new Date() },
     disabled: false,
     fanType: "general",
     playerOrTeam: "player",
@@ -302,10 +307,14 @@ class Home extends React.Component {
     if (this.state.toggleAdvancedOptions) {
       return (
         <div>
-          <button onClick={this.toggleAdvancedOptions}>
+          <Button
+            variant="outline-primary"
+            size="sm"
+            onClick={this.toggleAdvancedOptions}
+          >
             {" "}
             Advanced Options
-          </button>
+          </Button>
           <form>
             <label>
               <input type="radio" value="null" />
@@ -333,10 +342,14 @@ class Home extends React.Component {
     } else {
       return (
         <div>
-          <button onClick={this.toggleAdvancedOptions}>
+          <Button
+            size="sm"
+            variant="outline-primary"
+            onClick={this.toggleAdvancedOptions}
+          >
             {" "}
             Advanced Options
-          </button>
+          </Button>
         </div>
       );
     }
@@ -397,56 +410,66 @@ class Home extends React.Component {
   renderTopControlBar = () => {
     return (
       <div>
-        <form>
-          <label>
-            <input
-              type="radio"
-              value="general"
-              checked={this.state.fanType === "general"}
-              onChange={this.fanTypeRadioChangeHandler}
-            />
-            General
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="fantasy"
-              checked={this.state.fanType === "fantasy"}
-              onChange={this.fanTypeRadioChangeHandler}
-            />
-            Fantasy
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="betting"
-              checked={this.state.fanType === "betting"}
-              onChange={this.fanTypeRadioChangeHandler}
-            />
-            Betting
-          </label>
-        </form>
+        <Form.Row inline>
+          <Col>
+            <Form.Label>General</Form.Label>
+            <Form.Control as="radio">
+              <input
+                type="radio"
+                value="general"
+                checked={this.state.fanType === "general"}
+                onChange={this.fanTypeRadioChangeHandler}
+              />
+            </Form.Control>
+          </Col>
+          <Col>
+            <Form.Label>Fantasy</Form.Label>
 
-        <form>
-          <label>
-            <input
-              type="radio"
-              value="team"
-              checked={this.state.playerOrTeam === "team"}
-              onChange={this.teamOrPlayerRadioChangeHandler}
-            />
-            Team
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="player"
-              checked={this.state.playerOrTeam === "player"}
-              onChange={this.teamOrPlayerRadioChangeHandler}
-            />
-            Player
-          </label>
-        </form>
+            <Form.Control as="radio">
+              <input
+                type="radio"
+                value="fantasy"
+                checked={this.state.fanType === "fantasy"}
+                onChange={this.fanTypeRadioChangeHandler}
+              />
+            </Form.Control>
+          </Col>
+          <Col>
+            <Form.Label>Betting</Form.Label>
+            <Form.Control as="radio">
+              <input
+                type="radio"
+                value="betting"
+                checked={this.state.fanType === "betting"}
+                onChange={this.fanTypeRadioChangeHandler}
+              />
+            </Form.Control>
+          </Col>
+        </Form.Row>
+        <Form.Row inline>
+          <Col>
+            <Form.Label>Team</Form.Label>
+            <Form.Control as="radio">
+              <input
+                type="radio"
+                value="team"
+                checked={this.state.playerOrTeam === "team"}
+                onChange={this.teamOrPlayerRadioChangeHandler}
+              />
+            </Form.Control>
+          </Col>
+          <Col>
+            <Form.Label>Player</Form.Label>
+            <Form.Control as="radio">
+              <input
+                type="radio"
+                value="player"
+                checked={this.state.playerOrTeam === "player"}
+                onChange={this.teamOrPlayerRadioChangeHandler}
+              />
+            </Form.Control>
+          </Col>
+        </Form.Row>
       </div>
     );
   };
@@ -661,9 +684,16 @@ class Home extends React.Component {
     return (
       <div>
         <Form>
-          <p>Dates</p>
-          <button>Calendar</button>
-          <button>Calendar</button>
+          <h3>Dates</h3>
+          <DatePicker
+            selected={this.state.startDate.date}
+            onChange={(date) => this.setState({ startDate: { date: date } })}
+          />
+
+          <DatePicker
+            selected={this.state.endDate.date}
+            onChange={(date) => this.setState({ endDate: { date: date } })}
+          />
         </Form>
       </div>
     );
@@ -694,6 +724,7 @@ class Home extends React.Component {
             {this.renderTeamButtons()}
             {this.renderDateButtons()}
             {this.renderVenueButtons()}
+            {this.renderAdvancedOptions()}
           </div>
         </Form.Group>
       </div>
@@ -731,7 +762,6 @@ class Home extends React.Component {
         {this.renderGraphControlBar()}
         {/* {this.renderRadar()} */}
         {/* {this.renderScatterPlot()} */}
-        {this.renderAdvancedOptions()}
       </>
     );
   }
