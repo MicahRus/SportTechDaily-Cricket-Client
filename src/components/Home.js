@@ -12,7 +12,7 @@ import { motion } from "framer-motion";
 class Home extends React.Component {
   state = {
     players: [],
-    checked: false,
+    showPositionButtons: false,
     hide: true,
     disabled: false,
     fanType: "general",
@@ -95,7 +95,7 @@ class Home extends React.Component {
   };
 
   componentDidUpdate() {
-    console.log(this.state.checked);
+    console.log(this.state);
   }
   // This function handles setting up the data that the graph will display
   setGraphData = (playerName, playerNumber) => {
@@ -452,63 +452,83 @@ class Home extends React.Component {
   };
 
   renderPositionButtons = () => {
+    if (this.state.showPositionButtons) {
+      return (
+        <div>
+          <Form>
+            <Form.Check
+              type="switch"
+              id="custom-switch"
+              label="Positions"
+              onChange={() => {
+                this.setState({
+                  showPositionButtons: !this.state.showPositionButtons,
+                });
+              }}
+            />
+          </Form>
+          <Form>
+            <Row>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="2nd Row" />
+              </Col>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Five-Eighth" />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Interchange" />
+              </Col>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Hooker" />
+              </Col>
+            </Row>
+
+            <Row>
+              {" "}
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Fullback" />
+              </Col>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Halfback" />
+              </Col>
+            </Row>
+
+            <Row>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Lock" />
+              </Col>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Prop" />
+              </Col>
+            </Row>
+
+            <Row>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Winger" />
+              </Col>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Center" />
+              </Col>
+            </Row>
+          </Form>
+        </div>
+      );
+    }
     return (
       <div>
-        <ToggleButton
-          type="radio"
-          variant="primary"
-          checked={this.state.checked}
-          variant="outline-primary"
-        >
-          {" "}
-          Positions{" "}
-        </ToggleButton>
-
         <Form>
-          <Row>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="2nd Row" />
-            </Col>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Five-Eighth" />
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Interchange" />
-            </Col>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Hooker" />
-            </Col>
-          </Row>
-
-          <Row>
-            {" "}
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Fullback" />
-            </Col>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Halfback" />
-            </Col>
-          </Row>
-
-          <Row>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Lock" />
-            </Col>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Prop" />
-            </Col>
-          </Row>
-
-          <Row>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Winger" />
-            </Col>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Center" />
-            </Col>
-          </Row>
+          <Form.Check
+            type="switch"
+            id="custom-switch"
+            label="Positions"
+            onChange={() => {
+              this.setState({
+                showPositionButtons: !this.state.showPositionButtons,
+              });
+            }}
+          />
         </Form>
       </div>
     );
@@ -536,19 +556,27 @@ class Home extends React.Component {
     ];
     return (
       <div>
-        <Form>
-          <Form.Label> Stat 1</Form.Label>
-          <Form.Control as="select" custom>
-            {options.map((options) => {
-              return <option>{options}</option>;
-            })}
-          </Form.Control>
-          <Form.Label> Stat 2</Form.Label>
-          <Form.Control as="select" custom>
-            {options.map((options) => {
-              return <option>{options}</option>;
-            })}
-          </Form.Control>
+        <Form inline>
+          <Row>
+            <Col>
+              <Form.Label> Stat 1</Form.Label>
+              <Form.Control as="select" custom>
+                {options.map((options) => {
+                  return <option>{options}</option>;
+                })}
+              </Form.Control>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Label> Stat 2</Form.Label>
+              <Form.Control as="select" custom>
+                {options.map((options) => {
+                  return <option>{options}</option>;
+                })}
+              </Form.Control>
+            </Col>
+          </Row>
         </Form>
       </div>
     );
@@ -557,16 +585,24 @@ class Home extends React.Component {
   renderTeamButtons = () => {
     return (
       <div>
-        <Form>
-          <Form.Label> Team 1</Form.Label>
-          <Form.Control as="select" custom>
-            <option> Team</option>
-          </Form.Control>
+        <Form inline>
+          <Row>
+            <Col>
+              <Form.Label> Team 1</Form.Label>
+              <Form.Control as="select" custom>
+                <option> Team</option>
+              </Form.Control>
+            </Col>
+          </Row>
 
-          <Form.Label> Team 2</Form.Label>
-          <Form.Control as="select" custom>
-            <option> Team</option>
-          </Form.Control>
+          <Row>
+            <Col>
+              <Form.Label> Team 2</Form.Label>
+              <Form.Control as="select" custom>
+                <option> Team</option>
+              </Form.Control>
+            </Col>
+          </Row>
         </Form>
       </div>
     );
@@ -575,37 +611,47 @@ class Home extends React.Component {
   renderPlayerButtons = () => {
     return (
       <div>
-        <Form title="player1">
-          <Form.Label> Player 1 </Form.Label>
-          <Form.Control
-            as="select"
-            custom
-            onChange={this.playerButtonSelectHandler}
-          >
-            {this.state.players?.map((player) => {
-              return (
-                <option key={player.player_id} value={player.player_id}>
-                  {player.first_name} {player.last_name}
-                </option>
-              );
-            })}
-          </Form.Control>
-        </Form>
-        <Form title="player2">
-          <Form.Label> Player 2 </Form.Label>
-          <Form.Control
-            as="select"
-            custom
-            onChange={this.playerButtonSelectHandler}
-          >
-            {this.state.players?.map((player) => {
-              return (
-                <option key={player.player_id} value={player.player_id}>
-                  {player.first_name} {player.last_name}
-                </option>
-              );
-            })}
-          </Form.Control>
+        <Form inline>
+          <Form title="player1">
+            <Row>
+              <Col>
+                <Form.Label> Player 1 </Form.Label>
+                <Form.Control
+                  as="select"
+                  custom
+                  onChange={this.playerButtonSelectHandler}
+                >
+                  {this.state.players?.map((player) => {
+                    return (
+                      <option key={player.player_id} value={player.player_id}>
+                        {player.first_name} {player.last_name}
+                      </option>
+                    );
+                  })}
+                </Form.Control>
+              </Col>
+            </Row>
+          </Form>
+          <Form title="player2">
+            <Row>
+              <Col>
+                <Form.Label> Player 2 </Form.Label>
+                <Form.Control
+                  as="select"
+                  custom
+                  onChange={this.playerButtonSelectHandler}
+                >
+                  {this.state.players?.map((player) => {
+                    return (
+                      <option key={player.player_id} value={player.player_id}>
+                        {player.first_name} {player.last_name}
+                      </option>
+                    );
+                  })}
+                </Form.Control>
+              </Col>
+            </Row>
+          </Form>
         </Form>
       </div>
     );
@@ -639,7 +685,7 @@ class Home extends React.Component {
   renderGraphControlBar = () => {
     return (
       <div>
-        <Form>
+        <Form.Group>
           <div>
             {this.renderStatDropDowns()}
             {this.renderPlayerButtons()}
@@ -649,7 +695,7 @@ class Home extends React.Component {
             {this.renderDateButtons()}
             {this.renderVenueButtons()}
           </div>
-        </Form>
+        </Form.Group>
       </div>
     );
   };
