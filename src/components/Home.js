@@ -1,4 +1,5 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
 
 import { Form, Col, Row, Check, Button } from "react-bootstrap";
 
@@ -15,6 +16,7 @@ import { motion } from "framer-motion";
 class Home extends React.Component {
   state = {
     players: [],
+    redirect: null,
     showPositionButtons: false,
     hide: true,
     startDate: { date: new Date() },
@@ -755,6 +757,9 @@ class Home extends React.Component {
     //     </>
     //   )
     // }
+    if (this.state.redirect) {
+      return <Redirect to={this.state.redirect} />;
+    }
     return (
       <>
         {this.renderTopControlBar()}
