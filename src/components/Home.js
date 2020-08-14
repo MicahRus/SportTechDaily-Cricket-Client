@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Form, Col, Row, Check, ToggleButton } from "react-bootstrap";
+
 import { ResponsiveRadar } from "@nivo/radar";
 import { ResponsiveScatterPlot } from "@nivo/scatterplot";
 
@@ -10,14 +12,15 @@ import { motion } from "framer-motion";
 class Home extends React.Component {
   state = {
     players: [],
+    checked: false,
     hide: true,
     disabled: false,
     fanType: "general",
     playerOrTeam: "player",
     toggleAdvancedOptions: false,
     currentPlayersData: {
-      player1: { data: null, playerName: null },
-      player2: { data: null, playerName: null },
+      player1: { data: null, playerName: "Micah Rus" },
+      player2: { data: null, playerName: "Test user" },
     },
     graphData: [
       {
@@ -92,7 +95,7 @@ class Home extends React.Component {
   };
 
   componentDidUpdate() {
-    console.log(this.state);
+    console.log(this.state.checked);
   }
   // This function handles setting up the data that the graph will display
   setGraphData = (playerName, playerNumber) => {
@@ -391,7 +394,7 @@ class Home extends React.Component {
     );
   }
 
-  renderControlBar = () => {
+  renderTopControlBar = () => {
     return (
       <div>
         <form>
@@ -448,12 +451,137 @@ class Home extends React.Component {
     );
   };
 
-  renderButton = () => {
+  renderPositionButtons = () => {
     return (
       <div>
-        <span> Player 1</span>
-        <form title="player1">
-          <select onChange={this.playerButtonSelectHandler}>
+        <ToggleButton
+          type="radio"
+          variant="primary"
+          checked={this.state.checked}
+          variant="outline-primary"
+        >
+          {" "}
+          Positions{" "}
+        </ToggleButton>
+
+        <Form>
+          <Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="2nd Row" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Five-Eighth" />
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Interchange" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Hooker" />
+            </Col>
+          </Row>
+
+          <Row>
+            {" "}
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Fullback" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Halfback" />
+            </Col>
+          </Row>
+
+          <Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Lock" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Prop" />
+            </Col>
+          </Row>
+
+          <Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Winger" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Center" />
+            </Col>
+          </Row>
+        </Form>
+      </div>
+    );
+  };
+
+  renderStatDropDowns = () => {
+    const options = [
+      "AllRunMetres",
+      "Conversions",
+      "Errors",
+      "Fantasy",
+      "Intercepts",
+      "Kick Metres",
+      "LineBreakAssists",
+      "LineBreaks",
+      "MinutesPlayed",
+      "MissedTackles",
+      "Offloads",
+      "OneOnOneSteal",
+      "TackleBreaks",
+      "TackleEfficiency",
+      "TacklesMade",
+      "Tries",
+      "TryAssists",
+    ];
+    return (
+      <div>
+        <Form>
+          <Form.Label> Stat 1</Form.Label>
+          <Form.Control as="select" custom>
+            {options.map((options) => {
+              return <option>{options}</option>;
+            })}
+          </Form.Control>
+          <Form.Label> Stat 2</Form.Label>
+          <Form.Control as="select" custom>
+            {options.map((options) => {
+              return <option>{options}</option>;
+            })}
+          </Form.Control>
+        </Form>
+      </div>
+    );
+  };
+
+  renderTeamButtons = () => {
+    return (
+      <div>
+        <Form>
+          <Form.Label> Team 1</Form.Label>
+          <Form.Control as="select" custom>
+            <option> Team</option>
+          </Form.Control>
+
+          <Form.Label> Team 2</Form.Label>
+          <Form.Control as="select" custom>
+            <option> Team</option>
+          </Form.Control>
+        </Form>
+      </div>
+    );
+  };
+
+  renderPlayerButtons = () => {
+    return (
+      <div>
+        <Form title="player1">
+          <Form.Label> Player 1 </Form.Label>
+          <Form.Control
+            as="select"
+            custom
+            onChange={this.playerButtonSelectHandler}
+          >
             {this.state.players?.map((player) => {
               return (
                 <option key={player.player_id} value={player.player_id}>
@@ -461,11 +589,15 @@ class Home extends React.Component {
                 </option>
               );
             })}
-          </select>
-        </form>
-        <span> Player 2</span>
-        <form title="player2">
-          <select onChange={this.playerButtonSelectHandler}>
+          </Form.Control>
+        </Form>
+        <Form title="player2">
+          <Form.Label> Player 2 </Form.Label>
+          <Form.Control
+            as="select"
+            custom
+            onChange={this.playerButtonSelectHandler}
+          >
             {this.state.players?.map((player) => {
               return (
                 <option key={player.player_id} value={player.player_id}>
@@ -473,8 +605,51 @@ class Home extends React.Component {
                 </option>
               );
             })}
-          </select>
-        </form>
+          </Form.Control>
+        </Form>
+      </div>
+    );
+  };
+
+  renderDateButtons = () => {
+    return (
+      <div>
+        <Form>
+          <p>Dates</p>
+          <button>Calendar</button>
+          <button>Calendar</button>
+        </Form>
+      </div>
+    );
+  };
+
+  renderVenueButtons = () => {
+    return (
+      <div>
+        <Form>
+          <Form.Label> Venue </Form.Label>
+          <Form.Control as="select" custom>
+            <option> MCG </option>
+          </Form.Control>
+        </Form>
+      </div>
+    );
+  };
+
+  renderGraphControlBar = () => {
+    return (
+      <div>
+        <Form>
+          <div>
+            {this.renderStatDropDowns()}
+            {this.renderPlayerButtons()}
+            <h2> Filters </h2>
+            {this.renderPositionButtons()}
+            {this.renderTeamButtons()}
+            {this.renderDateButtons()}
+            {this.renderVenueButtons()}
+          </div>
+        </Form>
       </div>
     );
   };
@@ -501,14 +676,14 @@ class Home extends React.Component {
     //       {this.renderControlBar()}
     //       {this.renderModal()}
     //     </>
-    //   );
+    //   )
     // }
     return (
       <>
-        {this.renderControlBar()}
-        {this.renderMotionDiv()}
-        {this.renderButton()}
-        {this.renderRadar()}
+        {this.renderTopControlBar()}
+        {/* {this.renderMotionDiv()} */}
+        {this.renderGraphControlBar()}
+        {/* {this.renderRadar()} */}
         {/* {this.renderScatterPlot()} */}
         {this.renderAdvancedOptions()}
       </>
