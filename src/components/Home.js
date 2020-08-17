@@ -1,7 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-import { Form, Col, Row, Check, Button } from "react-bootstrap";
+import { Form, Col, Row, Tab, Tabs, Button } from "react-bootstrap";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -1088,11 +1088,36 @@ class Home extends React.Component {
     );
   };
 
+  handleSelect = () => {
+    console.log("hi");
+  };
+
+  renderGraphTabs = () => {
+    return (
+      <div>
+        <h3> Graph-Type</h3>
+
+        <Tabs
+          defaultActiveKey="radar"
+          id="graphTypeSelector"
+          onSelect={(e) => {
+            this.setState({ graphType: e });
+          }}
+        >
+          <Tab eventKey="radar" title="Radar"></Tab>
+          <Tab eventKey="scatter" title="Scatter"></Tab>
+          <Tab eventKey="bar" title="Bar"></Tab>
+        </Tabs>
+      </div>
+    );
+  };
+
   renderGraphControlBar = () => {
     return (
       <div style={{ height: "100%", width: "20%", overflow: "none" }}>
         <Form.Group>
           <div>
+            {this.renderGraphTabs()}
             {this.renderStatDropDowns()}
             {this.renderPlayerDropDowns()}
             <h2> Filters </h2>
