@@ -6,7 +6,7 @@ import { Form, Col, Row, Check, Button } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { ResponsiveRadar } from "@nivo/radar";
+import { ResponsiveRadar, Radar } from "@nivo/radar";
 import { ResponsiveScatterPlot } from "@nivo/scatterplot";
 
 import Popup from "reactjs-popup";
@@ -16,7 +16,7 @@ import { motion } from "framer-motion";
 class Home extends React.Component {
   state = {
     players: [],
-    menuOptions: { player: false },
+    graphType: "radar",
     redirect: null,
     showPositionButtons: false,
     hide: true,
@@ -173,10 +173,6 @@ class Home extends React.Component {
 
   toggleAdvancedOptions = () => {
     this.setState({ toggleAdvancedOptions: !this.state.toggleAdvancedOptions });
-  };
-
-  teamOrPlayerRadioChangeHandler = (event) => {
-    this.setState({ playerOrTeam: event.target.value });
   };
 
   fanTypeRadioChangeHandler = (event) => {
@@ -615,8 +611,6 @@ class Home extends React.Component {
           }}
           yScale={{ type: "linear", min: 0, max: "auto" }}
           yFormat={function (e) {
-            console.log(e);
-            console.log("here");
             return e + " cm";
           }}
           blendMode="multiply"
@@ -627,7 +621,7 @@ class Home extends React.Component {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: "weight",
+            legend: "Stat 1",
             legendPosition: "middle",
             legendOffset: 46,
           }}
@@ -636,7 +630,7 @@ class Home extends React.Component {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: "size",
+            legend: "Stat 2",
             legendPosition: "middle",
             legendOffset: -60,
           }}
@@ -824,6 +818,7 @@ class Home extends React.Component {
     );
   }
 
+  // Contains the buttons for the fan type and the team/player buttons
   renderTopControlBar = () => {
     return (
       <div>
@@ -871,7 +866,12 @@ class Home extends React.Component {
                 type="radio"
                 value="team"
                 checked={this.state.playerOrTeam === "team"}
-                onChange={this.teamOrPlayerRadioChangeHandler}
+                onChange={(e) => {
+                  this.setState({
+                    playerOrTeam: e.target.value,
+                    graphType: "scatter",
+                  });
+                }}
               />
             </Form.Control>
           </Col>
@@ -882,7 +882,12 @@ class Home extends React.Component {
                 type="radio"
                 value="player"
                 checked={this.state.playerOrTeam === "player"}
-                onChange={this.teamOrPlayerRadioChangeHandler}
+                onChange={(e) =>
+                  this.setState({
+                    playerOrTeam: e.target.value,
+                    graphType: "radar",
+                  })
+                }
               />
             </Form.Control>
           </Col>
@@ -1057,7 +1062,7 @@ class Home extends React.Component {
               <Col>
                 <Form.Label> Player 1 </Form.Label>
                 <Form.Control
-                  disabled={!this.state.menuOptions.player}
+                  disabled={this.state.graphType !== "radar"}
                   as="select"
                   custom
                   onChange={this.playerButtonSelectHandler}
@@ -1078,7 +1083,7 @@ class Home extends React.Component {
               <Col>
                 <Form.Label> Player 2 </Form.Label>
                 <Form.Control
-                  disabled={!this.state.menuOptions.player}
+                  disabled={this.state.graphType !== "radar"}
                   as="select"
                   custom
                   onChange={this.playerButtonSelectHandler}
@@ -1165,6 +1170,16 @@ class Home extends React.Component {
     );
   };
 
+  // This function contains a case statement that will determine which graph is rendered to the page
+  renderGraph = () => {
+    switch (this.state.graphType) {
+      case "radar":
+        return this.renderRadar();
+      case "scatter":
+        return this.renderScatterPlot();
+    }
+  };
+
   render() {
     // if (this.state.hide) {
     //   return (
@@ -1189,8 +1204,7 @@ class Home extends React.Component {
           }}
         >
           {this.renderGraphControlBar()}
-          {/* {this.renderRadar()} */}
-          {this.renderScatterPlot()}
+          {this.renderGraph()}
         </div>
       </>
     );
