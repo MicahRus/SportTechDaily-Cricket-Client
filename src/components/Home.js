@@ -1,4 +1,10 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
+
+import { Form, Col, Row, Check, Button } from "react-bootstrap";
+
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import { ResponsiveRadar } from "@nivo/radar";
 import { ResponsiveScatterPlot } from "@nivo/scatterplot";
@@ -10,14 +16,18 @@ import { motion } from "framer-motion";
 class Home extends React.Component {
   state = {
     players: [],
+    redirect: null,
+    showPositionButtons: false,
     hide: true,
+    startDate: { date: new Date() },
+    endDate: { date: new Date() },
     disabled: false,
     fanType: "general",
     playerOrTeam: "player",
     toggleAdvancedOptions: false,
     currentPlayersData: {
-      player1: { data: null, playerName: null },
-      player2: { data: null, playerName: null },
+      player1: { data: null, playerName: "Micah Rus" },
+      player2: { data: null, playerName: "Test user" },
     },
     graphData: [
       {
@@ -299,10 +309,14 @@ class Home extends React.Component {
     if (this.state.toggleAdvancedOptions) {
       return (
         <div>
-          <button onClick={this.toggleAdvancedOptions}>
+          <Button
+            variant="outline-primary"
+            size="sm"
+            onClick={this.toggleAdvancedOptions}
+          >
             {" "}
             Advanced Options
-          </button>
+          </Button>
           <form>
             <label>
               <input type="radio" value="null" />
@@ -330,10 +344,14 @@ class Home extends React.Component {
     } else {
       return (
         <div>
-          <button onClick={this.toggleAdvancedOptions}>
+          <Button
+            size="sm"
+            variant="outline-primary"
+            onClick={this.toggleAdvancedOptions}
+          >
             {" "}
             Advanced Options
-          </button>
+          </Button>
         </div>
       );
     }
@@ -391,90 +409,326 @@ class Home extends React.Component {
     );
   }
 
-  renderControlBar = () => {
+  renderTopControlBar = () => {
     return (
       <div>
-        <form>
-          <label>
-            <input
-              type="radio"
-              value="general"
-              checked={this.state.fanType === "general"}
-              onChange={this.fanTypeRadioChangeHandler}
-            />
-            General
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="fantasy"
-              checked={this.state.fanType === "fantasy"}
-              onChange={this.fanTypeRadioChangeHandler}
-            />
-            Fantasy
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="betting"
-              checked={this.state.fanType === "betting"}
-              onChange={this.fanTypeRadioChangeHandler}
-            />
-            Betting
-          </label>
-        </form>
+        <Form.Row inline>
+          <Col>
+            <Form.Label>General</Form.Label>
+            <Form.Control as="radio">
+              <input
+                type="radio"
+                value="general"
+                checked={this.state.fanType === "general"}
+                onChange={this.fanTypeRadioChangeHandler}
+              />
+            </Form.Control>
+          </Col>
+          <Col>
+            <Form.Label>Fantasy</Form.Label>
 
-        <form>
-          <label>
-            <input
-              type="radio"
-              value="team"
-              checked={this.state.playerOrTeam === "team"}
-              onChange={this.teamOrPlayerRadioChangeHandler}
-            />
-            Team
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="player"
-              checked={this.state.playerOrTeam === "player"}
-              onChange={this.teamOrPlayerRadioChangeHandler}
-            />
-            Player
-          </label>
-        </form>
+            <Form.Control as="radio">
+              <input
+                type="radio"
+                value="fantasy"
+                checked={this.state.fanType === "fantasy"}
+                onChange={this.fanTypeRadioChangeHandler}
+              />
+            </Form.Control>
+          </Col>
+          <Col>
+            <Form.Label>Betting</Form.Label>
+            <Form.Control as="radio">
+              <input
+                type="radio"
+                value="betting"
+                checked={this.state.fanType === "betting"}
+                onChange={this.fanTypeRadioChangeHandler}
+              />
+            </Form.Control>
+          </Col>
+        </Form.Row>
+        <Form.Row inline>
+          <Col>
+            <Form.Label>Team</Form.Label>
+            <Form.Control as="radio">
+              <input
+                type="radio"
+                value="team"
+                checked={this.state.playerOrTeam === "team"}
+                onChange={this.teamOrPlayerRadioChangeHandler}
+              />
+            </Form.Control>
+          </Col>
+          <Col>
+            <Form.Label>Player</Form.Label>
+            <Form.Control as="radio">
+              <input
+                type="radio"
+                value="player"
+                checked={this.state.playerOrTeam === "player"}
+                onChange={this.teamOrPlayerRadioChangeHandler}
+              />
+            </Form.Control>
+          </Col>
+        </Form.Row>
       </div>
     );
   };
 
-  renderButton = () => {
+  renderPositionButtons = () => {
+    if (this.state.showPositionButtons) {
+      return (
+        <div>
+          <Form>
+            <Form.Check
+              type="switch"
+              id="custom-switch"
+              label="Positions"
+              onChange={() => {
+                this.setState({
+                  showPositionButtons: !this.state.showPositionButtons,
+                });
+              }}
+            />
+          </Form>
+          <Form>
+            <Row>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="2nd Row" />
+              </Col>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Five-Eighth" />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Interchange" />
+              </Col>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Hooker" />
+              </Col>
+            </Row>
+
+            <Row>
+              {" "}
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Fullback" />
+              </Col>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Halfback" />
+              </Col>
+            </Row>
+
+            <Row>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Lock" />
+              </Col>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Prop" />
+              </Col>
+            </Row>
+
+            <Row>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Winger" />
+              </Col>
+              <Col>
+                <Form.Check type="checkbox" id="checkbox" label="Center" />
+              </Col>
+            </Row>
+          </Form>
+        </div>
+      );
+    }
     return (
       <div>
-        <span> Player 1</span>
-        <form title="player1">
-          <select onChange={this.playerButtonSelectHandler}>
-            {this.state.players?.map((player) => {
-              return (
-                <option key={player.player_id} value={player.player_id}>
-                  {player.first_name} {player.last_name}
-                </option>
-              );
-            })}
-          </select>
-        </form>
-        <span> Player 2</span>
-        <form title="player2">
-          <select onChange={this.playerButtonSelectHandler}>
-            {this.state.players?.map((player) => {
-              return (
-                <option key={player.player_id} value={player.player_id}>
-                  {player.first_name} {player.last_name}
-                </option>
-              );
-            })}
-          </select>
-        </form>
+        <Form>
+          <Form.Check
+            type="switch"
+            id="custom-switch"
+            label="Positions"
+            onChange={() => {
+              this.setState({
+                showPositionButtons: !this.state.showPositionButtons,
+              });
+            }}
+          />
+        </Form>
+      </div>
+    );
+  };
+
+  renderStatDropDowns = () => {
+    const options = [
+      "AllRunMetres",
+      "Conversions",
+      "Errors",
+      "Fantasy",
+      "Intercepts",
+      "Kick Metres",
+      "LineBreakAssists",
+      "LineBreaks",
+      "MinutesPlayed",
+      "MissedTackles",
+      "Offloads",
+      "OneOnOneSteal",
+      "TackleBreaks",
+      "TackleEfficiency",
+      "TacklesMade",
+      "Tries",
+      "TryAssists",
+    ];
+    return (
+      <div>
+        <Form inline>
+          <Row>
+            <Col>
+              <Form.Label> Stat 1</Form.Label>
+              <Form.Control as="select" custom>
+                {options.map((options) => {
+                  return <option>{options}</option>;
+                })}
+              </Form.Control>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Label> Stat 2</Form.Label>
+              <Form.Control as="select" custom>
+                {options.map((options) => {
+                  return <option>{options}</option>;
+                })}
+              </Form.Control>
+            </Col>
+          </Row>
+        </Form>
+      </div>
+    );
+  };
+
+  renderTeamButtons = () => {
+    return (
+      <div>
+        <Form inline>
+          <Row>
+            <Col>
+              <Form.Label> Team 1</Form.Label>
+              <Form.Control as="select" custom>
+                <option> Team</option>
+              </Form.Control>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col>
+              <Form.Label> Team 2</Form.Label>
+              <Form.Control as="select" custom>
+                <option> Team</option>
+              </Form.Control>
+            </Col>
+          </Row>
+        </Form>
+      </div>
+    );
+  };
+
+  renderPlayerButtons = () => {
+    return (
+      <div>
+        <Form inline>
+          <Form title="player1">
+            <Row>
+              <Col>
+                <Form.Label> Player 1 </Form.Label>
+                <Form.Control
+                  as="select"
+                  custom
+                  onChange={this.playerButtonSelectHandler}
+                >
+                  {this.state.players?.map((player) => {
+                    return (
+                      <option key={player.player_id} value={player.player_id}>
+                        {player.first_name} {player.last_name}
+                      </option>
+                    );
+                  })}
+                </Form.Control>
+              </Col>
+            </Row>
+          </Form>
+          <Form title="player2">
+            <Row>
+              <Col>
+                <Form.Label> Player 2 </Form.Label>
+                <Form.Control
+                  as="select"
+                  custom
+                  onChange={this.playerButtonSelectHandler}
+                >
+                  {this.state.players?.map((player) => {
+                    return (
+                      <option key={player.player_id} value={player.player_id}>
+                        {player.first_name} {player.last_name}
+                      </option>
+                    );
+                  })}
+                </Form.Control>
+              </Col>
+            </Row>
+          </Form>
+        </Form>
+      </div>
+    );
+  };
+
+  renderDateButtons = () => {
+    return (
+      <div>
+        <Form>
+          <h3>Dates</h3>
+          <DatePicker
+            selected={this.state.startDate.date}
+            onChange={(date) => this.setState({ startDate: { date: date } })}
+          />
+
+          <DatePicker
+            selected={this.state.endDate.date}
+            onChange={(date) => this.setState({ endDate: { date: date } })}
+          />
+        </Form>
+      </div>
+    );
+  };
+
+  renderVenueButtons = () => {
+    return (
+      <div>
+        <Form>
+          <Form.Label> Venue </Form.Label>
+          <Form.Control as="select" custom>
+            <option> MCG </option>
+          </Form.Control>
+        </Form>
+      </div>
+    );
+  };
+
+  renderGraphControlBar = () => {
+    return (
+      <div>
+        <Form.Group>
+          <div>
+            {this.renderStatDropDowns()}
+            {this.renderPlayerButtons()}
+            <h2> Filters </h2>
+            {this.renderPositionButtons()}
+            {this.renderTeamButtons()}
+            {this.renderDateButtons()}
+            {this.renderVenueButtons()}
+            {this.renderAdvancedOptions()}
+          </div>
+        </Form.Group>
       </div>
     );
   };
@@ -501,16 +755,18 @@ class Home extends React.Component {
     //       {this.renderControlBar()}
     //       {this.renderModal()}
     //     </>
-    //   );
+    //   )
     // }
+    if (this.state.redirect) {
+      return <Redirect to={this.state.redirect} />;
+    }
     return (
       <>
-        {this.renderControlBar()}
-        {this.renderMotionDiv()}
-        {this.renderButton()}
-        {this.renderRadar()}
+        {this.renderTopControlBar()}
+        {/* {this.renderMotionDiv()} */}
+        {this.renderGraphControlBar()}
+        {/* {this.renderRadar()} */}
         {/* {this.renderScatterPlot()} */}
-        {this.renderAdvancedOptions()}
       </>
     );
   }

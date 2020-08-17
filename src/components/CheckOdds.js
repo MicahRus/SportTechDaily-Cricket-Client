@@ -4,15 +4,25 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import Button from 'react-bootstrap/Button'
 import atsData from '../data/ats_summary_data'
 
-const CheckOdds = ({ats_summary_data}) => {
+class CheckOdds extends React.Component {
+  state = { redirect: null };
+
+  componentDidUpdate() {
+    console.log("true");
+    console.log(this.state);
+  }
+  render() {
+    if (this.state.redirect) {
+      return <Redirect to={this.state.redirect} />;
+    }
 
     return (
-        <>
+      <>
         <div>
-            <h1>Check the Odds</h1>
+          <h1>Check the Odds</h1>
         </div>
         <div>
-            <TabNav />
+          <TabNav />
         </div>
         <div>
             <Dropdown>
@@ -42,6 +52,7 @@ const CheckOdds = ({ats_summary_data}) => {
         </div>
         </>
     )
+
 }
 
 export default CheckOdds;
