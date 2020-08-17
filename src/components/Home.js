@@ -1,12 +1,12 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-import { Form, Col, Row, Check, Button } from "react-bootstrap";
+import { Form, Col, Row, Tab, Tabs, Button } from "react-bootstrap";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { ResponsiveRadar } from "@nivo/radar";
+import { ResponsiveRadar, Radar } from "@nivo/radar";
 import { ResponsiveScatterPlot } from "@nivo/scatterplot";
 
 import Popup from "reactjs-popup";
@@ -16,6 +16,7 @@ import { motion } from "framer-motion";
 class Home extends React.Component {
   state = {
     players: [],
+    graphType: "radar",
     redirect: null,
     showPositionButtons: false,
     hide: true,
@@ -162,24 +163,8 @@ class Home extends React.Component {
     }
   };
 
-  fanTypeClickHandler = (event) => {
-    this.setState({ fanType: event.target.value });
-  };
-
-  teamPlayerClickHandler = (event) => {
-    this.setState({ disabled: true, playerOrTeam: event.target.value });
-  };
-
   toggleAdvancedOptions = () => {
     this.setState({ toggleAdvancedOptions: !this.state.toggleAdvancedOptions });
-  };
-
-  teamOrPlayerRadioChangeHandler = (event) => {
-    this.setState({ playerOrTeam: event.target.value });
-  };
-
-  fanTypeRadioChangeHandler = (event) => {
-    this.setState({ fanType: event.target.value });
   };
 
   playerButtonSelectHandler = (event) => {
@@ -190,11 +175,424 @@ class Home extends React.Component {
     this.getPlayerData(playerId, playerName, playerNumber);
   };
 
+  // Renders the scatter-plot graph
   renderScatterPlot = () => {
+    const data = [
+      {
+        id: "Sydney Roosters",
+        data: [
+          {
+            x: 1,
+            y: 1,
+          },
+          {
+            x: 47,
+            y: 84,
+          },
+          {
+            x: 32,
+            y: 61,
+          },
+          {
+            x: 66,
+            y: 96,
+          },
+          {
+            x: 94,
+            y: 75,
+          },
+          {
+            x: 2,
+            y: 112,
+          },
+          {
+            x: 8,
+            y: 91,
+          },
+          {
+            x: 75,
+            y: 4,
+          },
+          {
+            x: 41,
+            y: 23,
+          },
+          {
+            x: 97,
+            y: 34,
+          },
+          {
+            x: 5,
+            y: 64,
+          },
+          {
+            x: 21,
+            y: 53,
+          },
+          {
+            x: 46,
+            y: 96,
+          },
+          {
+            x: 58,
+            y: 91,
+          },
+          {
+            x: 10,
+            y: 73,
+          },
+          {
+            x: 50,
+            y: 65,
+          },
+          {
+            x: 65,
+            y: 30,
+          },
+          {
+            x: 0,
+            y: 80,
+          },
+          {
+            x: 17,
+            y: 12,
+          },
+          {
+            x: 24,
+            y: 62,
+          },
+          {
+            x: 74,
+            y: 48,
+          },
+          {
+            x: 62,
+            y: 85,
+          },
+          {
+            x: 37,
+            y: 98,
+          },
+          {
+            x: 72,
+            y: 103,
+          },
+          {
+            x: 57,
+            y: 57,
+          },
+          {
+            x: 7,
+            y: 48,
+          },
+          {
+            x: 66,
+            y: 51,
+          },
+          {
+            x: 51,
+            y: 76,
+          },
+          {
+            x: 23,
+            y: 96,
+          },
+          {
+            x: 70,
+            y: 21,
+          },
+          {
+            x: 15,
+            y: 59,
+          },
+          {
+            x: 50,
+            y: 90,
+          },
+          {
+            x: 30,
+            y: 9,
+          },
+          {
+            x: 34,
+            y: 113,
+          },
+          {
+            x: 48,
+            y: 66,
+          },
+          {
+            x: 56,
+            y: 71,
+          },
+          {
+            x: 66,
+            y: 58,
+          },
+          {
+            x: 18,
+            y: 67,
+          },
+          {
+            x: 28,
+            y: 12,
+          },
+          {
+            x: 65,
+            y: 60,
+          },
+          {
+            x: 1,
+            y: 69,
+          },
+          {
+            x: 72,
+            y: 84,
+          },
+          {
+            x: 81,
+            y: 44,
+          },
+          {
+            x: 47,
+            y: 88,
+          },
+          {
+            x: 49,
+            y: 34,
+          },
+          {
+            x: 38,
+            y: 59,
+          },
+          {
+            x: 31,
+            y: 88,
+          },
+          {
+            x: 52,
+            y: 71,
+          },
+          {
+            x: 21,
+            y: 34,
+          },
+          {
+            x: 9,
+            y: 107,
+          },
+        ],
+      },
+      {
+        id: "Brisbane Bronco's",
+        data: [
+          {
+            x: 86,
+            y: 39,
+          },
+          {
+            x: 0,
+            y: 33,
+          },
+          {
+            x: 99,
+            y: 56,
+          },
+          {
+            x: 30,
+            y: 87,
+          },
+          {
+            x: 0,
+            y: 56,
+          },
+          {
+            x: 97,
+            y: 96,
+          },
+          {
+            x: 10,
+            y: 106,
+          },
+          {
+            x: 54,
+            y: 111,
+          },
+          {
+            x: 26,
+            y: 69,
+          },
+          {
+            x: 63,
+            y: 105,
+          },
+          {
+            x: 2,
+            y: 87,
+          },
+          {
+            x: 84,
+            y: 59,
+          },
+          {
+            x: 81,
+            y: 66,
+          },
+          {
+            x: 98,
+            y: 87,
+          },
+          {
+            x: 28,
+            y: 45,
+          },
+          {
+            x: 98,
+            y: 117,
+          },
+          {
+            x: 45,
+            y: 86,
+          },
+          {
+            x: 5,
+            y: 59,
+          },
+          {
+            x: 75,
+            y: 99,
+          },
+          {
+            x: 42,
+            y: 49,
+          },
+          {
+            x: 93,
+            y: 14,
+          },
+          {
+            x: 38,
+            y: 100,
+          },
+          {
+            x: 8,
+            y: 40,
+          },
+          {
+            x: 43,
+            y: 46,
+          },
+          {
+            x: 8,
+            y: 77,
+          },
+          {
+            x: 48,
+            y: 6,
+          },
+          {
+            x: 66,
+            y: 25,
+          },
+          {
+            x: 64,
+            y: 3,
+          },
+          {
+            x: 60,
+            y: 83,
+          },
+          {
+            x: 14,
+            y: 60,
+          },
+          {
+            x: 44,
+            y: 64,
+          },
+          {
+            x: 28,
+            y: 90,
+          },
+          {
+            x: 62,
+            y: 47,
+          },
+          {
+            x: 70,
+            y: 80,
+          },
+          {
+            x: 3,
+            y: 15,
+          },
+          {
+            x: 23,
+            y: 58,
+          },
+          {
+            x: 37,
+            y: 116,
+          },
+          {
+            x: 95,
+            y: 35,
+          },
+          {
+            x: 39,
+            y: 12,
+          },
+          {
+            x: 53,
+            y: 70,
+          },
+          {
+            x: 97,
+            y: 21,
+          },
+          {
+            x: 82,
+            y: 10,
+          },
+          {
+            x: 25,
+            y: 74,
+          },
+          {
+            x: 5,
+            y: 80,
+          },
+          {
+            x: 75,
+            y: 85,
+          },
+          {
+            x: 60,
+            y: 90,
+          },
+          {
+            x: 16,
+            y: 23,
+          },
+          {
+            x: 69,
+            y: 91,
+          },
+          {
+            x: 74,
+            y: 36,
+          },
+          {
+            x: 54,
+            y: 93,
+          },
+        ],
+      },
+    ];
     return (
-      <div style={{ height: "950px" }}>
+      <div div style={{ height: "100%", width: "75%" }}>
         <ResponsiveScatterPlot
-          data={this.state.data}
+          data={data}
           margin={{ top: 60, right: 140, bottom: 70, left: 90 }}
           xScale={{ type: "linear", min: 0, max: "auto" }}
           xFormat={function (e) {
@@ -212,7 +610,7 @@ class Home extends React.Component {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: "weight",
+            legend: "Stat 1",
             legendPosition: "middle",
             legendOffset: 46,
           }}
@@ -221,7 +619,7 @@ class Home extends React.Component {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: "size",
+            legend: "Stat 2",
             legendPosition: "middle",
             legendOffset: -60,
           }}
@@ -253,10 +651,11 @@ class Home extends React.Component {
     );
   };
 
+  // Renders the radar graph
   renderRadar = () => {
     console.log(this.state);
     return (
-      <div style={{ height: "1000px" }}>
+      <div style={{ height: "100%", width: "75%" }}>
         <ResponsiveRadar
           data={this.state.graphData}
           keys={[
@@ -409,45 +808,10 @@ class Home extends React.Component {
     );
   }
 
+  // Contains the buttons for the fan type and the team/player buttons
   renderTopControlBar = () => {
     return (
       <div>
-        <Form.Row inline>
-          <Col>
-            <Form.Label>General</Form.Label>
-            <Form.Control as="radio">
-              <input
-                type="radio"
-                value="general"
-                checked={this.state.fanType === "general"}
-                onChange={this.fanTypeRadioChangeHandler}
-              />
-            </Form.Control>
-          </Col>
-          <Col>
-            <Form.Label>Fantasy</Form.Label>
-
-            <Form.Control as="radio">
-              <input
-                type="radio"
-                value="fantasy"
-                checked={this.state.fanType === "fantasy"}
-                onChange={this.fanTypeRadioChangeHandler}
-              />
-            </Form.Control>
-          </Col>
-          <Col>
-            <Form.Label>Betting</Form.Label>
-            <Form.Control as="radio">
-              <input
-                type="radio"
-                value="betting"
-                checked={this.state.fanType === "betting"}
-                onChange={this.fanTypeRadioChangeHandler}
-              />
-            </Form.Control>
-          </Col>
-        </Form.Row>
         <Form.Row inline>
           <Col>
             <Form.Label>Team</Form.Label>
@@ -456,7 +820,11 @@ class Home extends React.Component {
                 type="radio"
                 value="team"
                 checked={this.state.playerOrTeam === "team"}
-                onChange={this.teamOrPlayerRadioChangeHandler}
+                onChange={(e) => {
+                  this.setState({
+                    playerOrTeam: e.target.value,
+                  });
+                }}
               />
             </Form.Control>
           </Col>
@@ -467,7 +835,11 @@ class Home extends React.Component {
                 type="radio"
                 value="player"
                 checked={this.state.playerOrTeam === "player"}
-                onChange={this.teamOrPlayerRadioChangeHandler}
+                onChange={(e) =>
+                  this.setState({
+                    playerOrTeam: e.target.value,
+                  })
+                }
               />
             </Form.Control>
           </Col>
@@ -476,7 +848,7 @@ class Home extends React.Component {
     );
   };
 
-  renderPositionButtons = () => {
+  renderPositionToggle = () => {
     if (this.state.showPositionButtons) {
       return (
         <div>
@@ -607,7 +979,7 @@ class Home extends React.Component {
     );
   };
 
-  renderTeamButtons = () => {
+  renderTeamDropDown = () => {
     return (
       <div>
         <Form inline>
@@ -633,7 +1005,7 @@ class Home extends React.Component {
     );
   };
 
-  renderPlayerButtons = () => {
+  renderPlayerDropDowns = () => {
     return (
       <div>
         <Form inline>
@@ -642,6 +1014,7 @@ class Home extends React.Component {
               <Col>
                 <Form.Label> Player 1 </Form.Label>
                 <Form.Control
+                  disabled={this.state.graphType !== "radar"}
                   as="select"
                   custom
                   onChange={this.playerButtonSelectHandler}
@@ -662,6 +1035,7 @@ class Home extends React.Component {
               <Col>
                 <Form.Label> Player 2 </Form.Label>
                 <Form.Control
+                  disabled={this.state.graphType !== "radar"}
                   as="select"
                   custom
                   onChange={this.playerButtonSelectHandler}
@@ -677,6 +1051,101 @@ class Home extends React.Component {
               </Col>
             </Row>
           </Form>
+        </Form>
+      </div>
+    );
+  };
+
+  renderStatCheckBox = () => {
+    return (
+      <div>
+        <h3> Stats </h3>
+        <Form>
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Conversions" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Errors" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Fantasy" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Intercepts" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="KickMetres" />
+            </Col>
+            <Col>
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="LineBreakAssists"
+              />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="LineBreaks" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="MinutesPlayed" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="MissedTackles" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Offloads" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Offloads" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="TackleBreaks" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="TryAssists" />
+            </Col>
+            <Col>
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="TackleEfficiency"
+              />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="TacklesMade" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Tries" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="TryAssists" />
+            </Col>
+          </Form.Row>
         </Form>
       </div>
     );
@@ -701,7 +1170,7 @@ class Home extends React.Component {
     );
   };
 
-  renderVenueButtons = () => {
+  renderVenueDropDown = () => {
     return (
       <div>
         <Form>
@@ -714,21 +1183,22 @@ class Home extends React.Component {
     );
   };
 
-  renderGraphControlBar = () => {
+  renderGraphTabs = () => {
     return (
       <div>
-        <Form.Group>
-          <div>
-            {this.renderStatDropDowns()}
-            {this.renderPlayerButtons()}
-            <h2> Filters </h2>
-            {this.renderPositionButtons()}
-            {this.renderTeamButtons()}
-            {this.renderDateButtons()}
-            {this.renderVenueButtons()}
-            {this.renderAdvancedOptions()}
-          </div>
-        </Form.Group>
+        <h3> Graph-Type</h3>
+
+        <Tabs
+          defaultActiveKey="radar"
+          id="graphTypeSelector"
+          onSelect={(e) => {
+            if (this.state.graphType !== e) this.setState({ graphType: e });
+          }}
+        >
+          <Tab eventKey="radar" title="Radar"></Tab>
+          <Tab eventKey="scatter" title="Scatter"></Tab>
+          <Tab eventKey="bar" title="Bar"></Tab>
+        </Tabs>
       </div>
     );
   };
@@ -748,6 +1218,83 @@ class Home extends React.Component {
     );
   };
 
+  // This function contains a case statement that will determine which graph is rendered to the page
+  renderGraph = () => {
+    switch (this.state.graphType) {
+      case "radar":
+        return this.renderRadar();
+      case "scatter":
+        return this.renderScatterPlot();
+    }
+  };
+
+  // Renders the control for the radar graph
+  radarGraphControls = () => {
+    return (
+      <>
+        {this.renderStatCheckBox()}
+        {this.renderPlayerDropDowns()}
+      </>
+    );
+  };
+
+  // Renders the controls for the scatter graph
+  scatterGraphControls = () => {
+    return (
+      <>
+        {this.renderStatDropDowns()}
+        {this.renderTeamDropDown()}
+      </>
+    );
+  };
+
+  // Renders the controls for the bar graph
+  barGraphControls = () => {
+    return (
+      <>
+        <div>
+          {" "}
+          <p>To be implemented</p>
+        </div>
+      </>
+    );
+  };
+
+  // Handles logic to decide which graph to display
+  graphSelect = () => {
+    switch (this.state.graphType) {
+      case "radar":
+        return this.radarGraphControls();
+
+      case "scatter":
+        return this.scatterGraphControls();
+
+      case "bar":
+        return this.barGraphControls();
+    }
+  };
+
+  // Renders the graph control to screen
+  renderGraphControl = () => {
+    return (
+      <div style={{ height: "100%", width: "25%" }}>
+        <Form.Group>
+          <div>
+            {this.renderGraphTabs()}
+            {this.graphSelect()}
+
+            <h2> Filters </h2>
+
+            {this.renderPositionToggle()}
+            {this.renderDateButtons()}
+            {this.renderVenueDropDown()}
+            {this.renderAdvancedOptions()}
+          </div>
+        </Form.Group>
+      </div>
+    );
+  };
+
   render() {
     // if (this.state.hide) {
     //   return (
@@ -764,9 +1311,16 @@ class Home extends React.Component {
       <>
         {this.renderTopControlBar()}
         {/* {this.renderMotionDiv()} */}
-        {this.renderGraphControlBar()}
-        {/* {this.renderRadar()} */}
-        {/* {this.renderScatterPlot()} */}
+        <div
+          style={{
+            display: "flex",
+            height: "80vh",
+            width: "100%",
+          }}
+        >
+          {this.renderGraphControl()}
+          {this.renderGraph()}
+        </div>
       </>
     );
   }
