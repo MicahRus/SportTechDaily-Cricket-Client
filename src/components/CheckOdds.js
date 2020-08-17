@@ -1,8 +1,11 @@
 import React from 'react';
 import TabNav from './TabNav';
 import Dropdown from 'react-bootstrap/Dropdown'
+import Button from 'react-bootstrap/Button'
+import atsData from '../data/ats_summary_data'
 
-const CheckOdds = () => {
+const CheckOdds = ({ats_summary_data}) => {
+
     return (
         <>
         <div>
@@ -13,15 +16,29 @@ const CheckOdds = () => {
         </div>
         <div>
             <Dropdown>
-                <Dropdown.Toggle variant="success" id="dropdown-basic">
-                Dropdown Button
+                <Dropdown.Toggle id="dropdown-basic">
+                Match
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                    <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                    <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                    <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                    <Dropdown.Item>Sydney Roosters vs Melbourne Storm</Dropdown.Item>
+                    <Dropdown.Item>Another action</Dropdown.Item>
+                    <Dropdown.Item>Something else</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
+        </div>
+        <div>
+            <Dropdown>
+                <Dropdown.Toggle id="dropdown-basic">
+                Market
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                    <Dropdown.Item>ATS</Dropdown.Item>
+                    <Dropdown.Item>FTS</Dropdown.Item>
+                </Dropdown.Menu>
+            </Dropdown>
+        </div>
+        <div>
+        <Button variant="success">Go!</Button>{' '}
         </div>
         </>
     )
