@@ -5,11 +5,11 @@ import DataPage from "./DataPage";
 import MainNav from "./MainNav";
 import "bootstrap/dist/css/bootstrap.min.css";
 import CheckOdds from "./CheckOdds";
-import TabNav from "./TabNav";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
+
   return (
     <BrowserRouter>
       <MainNav />
