@@ -16,6 +16,7 @@ import { motion } from "framer-motion";
 class Home extends React.Component {
   state = {
     players: [],
+    menuOptions: { player: false },
     redirect: null,
     showPositionButtons: false,
     hide: true,
@@ -191,10 +192,422 @@ class Home extends React.Component {
   };
 
   renderScatterPlot = () => {
+    const data = [
+      {
+        id: "Sydney Roosters",
+        data: [
+          {
+            x: 1,
+            y: 1,
+          },
+          {
+            x: 47,
+            y: 84,
+          },
+          {
+            x: 32,
+            y: 61,
+          },
+          {
+            x: 66,
+            y: 96,
+          },
+          {
+            x: 94,
+            y: 75,
+          },
+          {
+            x: 2,
+            y: 112,
+          },
+          {
+            x: 8,
+            y: 91,
+          },
+          {
+            x: 75,
+            y: 4,
+          },
+          {
+            x: 41,
+            y: 23,
+          },
+          {
+            x: 97,
+            y: 34,
+          },
+          {
+            x: 5,
+            y: 64,
+          },
+          {
+            x: 21,
+            y: 53,
+          },
+          {
+            x: 46,
+            y: 96,
+          },
+          {
+            x: 58,
+            y: 91,
+          },
+          {
+            x: 10,
+            y: 73,
+          },
+          {
+            x: 50,
+            y: 65,
+          },
+          {
+            x: 65,
+            y: 30,
+          },
+          {
+            x: 0,
+            y: 80,
+          },
+          {
+            x: 17,
+            y: 12,
+          },
+          {
+            x: 24,
+            y: 62,
+          },
+          {
+            x: 74,
+            y: 48,
+          },
+          {
+            x: 62,
+            y: 85,
+          },
+          {
+            x: 37,
+            y: 98,
+          },
+          {
+            x: 72,
+            y: 103,
+          },
+          {
+            x: 57,
+            y: 57,
+          },
+          {
+            x: 7,
+            y: 48,
+          },
+          {
+            x: 66,
+            y: 51,
+          },
+          {
+            x: 51,
+            y: 76,
+          },
+          {
+            x: 23,
+            y: 96,
+          },
+          {
+            x: 70,
+            y: 21,
+          },
+          {
+            x: 15,
+            y: 59,
+          },
+          {
+            x: 50,
+            y: 90,
+          },
+          {
+            x: 30,
+            y: 9,
+          },
+          {
+            x: 34,
+            y: 113,
+          },
+          {
+            x: 48,
+            y: 66,
+          },
+          {
+            x: 56,
+            y: 71,
+          },
+          {
+            x: 66,
+            y: 58,
+          },
+          {
+            x: 18,
+            y: 67,
+          },
+          {
+            x: 28,
+            y: 12,
+          },
+          {
+            x: 65,
+            y: 60,
+          },
+          {
+            x: 1,
+            y: 69,
+          },
+          {
+            x: 72,
+            y: 84,
+          },
+          {
+            x: 81,
+            y: 44,
+          },
+          {
+            x: 47,
+            y: 88,
+          },
+          {
+            x: 49,
+            y: 34,
+          },
+          {
+            x: 38,
+            y: 59,
+          },
+          {
+            x: 31,
+            y: 88,
+          },
+          {
+            x: 52,
+            y: 71,
+          },
+          {
+            x: 21,
+            y: 34,
+          },
+          {
+            x: 9,
+            y: 107,
+          },
+        ],
+      },
+      {
+        id: "Brisbane Bronco's",
+        data: [
+          {
+            x: 86,
+            y: 39,
+          },
+          {
+            x: 0,
+            y: 33,
+          },
+          {
+            x: 99,
+            y: 56,
+          },
+          {
+            x: 30,
+            y: 87,
+          },
+          {
+            x: 0,
+            y: 56,
+          },
+          {
+            x: 97,
+            y: 96,
+          },
+          {
+            x: 10,
+            y: 106,
+          },
+          {
+            x: 54,
+            y: 111,
+          },
+          {
+            x: 26,
+            y: 69,
+          },
+          {
+            x: 63,
+            y: 105,
+          },
+          {
+            x: 2,
+            y: 87,
+          },
+          {
+            x: 84,
+            y: 59,
+          },
+          {
+            x: 81,
+            y: 66,
+          },
+          {
+            x: 98,
+            y: 87,
+          },
+          {
+            x: 28,
+            y: 45,
+          },
+          {
+            x: 98,
+            y: 117,
+          },
+          {
+            x: 45,
+            y: 86,
+          },
+          {
+            x: 5,
+            y: 59,
+          },
+          {
+            x: 75,
+            y: 99,
+          },
+          {
+            x: 42,
+            y: 49,
+          },
+          {
+            x: 93,
+            y: 14,
+          },
+          {
+            x: 38,
+            y: 100,
+          },
+          {
+            x: 8,
+            y: 40,
+          },
+          {
+            x: 43,
+            y: 46,
+          },
+          {
+            x: 8,
+            y: 77,
+          },
+          {
+            x: 48,
+            y: 6,
+          },
+          {
+            x: 66,
+            y: 25,
+          },
+          {
+            x: 64,
+            y: 3,
+          },
+          {
+            x: 60,
+            y: 83,
+          },
+          {
+            x: 14,
+            y: 60,
+          },
+          {
+            x: 44,
+            y: 64,
+          },
+          {
+            x: 28,
+            y: 90,
+          },
+          {
+            x: 62,
+            y: 47,
+          },
+          {
+            x: 70,
+            y: 80,
+          },
+          {
+            x: 3,
+            y: 15,
+          },
+          {
+            x: 23,
+            y: 58,
+          },
+          {
+            x: 37,
+            y: 116,
+          },
+          {
+            x: 95,
+            y: 35,
+          },
+          {
+            x: 39,
+            y: 12,
+          },
+          {
+            x: 53,
+            y: 70,
+          },
+          {
+            x: 97,
+            y: 21,
+          },
+          {
+            x: 82,
+            y: 10,
+          },
+          {
+            x: 25,
+            y: 74,
+          },
+          {
+            x: 5,
+            y: 80,
+          },
+          {
+            x: 75,
+            y: 85,
+          },
+          {
+            x: 60,
+            y: 90,
+          },
+          {
+            x: 16,
+            y: 23,
+          },
+          {
+            x: 69,
+            y: 91,
+          },
+          {
+            x: 74,
+            y: 36,
+          },
+          {
+            x: 54,
+            y: 93,
+          },
+        ],
+      },
+    ];
     return (
-      <div style={{ height: "950px" }}>
+      <div div style={{ height: "100%", width: "80%" }}>
         <ResponsiveScatterPlot
-          data={this.state.data}
+          data={data}
           margin={{ top: 60, right: 140, bottom: 70, left: 90 }}
           xScale={{ type: "linear", min: 0, max: "auto" }}
           xFormat={function (e) {
@@ -202,6 +615,8 @@ class Home extends React.Component {
           }}
           yScale={{ type: "linear", min: 0, max: "auto" }}
           yFormat={function (e) {
+            console.log(e);
+            console.log("here");
             return e + " cm";
           }}
           blendMode="multiply"
@@ -256,7 +671,7 @@ class Home extends React.Component {
   renderRadar = () => {
     console.log(this.state);
     return (
-      <div style={{ height: "1000px" }}>
+      <div style={{ height: "100%", width: "80%" }}>
         <ResponsiveRadar
           data={this.state.graphData}
           keys={[
@@ -642,6 +1057,7 @@ class Home extends React.Component {
               <Col>
                 <Form.Label> Player 1 </Form.Label>
                 <Form.Control
+                  disabled={!this.state.menuOptions.player}
                   as="select"
                   custom
                   onChange={this.playerButtonSelectHandler}
@@ -662,6 +1078,7 @@ class Home extends React.Component {
               <Col>
                 <Form.Label> Player 2 </Form.Label>
                 <Form.Control
+                  disabled={!this.state.menuOptions.player}
                   as="select"
                   custom
                   onChange={this.playerButtonSelectHandler}
@@ -716,7 +1133,7 @@ class Home extends React.Component {
 
   renderGraphControlBar = () => {
     return (
-      <div>
+      <div style={{ height: "100%", width: "20%", overflow: "none" }}>
         <Form.Group>
           <div>
             {this.renderStatDropDowns()}
@@ -764,9 +1181,17 @@ class Home extends React.Component {
       <>
         {this.renderTopControlBar()}
         {/* {this.renderMotionDiv()} */}
-        {this.renderGraphControlBar()}
-        {/* {this.renderRadar()} */}
-        {/* {this.renderScatterPlot()} */}
+        <div
+          style={{
+            display: "flex",
+            height: "80vh",
+            width: "100%",
+          }}
+        >
+          {this.renderGraphControlBar()}
+          {/* {this.renderRadar()} */}
+          {this.renderScatterPlot()}
+        </div>
       </>
     );
   }
