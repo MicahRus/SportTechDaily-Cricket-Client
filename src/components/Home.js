@@ -175,6 +175,7 @@ class Home extends React.Component {
     this.getPlayerData(playerId, playerName, playerNumber);
   };
 
+  // Renders the scatter-plot graph
   renderScatterPlot = () => {
     const data = [
       {
@@ -589,7 +590,7 @@ class Home extends React.Component {
       },
     ];
     return (
-      <div div style={{ height: "100%", width: "80%" }}>
+      <div div style={{ height: "100%", width: "75%" }}>
         <ResponsiveScatterPlot
           data={data}
           margin={{ top: 60, right: 140, bottom: 70, left: 90 }}
@@ -650,10 +651,11 @@ class Home extends React.Component {
     );
   };
 
+  // Renders the radar graph
   renderRadar = () => {
     console.log(this.state);
     return (
-      <div style={{ height: "100%", width: "80%" }}>
+      <div style={{ height: "100%", width: "75%" }}>
         <ResponsiveRadar
           data={this.state.graphData}
           keys={[
@@ -821,7 +823,6 @@ class Home extends React.Component {
                 onChange={(e) => {
                   this.setState({
                     playerOrTeam: e.target.value,
-                    graphType: "scatter",
                   });
                 }}
               />
@@ -837,7 +838,6 @@ class Home extends React.Component {
                 onChange={(e) =>
                   this.setState({
                     playerOrTeam: e.target.value,
-                    graphType: "radar",
                   })
                 }
               />
@@ -1056,6 +1056,101 @@ class Home extends React.Component {
     );
   };
 
+  renderStatCheckBox = () => {
+    return (
+      <div>
+        <h3> Stats </h3>
+        <Form>
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Conversions" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Errors" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Fantasy" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Intercepts" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="KickMetres" />
+            </Col>
+            <Col>
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="LineBreakAssists"
+              />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="LineBreaks" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="MinutesPlayed" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="MissedTackles" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Offloads" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Offloads" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="TackleBreaks" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="TryAssists" />
+            </Col>
+            <Col>
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="TackleEfficiency"
+              />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="TacklesMade" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Tries" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="TryAssists" />
+            </Col>
+          </Form.Row>
+        </Form>
+      </div>
+    );
+  };
+
   renderDateButtons = () => {
     return (
       <div>
@@ -1088,10 +1183,6 @@ class Home extends React.Component {
     );
   };
 
-  handleSelect = () => {
-    console.log("hi");
-  };
-
   renderGraphTabs = () => {
     return (
       <div>
@@ -1101,33 +1192,13 @@ class Home extends React.Component {
           defaultActiveKey="radar"
           id="graphTypeSelector"
           onSelect={(e) => {
-            this.setState({ graphType: e });
+            if (this.state.graphType !== e) this.setState({ graphType: e });
           }}
         >
           <Tab eventKey="radar" title="Radar"></Tab>
           <Tab eventKey="scatter" title="Scatter"></Tab>
           <Tab eventKey="bar" title="Bar"></Tab>
         </Tabs>
-      </div>
-    );
-  };
-
-  renderGraphControlBar = () => {
-    return (
-      <div style={{ height: "100%", width: "20%", overflow: "none" }}>
-        <Form.Group>
-          <div>
-            {this.renderGraphTabs()}
-            {this.renderStatDropDowns()}
-            {this.renderPlayerDropDowns()}
-            <h2> Filters </h2>
-            {this.renderPositionToggle()}
-            {this.renderTeamDropDown()}
-            {this.renderDateButtons()}
-            {this.renderVenueDropDown()}
-            {this.renderAdvancedOptions()}
-          </div>
-        </Form.Group>
       </div>
     );
   };
@@ -1157,6 +1228,73 @@ class Home extends React.Component {
     }
   };
 
+  // Renders the control for the radar graph
+  radarGraphControls = () => {
+    return (
+      <>
+        {this.renderStatCheckBox()}
+        {this.renderPlayerDropDowns()}
+      </>
+    );
+  };
+
+  // Renders the controls for the scatter graph
+  scatterGraphControls = () => {
+    return (
+      <>
+        {this.renderStatDropDowns()}
+        {this.renderTeamDropDown()}
+      </>
+    );
+  };
+
+  // Renders the controls for the bar graph
+  barGraphControls = () => {
+    return (
+      <>
+        <div>
+          {" "}
+          <p>To be implemented</p>
+        </div>
+      </>
+    );
+  };
+
+  // Handles logic to decide which graph to display
+  graphSelect = () => {
+    switch (this.state.graphType) {
+      case "radar":
+        return this.radarGraphControls();
+
+      case "scatter":
+        return this.scatterGraphControls();
+
+      case "bar":
+        return this.barGraphControls();
+    }
+  };
+
+  // Renders the graph control to screen
+  renderGraphControl = () => {
+    return (
+      <div style={{ height: "100%", width: "25%" }}>
+        <Form.Group>
+          <div>
+            {this.renderGraphTabs()}
+            {this.graphSelect()}
+
+            <h2> Filters </h2>
+
+            {this.renderPositionToggle()}
+            {this.renderDateButtons()}
+            {this.renderVenueDropDown()}
+            {this.renderAdvancedOptions()}
+          </div>
+        </Form.Group>
+      </div>
+    );
+  };
+
   render() {
     // if (this.state.hide) {
     //   return (
@@ -1180,7 +1318,7 @@ class Home extends React.Component {
             width: "100%",
           }}
         >
-          {this.renderGraphControlBar()}
+          {this.renderGraphControl()}
           {this.renderGraph()}
         </div>
       </>
