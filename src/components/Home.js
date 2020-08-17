@@ -848,7 +848,7 @@ class Home extends React.Component {
     );
   };
 
-  renderPositionButtons = () => {
+  renderPositionToggle = () => {
     if (this.state.showPositionButtons) {
       return (
         <div>
@@ -979,7 +979,7 @@ class Home extends React.Component {
     );
   };
 
-  renderTeamButtons = () => {
+  renderTeamDropDown = () => {
     return (
       <div>
         <Form inline>
@@ -1005,7 +1005,7 @@ class Home extends React.Component {
     );
   };
 
-  renderPlayerButtons = () => {
+  renderPlayerDropDowns = () => {
     return (
       <div>
         <Form inline>
@@ -1075,7 +1075,7 @@ class Home extends React.Component {
     );
   };
 
-  renderVenueButtons = () => {
+  renderVenueDropDown = () => {
     return (
       <div>
         <Form>
@@ -1094,12 +1094,12 @@ class Home extends React.Component {
         <Form.Group>
           <div>
             {this.renderStatDropDowns()}
-            {this.renderPlayerButtons()}
+            {this.renderPlayerDropDowns()}
             <h2> Filters </h2>
-            {this.renderPositionButtons()}
-            {this.renderTeamButtons()}
+            {this.renderPositionToggle()}
+            {this.renderTeamDropDown()}
             {this.renderDateButtons()}
-            {this.renderVenueButtons()}
+            {this.renderVenueDropDown()}
             {this.renderAdvancedOptions()}
           </div>
         </Form.Group>
