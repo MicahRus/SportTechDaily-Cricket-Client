@@ -163,20 +163,8 @@ class Home extends React.Component {
     }
   };
 
-  fanTypeClickHandler = (event) => {
-    this.setState({ fanType: event.target.value });
-  };
-
-  teamPlayerClickHandler = (event) => {
-    this.setState({ disabled: true, playerOrTeam: event.target.value });
-  };
-
   toggleAdvancedOptions = () => {
     this.setState({ toggleAdvancedOptions: !this.state.toggleAdvancedOptions });
-  };
-
-  fanTypeRadioChangeHandler = (event) => {
-    this.setState({ fanType: event.target.value });
   };
 
   playerButtonSelectHandler = (event) => {
@@ -822,42 +810,6 @@ class Home extends React.Component {
   renderTopControlBar = () => {
     return (
       <div>
-        <Form.Row inline>
-          <Col>
-            <Form.Label>General</Form.Label>
-            <Form.Control as="radio">
-              <input
-                type="radio"
-                value="general"
-                checked={this.state.fanType === "general"}
-                onChange={this.fanTypeRadioChangeHandler}
-              />
-            </Form.Control>
-          </Col>
-          <Col>
-            <Form.Label>Fantasy</Form.Label>
-
-            <Form.Control as="radio">
-              <input
-                type="radio"
-                value="fantasy"
-                checked={this.state.fanType === "fantasy"}
-                onChange={this.fanTypeRadioChangeHandler}
-              />
-            </Form.Control>
-          </Col>
-          <Col>
-            <Form.Label>Betting</Form.Label>
-            <Form.Control as="radio">
-              <input
-                type="radio"
-                value="betting"
-                checked={this.state.fanType === "betting"}
-                onChange={this.fanTypeRadioChangeHandler}
-              />
-            </Form.Control>
-          </Col>
-        </Form.Row>
         <Form.Row inline>
           <Col>
             <Form.Label>Team</Form.Label>
