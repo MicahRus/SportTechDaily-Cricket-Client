@@ -11,27 +11,31 @@ class TabNav extends React.Component {
         <Nav.Item>
           <Nav.Link
             onClick={() => {
-              this.setState({ redirect: "/sportsbetting" });
+              this.setState({ redirect: "/" });
             }}
+            eventKey="/"
           >
-            Sports Betting
+            Sports Analytics
           </Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link 
-            onClick={() => {
-              this.setState({ redirect: "/fantasysport" });
-            }}
-              eventKey="link-1">Fantasy Sports</Nav.Link>
         </Nav.Item>
         <Nav.Item>
           <Nav.Link
             onClick={() => {
-              this.setState({ redirect: "/" });
+              this.setState({ redirect: "/fantasysport" });
             }}
-            eventKey="link-1"
+            eventKey="/fantasysport"
           >
-            Sports Analytics
+            Fantasy Sports
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link
+            onClick={() => {
+              this.setState({ redirect: "/sportsbetting" });
+            }}
+            eventKey="/sportsbetting"
+          >
+            Sports Betting
           </Nav.Link>
         </Nav.Item>
       </Nav>
