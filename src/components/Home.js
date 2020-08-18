@@ -3,6 +3,8 @@ import { Redirect } from "react-router-dom";
 
 import { Form, Col, Row, Tab, Tabs, Button } from "react-bootstrap";
 
+import Select from "react-select";
+
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -987,52 +989,19 @@ class Home extends React.Component {
   };
 
   renderPlayerDropDowns = () => {
+    const options = [];
+    this.state.players.map((player) => {
+      options.push({
+        value: player.first_name + " " + player.last_name,
+        label: player.first_name + " " + player.last_name,
+      });
+    });
     return (
       <div>
-        <Form inline>
-          <Form title="player1">
-            <Row>
-              <Col>
-                <Form.Label> Player 1 </Form.Label>
-                <Form.Control
-                  disabled={this.state.graphType !== "radar"}
-                  as="select"
-                  custom
-                  onChange={this.playerButtonSelectHandler}
-                >
-                  {this.state.players?.map((player) => {
-                    return (
-                      <option key={player.player_id} value={player.player_id}>
-                        {player.first_name} {player.last_name}
-                      </option>
-                    );
-                  })}
-                </Form.Control>
-              </Col>
-            </Row>
-          </Form>
-          <Form title="player2">
-            <Row>
-              <Col>
-                <Form.Label> Player 2 </Form.Label>
-                <Form.Control
-                  disabled={this.state.graphType !== "radar"}
-                  as="select"
-                  custom
-                  onChange={this.playerButtonSelectHandler}
-                >
-                  {this.state.players?.map((player) => {
-                    return (
-                      <option key={player.player_id} value={player.player_id}>
-                        {player.first_name} {player.last_name}
-                      </option>
-                    );
-                  })}
-                </Form.Control>
-              </Col>
-            </Row>
-          </Form>
-        </Form>
+        <h2> Player 1</h2>
+        <Select options={options} onChange={this.playerButtonSelectHandler} />
+        <h2> Player 2</h2>
+        <Select options={options} onChange={this.playerButtonSelectHandler} />
       </div>
     );
   };
