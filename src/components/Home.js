@@ -812,38 +812,19 @@ class Home extends React.Component {
   renderTopControlBar = () => {
     return (
       <div>
-        <Form.Row inline>
-          <Col>
-            <Form.Label>Team</Form.Label>
-            <Form.Control as="radio">
-              <input
-                type="radio"
-                value="team"
-                checked={this.state.playerOrTeam === "team"}
-                onChange={(e) => {
-                  this.setState({
-                    playerOrTeam: e.target.value,
-                  });
-                }}
-              />
-            </Form.Control>
-          </Col>
-          <Col>
-            <Form.Label>Player</Form.Label>
-            <Form.Control as="radio">
-              <input
-                type="radio"
-                value="player"
-                checked={this.state.playerOrTeam === "player"}
-                onChange={(e) =>
-                  this.setState({
-                    playerOrTeam: e.target.value,
-                  })
-                }
-              />
-            </Form.Control>
-          </Col>
-        </Form.Row>
+        <h3> Graph-Type</h3>
+
+        <Tabs
+          defaultActiveKey="Player"
+          id="teamOrPlayerSelector"
+          onSelect={(e) => {
+            if (this.state.playerOrTeam !== e)
+              this.setState({ playerOrTeam: e });
+          }}
+        >
+          <Tab eventKey="player" title="Player"></Tab>
+          <Tab eventKey="team" title="Team"></Tab>
+        </Tabs>
       </div>
     );
   };
@@ -933,23 +914,23 @@ class Home extends React.Component {
 
   renderStatDropDowns = () => {
     const options = [
-      "AllRunMetres",
+      "All Run Metres",
       "Conversions",
       "Errors",
       "Fantasy",
       "Intercepts",
       "Kick Metres",
-      "LineBreakAssists",
-      "LineBreaks",
-      "MinutesPlayed",
-      "MissedTackles",
+      "Line Break Assists",
+      "Line Breaks",
+      "Minutes Played",
+      "Missed Tackles",
       "Offloads",
-      "OneOnOneSteal",
-      "TackleBreaks",
-      "TackleEfficiency",
-      "TacklesMade",
+      "One On One Steal",
+      "Tackle Breaks",
+      "Tackle Efficiency",
+      "Tackles Made",
       "Tries",
-      "TryAssists",
+      "Try Assists",
     ];
     return (
       <div>
@@ -1081,41 +1062,49 @@ class Home extends React.Component {
 
           <Form.Row>
             <Col>
-              <Form.Check type="checkbox" id="checkbox" label="KickMetres" />
+              <Form.Check type="checkbox" id="checkbox" label="Kick Metres" />
             </Col>
             <Col>
               <Form.Check
                 type="checkbox"
                 id="checkbox"
-                label="LineBreakAssists"
+                label="Line Break Assists"
               />
             </Col>
           </Form.Row>
 
           <Form.Row>
             <Col>
-              <Form.Check type="checkbox" id="checkbox" label="LineBreaks" />
+              <Form.Check type="checkbox" id="checkbox" label="Line Breaks" />
             </Col>
             <Col>
-              <Form.Check type="checkbox" id="checkbox" label="MinutesPlayed" />
-            </Col>
-          </Form.Row>
-
-          <Form.Row>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="MissedTackles" />
-            </Col>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Offloads" />
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="Minutes Played"
+              />
             </Col>
           </Form.Row>
 
           <Form.Row>
             <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Offloads" />
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="Missed Tackles"
+              />
             </Col>
             <Col>
-              <Form.Check type="checkbox" id="checkbox" label="TackleBreaks" />
+              <Form.Check type="checkbox" id="checkbox" label="Off loads" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Try Assists" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Tackle Breaks" />
             </Col>
           </Form.Row>
 
@@ -1127,23 +1116,17 @@ class Home extends React.Component {
               <Form.Check
                 type="checkbox"
                 id="checkbox"
-                label="TackleEfficiency"
+                label="Tackle Efficiency"
               />
             </Col>
           </Form.Row>
 
           <Form.Row>
             <Col>
-              <Form.Check type="checkbox" id="checkbox" label="TacklesMade" />
+              <Form.Check type="checkbox" id="checkbox" label="Tackles Made" />
             </Col>
             <Col>
               <Form.Check type="checkbox" id="checkbox" label="Tries" />
-            </Col>
-          </Form.Row>
-
-          <Form.Row>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="TryAssists" />
             </Col>
           </Form.Row>
         </Form>
@@ -1284,8 +1267,10 @@ class Home extends React.Component {
             {this.graphSelect()}
 
             <h2> Filters </h2>
+            {this.state.playerOrTeam === "team"
+              ? this.renderPositionToggle()
+              : null}
 
-            {this.renderPositionToggle()}
             {this.renderDateButtons()}
             {this.renderVenueDropDown()}
             {this.renderAdvancedOptions()}
