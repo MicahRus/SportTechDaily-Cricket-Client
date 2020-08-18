@@ -17,6 +17,7 @@ import { motion } from "framer-motion";
 
 class Home extends React.Component {
   state = {
+    display: null,
     players: [],
     graphType: "radar",
     redirect: null,
@@ -26,7 +27,8 @@ class Home extends React.Component {
     endDate: { date: new Date() },
     disabled: false,
     fanType: "general",
-    playerOrTeam: "player",
+    playerOrTeam: "team",
+    teams: ["test"],
     toggleAdvancedOptions: false,
     currentPlayersData: {
       player1: { data: null, playerName: "Micah Rus" },
@@ -63,6 +65,7 @@ class Home extends React.Component {
 
   componentDidMount() {
     this.getAllPlayersData();
+    this.getAllTeamsData();
   }
 
   // Retrieves all player data from database
@@ -102,6 +105,12 @@ class Home extends React.Component {
     }
 
     this.setGraphData(playerName, playerNumber);
+  };
+
+  getAllTeamsData = async () => {
+    const response = await fetch("http://localhost:3001/teams");
+    const data = await response.json();
+    this.setState({ teams: data.rows });
   };
 
   componentDidUpdate() {
@@ -169,10 +178,20 @@ class Home extends React.Component {
     this.setState({ toggleAdvancedOptions: !this.state.toggleAdvancedOptions });
   };
 
-  playerButtonSelectHandler = (event) => {
-    let playerId = event.target.value;
-    let playerName = event.target[event.target.selectedIndex].innerText;
-    let playerNumber = event.target.parentNode.title;
+  playerButtonSelectHandler1 = (event) => {
+    console.log(event);
+    let playerId = event.value;
+    let playerName = event.label;
+    let playerNumber = 1;
+
+    this.getPlayerData(playerId, playerName, playerNumber);
+  };
+
+  playerButtonSelectHandler2 = (event) => {
+    console.log(event);
+    let playerId = event.value;
+    let playerName = event.label;
+    let playerNumber = 2;
 
     this.getPlayerData(playerId, playerName, playerNumber);
   };
@@ -811,13 +830,11 @@ class Home extends React.Component {
   }
 
   // Contains the buttons for the fan type and the team/player buttons
-  renderTopControlBar = () => {
+  renderPlayerAndTeamTabs = () => {
     return (
       <div>
-        <h3> Graph-Type</h3>
-
         <Tabs
-          defaultActiveKey="Player"
+          defaultActiveKey="player"
           id="teamOrPlayerSelector"
           onSelect={(e) => {
             if (this.state.playerOrTeam !== e)
@@ -834,12 +851,12 @@ class Home extends React.Component {
   renderPositionToggle = () => {
     if (this.state.showPositionButtons) {
       return (
-        <div>
+        <div style={{ display: this.state.display }}>
           <Form>
             <Form.Check
               type="switch"
               id="custom-switch"
-              label="Positions"
+              label="positions"
               onChange={() => {
                 this.setState({
                   showPositionButtons: !this.state.showPositionButtons,
@@ -897,7 +914,7 @@ class Home extends React.Component {
       );
     }
     return (
-      <div>
+      <div style={{ display: this.state.display }}>
         <Form>
           <Form.Check
             type="switch"
@@ -963,27 +980,20 @@ class Home extends React.Component {
   };
 
   renderTeamDropDown = () => {
+    const options = [];
+    this.state.teams.map((team) => {
+      options.push({ label: team.team_name, value: team.team_name });
+    });
     return (
       <div>
-        <Form inline>
-          <Row>
-            <Col>
-              <Form.Label> Team 1</Form.Label>
-              <Form.Control as="select" custom>
-                <option> Team</option>
-              </Form.Control>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col>
-              <Form.Label> Team 2</Form.Label>
-              <Form.Control as="select" custom>
-                <option> Team</option>
-              </Form.Control>
-            </Col>
-          </Row>
-        </Form>
+        <span> Team 1 </span>
+        <Select
+          options={options}
+          onMenuOpen={() => this.setState({ display: "none" })}
+          onMenuClose={() => this.setState({ display: null })}
+        />
+        <span> Team 2 </span>
+        <Select options={options} />
       </div>
     );
   };
@@ -992,16 +1002,16 @@ class Home extends React.Component {
     const options = [];
     this.state.players.map((player) => {
       options.push({
-        value: player.first_name + " " + player.last_name,
+        value: player.player_id,
         label: player.first_name + " " + player.last_name,
       });
     });
     return (
       <div>
-        <h2> Player 1</h2>
-        <Select options={options} onChange={this.playerButtonSelectHandler} />
-        <h2> Player 2</h2>
-        <Select options={options} onChange={this.playerButtonSelectHandler} />
+        <span> Player 1 </span>
+        <Select options={options} onChange={this.playerButtonSelectHandler1} />
+        <span> Player 2 </span>
+        <Select options={options} onChange={this.playerButtonSelectHandler2} />
       </div>
     );
   };
@@ -1123,14 +1133,21 @@ class Home extends React.Component {
   };
 
   renderVenueDropDown = () => {
+    const options = [
+      { value: "Suncorp Stadium", label: "Suncorp Stadium" },
+      { value: "GIO Stadium	", label: "	GIO Stadium" },
+      { value: "AAMI Park", label: "AAMI Park" },
+    ];
     return (
       <div>
-        <Form>
-          <Form.Label> Venue </Form.Label>
-          <Form.Control as="select" custom>
-            <option> MCG </option>
-          </Form.Control>
-        </Form>
+        <Select
+          defaultValue={options}
+          isMulti
+          name="colors"
+          options={options}
+          className="basic-multi-select"
+          classNamePrefix="select"
+        />
       </div>
     );
   };
@@ -1185,7 +1202,9 @@ class Home extends React.Component {
     return (
       <>
         {this.renderStatCheckBox()}
-        {this.renderPlayerDropDowns()}
+        {this.state.playerOrTeam === "team"
+          ? this.renderTeamDropDown()
+          : this.renderPlayerDropDowns()}
       </>
     );
   };
@@ -1236,10 +1255,10 @@ class Home extends React.Component {
             {this.graphSelect()}
 
             <h2> Filters </h2>
+
             {this.state.playerOrTeam === "team"
               ? this.renderPositionToggle()
               : null}
-
             {this.renderDateButtons()}
             {this.renderVenueDropDown()}
             {this.renderAdvancedOptions()}
@@ -1263,7 +1282,7 @@ class Home extends React.Component {
     }
     return (
       <>
-        {this.renderTopControlBar()}
+        {this.renderPlayerAndTeamTabs()}
         {/* {this.renderMotionDiv()} */}
         <div
           style={{
