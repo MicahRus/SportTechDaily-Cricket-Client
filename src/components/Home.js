@@ -3,6 +3,8 @@ import { Redirect } from "react-router-dom";
 
 import { Form, Col, Row, Tab, Tabs, Button } from "react-bootstrap";
 
+import Select from "react-select";
+
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -13,8 +15,11 @@ import Popup from "reactjs-popup";
 
 import { motion } from "framer-motion";
 
+import BarChart from "./BarChart";
+
 class Home extends React.Component {
   state = {
+    visibility: null,
     players: [],
     graphType: "radar",
     redirect: null,
@@ -25,6 +30,7 @@ class Home extends React.Component {
     disabled: false,
     fanType: "general",
     playerOrTeam: "player",
+    teams: ["test"],
     toggleAdvancedOptions: false,
     currentPlayersData: {
       player1: { data: null, playerName: "Micah Rus" },
@@ -61,6 +67,7 @@ class Home extends React.Component {
 
   componentDidMount() {
     this.getAllPlayersData();
+    this.getAllTeamsData();
   }
 
   // Retrieves all player data from database
@@ -100,6 +107,12 @@ class Home extends React.Component {
     }
 
     this.setGraphData(playerName, playerNumber);
+  };
+
+  getAllTeamsData = async () => {
+    const response = await fetch("http://localhost:3001/teams");
+    const data = await response.json();
+    this.setState({ teams: data.rows });
   };
 
   componentDidUpdate() {
@@ -167,10 +180,20 @@ class Home extends React.Component {
     this.setState({ toggleAdvancedOptions: !this.state.toggleAdvancedOptions });
   };
 
-  playerButtonSelectHandler = (event) => {
-    let playerId = event.target.value;
-    let playerName = event.target[event.target.selectedIndex].innerText;
-    let playerNumber = event.target.parentNode.title;
+  playerButtonSelectHandler1 = (event) => {
+    console.log(event);
+    let playerId = event.value;
+    let playerName = event.label;
+    let playerNumber = 1;
+
+    this.getPlayerData(playerId, playerName, playerNumber);
+  };
+
+  playerButtonSelectHandler2 = (event) => {
+    console.log(event);
+    let playerId = event.value;
+    let playerName = event.label;
+    let playerNumber = 2;
 
     this.getPlayerData(playerId, playerName, playerNumber);
   };
@@ -653,7 +676,6 @@ class Home extends React.Component {
 
   // Renders the radar graph
   renderRadar = () => {
-    console.log(this.state);
     return (
       <div style={{ height: "100%", width: "75%" }}>
         <ResponsiveRadar
@@ -809,13 +831,11 @@ class Home extends React.Component {
   }
 
   // Contains the buttons for the fan type and the team/player buttons
-  renderTopControlBar = () => {
+  renderPlayerAndTeamTabs = () => {
     return (
       <div>
-        <h3> Graph-Type</h3>
-
         <Tabs
-          defaultActiveKey="Player"
+          defaultActiveKey="player"
           id="teamOrPlayerSelector"
           onSelect={(e) => {
             if (this.state.playerOrTeam !== e)
@@ -832,12 +852,12 @@ class Home extends React.Component {
   renderPositionToggle = () => {
     if (this.state.showPositionButtons) {
       return (
-        <div>
+        <div style={{ visibility: this.state.visibility }}>
           <Form>
             <Form.Check
               type="switch"
               id="custom-switch"
-              label="Positions"
+              label="positions"
               onChange={() => {
                 this.setState({
                   showPositionButtons: !this.state.showPositionButtons,
@@ -895,7 +915,7 @@ class Home extends React.Component {
       );
     }
     return (
-      <div>
+      <div style={{ visibility: this.state.visibility }}>
         <Form>
           <Form.Check
             type="switch"
@@ -914,12 +934,12 @@ class Home extends React.Component {
 
   renderStatDropDowns = () => {
     const options = [
-      "All Run Metres",
       "Conversions",
       "Errors",
       "Fantasy",
       "Intercepts",
       "Kick Metres",
+      "Field Goals",
       "Line Break Assists",
       "Line Breaks",
       "Minutes Played",
@@ -931,6 +951,8 @@ class Home extends React.Component {
       "Tackles Made",
       "Tries",
       "Try Assists",
+      "All Run Metres",
+      "Post Contact Metres",
     ];
     return (
       <div>
@@ -961,78 +983,42 @@ class Home extends React.Component {
   };
 
   renderTeamDropDown = () => {
+    const options = [];
+    this.state.teams.map((team) => {
+      options.push({ label: team.team_name, value: team.team_name });
+    });
     return (
       <div>
-        <Form inline>
-          <Row>
-            <Col>
-              <Form.Label> Team 1</Form.Label>
-              <Form.Control as="select" custom>
-                <option> Team</option>
-              </Form.Control>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col>
-              <Form.Label> Team 2</Form.Label>
-              <Form.Control as="select" custom>
-                <option> Team</option>
-              </Form.Control>
-            </Col>
-          </Row>
-        </Form>
+        <span> Team 1 </span>
+        <Select
+          options={options}
+          onMenuOpen={() => this.setState({ visibility: "hidden" })}
+          onMenuClose={() => this.setState({ visibility: null })}
+        />
+        <span> Team 2 </span>
+        <Select
+          options={options}
+          onMenuOpen={() => this.setState({ visibility: "hidden" })}
+          onMenuClose={() => this.setState({ visibility: null })}
+        />
       </div>
     );
   };
 
   renderPlayerDropDowns = () => {
+    const options = [];
+    this.state.players.map((player) => {
+      options.push({
+        value: player.player_id,
+        label: player.first_name + " " + player.last_name,
+      });
+    });
     return (
       <div>
-        <Form inline>
-          <Form title="player1">
-            <Row>
-              <Col>
-                <Form.Label> Player 1 </Form.Label>
-                <Form.Control
-                  disabled={this.state.graphType !== "radar"}
-                  as="select"
-                  custom
-                  onChange={this.playerButtonSelectHandler}
-                >
-                  {this.state.players?.map((player) => {
-                    return (
-                      <option key={player.player_id} value={player.player_id}>
-                        {player.first_name} {player.last_name}
-                      </option>
-                    );
-                  })}
-                </Form.Control>
-              </Col>
-            </Row>
-          </Form>
-          <Form title="player2">
-            <Row>
-              <Col>
-                <Form.Label> Player 2 </Form.Label>
-                <Form.Control
-                  disabled={this.state.graphType !== "radar"}
-                  as="select"
-                  custom
-                  onChange={this.playerButtonSelectHandler}
-                >
-                  {this.state.players?.map((player) => {
-                    return (
-                      <option key={player.player_id} value={player.player_id}>
-                        {player.first_name} {player.last_name}
-                      </option>
-                    );
-                  })}
-                </Form.Control>
-              </Col>
-            </Row>
-          </Form>
-        </Form>
+        <span> Player 1 </span>
+        <Select options={options} onChange={this.playerButtonSelectHandler1} />
+        <span> Player 2 </span>
+        <Select options={options} onChange={this.playerButtonSelectHandler2} />
       </div>
     );
   };
@@ -1065,18 +1051,24 @@ class Home extends React.Component {
               <Form.Check type="checkbox" id="checkbox" label="Kick Metres" />
             </Col>
             <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Field Goals" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
               <Form.Check
                 type="checkbox"
                 id="checkbox"
                 label="Line Break Assists"
               />
             </Col>
-          </Form.Row>
-
-          <Form.Row>
             <Col>
               <Form.Check type="checkbox" id="checkbox" label="Line Breaks" />
             </Col>
+          </Form.Row>
+
+          <Form.Row>
             <Col>
               <Form.Check
                 type="checkbox"
@@ -1084,9 +1076,6 @@ class Home extends React.Component {
                 label="Minutes Played"
               />
             </Col>
-          </Form.Row>
-
-          <Form.Row>
             <Col>
               <Form.Check
                 type="checkbox"
@@ -1094,23 +1083,24 @@ class Home extends React.Component {
                 label="Missed Tackles"
               />
             </Col>
+          </Form.Row>
+
+          <Form.Row>
             <Col>
               <Form.Check type="checkbox" id="checkbox" label="Off loads" />
             </Col>
+            <Col>
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="One On One Steal"
+              />
+            </Col>
           </Form.Row>
 
           <Form.Row>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Try Assists" />
-            </Col>
             <Col>
               <Form.Check type="checkbox" id="checkbox" label="Tackle Breaks" />
-            </Col>
-          </Form.Row>
-
-          <Form.Row>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="TryAssists" />
             </Col>
             <Col>
               <Form.Check
@@ -1127,6 +1117,28 @@ class Home extends React.Component {
             </Col>
             <Col>
               <Form.Check type="checkbox" id="checkbox" label="Tries" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Try Assists" />
+            </Col>
+            <Col>
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="All Run Metres"
+              />
+            </Col>
+          </Form.Row>
+          <Form.Row>
+            <Col>
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="Post Contact Metres"
+              />
             </Col>
           </Form.Row>
         </Form>
@@ -1154,14 +1166,22 @@ class Home extends React.Component {
   };
 
   renderVenueDropDown = () => {
+    const options = [
+      { value: "Suncorp Stadium", label: "Suncorp Stadium" },
+      { value: "GIO Stadium	", label: "	GIO Stadium" },
+      { value: "AAMI Park", label: "AAMI Park" },
+    ];
     return (
       <div>
-        <Form>
-          <Form.Label> Venue </Form.Label>
-          <Form.Control as="select" custom>
-            <option> MCG </option>
-          </Form.Control>
-        </Form>
+        <Select
+          defaultValue={options}
+          isMulti
+          closeMenuOnSelect={false}
+          name="venues"
+          options={options}
+          className="basic-multi-select"
+          classNamePrefix="select"
+        />
       </div>
     );
   };
@@ -1204,10 +1224,12 @@ class Home extends React.Component {
   // This function contains a case statement that will determine which graph is rendered to the page
   renderGraph = () => {
     switch (this.state.graphType) {
-      case "radar":
+      default:
         return this.renderRadar();
       case "scatter":
         return this.renderScatterPlot();
+      case "bar":
+        return BarChart();
     }
   };
 
@@ -1216,7 +1238,9 @@ class Home extends React.Component {
     return (
       <>
         {this.renderStatCheckBox()}
-        {this.renderPlayerDropDowns()}
+        {this.state.playerOrTeam === "team"
+          ? this.renderTeamDropDown()
+          : this.renderPlayerDropDowns()}
       </>
     );
   };
@@ -1267,10 +1291,10 @@ class Home extends React.Component {
             {this.graphSelect()}
 
             <h2> Filters </h2>
+
             {this.state.playerOrTeam === "team"
               ? this.renderPositionToggle()
               : null}
-
             {this.renderDateButtons()}
             {this.renderVenueDropDown()}
             {this.renderAdvancedOptions()}
@@ -1294,7 +1318,7 @@ class Home extends React.Component {
     }
     return (
       <>
-        {this.renderTopControlBar()}
+        {this.renderPlayerAndTeamTabs()}
         {/* {this.renderMotionDiv()} */}
         <div
           style={{
