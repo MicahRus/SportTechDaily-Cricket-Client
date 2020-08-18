@@ -15,9 +15,11 @@ import Popup from "reactjs-popup";
 
 import { motion } from "framer-motion";
 
+import BarChart from "./BarChart";
+
 class Home extends React.Component {
   state = {
-    display: null,
+    visibility: null,
     players: [],
     graphType: "radar",
     redirect: null,
@@ -27,7 +29,7 @@ class Home extends React.Component {
     endDate: { date: new Date() },
     disabled: false,
     fanType: "general",
-    playerOrTeam: "team",
+    playerOrTeam: "player",
     teams: ["test"],
     toggleAdvancedOptions: false,
     currentPlayersData: {
@@ -674,7 +676,6 @@ class Home extends React.Component {
 
   // Renders the radar graph
   renderRadar = () => {
-    console.log(this.state);
     return (
       <div style={{ height: "100%", width: "75%" }}>
         <ResponsiveRadar
@@ -851,7 +852,7 @@ class Home extends React.Component {
   renderPositionToggle = () => {
     if (this.state.showPositionButtons) {
       return (
-        <div style={{ display: this.state.display }}>
+        <div style={{ visibility: this.state.visibility }}>
           <Form>
             <Form.Check
               type="switch"
@@ -914,7 +915,7 @@ class Home extends React.Component {
       );
     }
     return (
-      <div style={{ display: this.state.display }}>
+      <div style={{ visibility: this.state.visibility }}>
         <Form>
           <Form.Check
             type="switch"
@@ -933,12 +934,12 @@ class Home extends React.Component {
 
   renderStatDropDowns = () => {
     const options = [
-      "All Run Metres",
       "Conversions",
       "Errors",
       "Fantasy",
       "Intercepts",
       "Kick Metres",
+      "Field Goals",
       "Line Break Assists",
       "Line Breaks",
       "Minutes Played",
@@ -950,6 +951,8 @@ class Home extends React.Component {
       "Tackles Made",
       "Tries",
       "Try Assists",
+      "All Run Metres",
+      "Post Contact Metres",
     ];
     return (
       <div>
@@ -989,11 +992,15 @@ class Home extends React.Component {
         <span> Team 1 </span>
         <Select
           options={options}
-          onMenuOpen={() => this.setState({ display: "none" })}
-          onMenuClose={() => this.setState({ display: null })}
+          onMenuOpen={() => this.setState({ visibility: "hidden" })}
+          onMenuClose={() => this.setState({ visibility: null })}
         />
         <span> Team 2 </span>
-        <Select options={options} />
+        <Select
+          options={options}
+          onMenuOpen={() => this.setState({ visibility: "hidden" })}
+          onMenuClose={() => this.setState({ visibility: null })}
+        />
       </div>
     );
   };
@@ -1044,18 +1051,24 @@ class Home extends React.Component {
               <Form.Check type="checkbox" id="checkbox" label="Kick Metres" />
             </Col>
             <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Field Goals" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
               <Form.Check
                 type="checkbox"
                 id="checkbox"
                 label="Line Break Assists"
               />
             </Col>
-          </Form.Row>
-
-          <Form.Row>
             <Col>
               <Form.Check type="checkbox" id="checkbox" label="Line Breaks" />
             </Col>
+          </Form.Row>
+
+          <Form.Row>
             <Col>
               <Form.Check
                 type="checkbox"
@@ -1063,9 +1076,6 @@ class Home extends React.Component {
                 label="Minutes Played"
               />
             </Col>
-          </Form.Row>
-
-          <Form.Row>
             <Col>
               <Form.Check
                 type="checkbox"
@@ -1073,23 +1083,24 @@ class Home extends React.Component {
                 label="Missed Tackles"
               />
             </Col>
+          </Form.Row>
+
+          <Form.Row>
             <Col>
               <Form.Check type="checkbox" id="checkbox" label="Off loads" />
             </Col>
+            <Col>
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="One On One Steal"
+              />
+            </Col>
           </Form.Row>
 
           <Form.Row>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Try Assists" />
-            </Col>
             <Col>
               <Form.Check type="checkbox" id="checkbox" label="Tackle Breaks" />
-            </Col>
-          </Form.Row>
-
-          <Form.Row>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="TryAssists" />
             </Col>
             <Col>
               <Form.Check
@@ -1106,6 +1117,28 @@ class Home extends React.Component {
             </Col>
             <Col>
               <Form.Check type="checkbox" id="checkbox" label="Tries" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Try Assists" />
+            </Col>
+            <Col>
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="All Run Metres"
+              />
+            </Col>
+          </Form.Row>
+          <Form.Row>
+            <Col>
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="Post Contact Metres"
+              />
             </Col>
           </Form.Row>
         </Form>
@@ -1143,7 +1176,8 @@ class Home extends React.Component {
         <Select
           defaultValue={options}
           isMulti
-          name="colors"
+          closeMenuOnSelect={false}
+          name="venues"
           options={options}
           className="basic-multi-select"
           classNamePrefix="select"
@@ -1190,10 +1224,12 @@ class Home extends React.Component {
   // This function contains a case statement that will determine which graph is rendered to the page
   renderGraph = () => {
     switch (this.state.graphType) {
-      case "radar":
+      default:
         return this.renderRadar();
       case "scatter":
         return this.renderScatterPlot();
+      case "bar":
+        return BarChart();
     }
   };
 
