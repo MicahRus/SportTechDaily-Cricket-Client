@@ -1189,8 +1189,6 @@ class Home extends React.Component {
   renderGraphTabs = () => {
     return (
       <div>
-        <h3> Graph-Type</h3>
-
         <Tabs
           defaultActiveKey="radar"
           id="graphTypeSelector"
