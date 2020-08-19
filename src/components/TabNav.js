@@ -7,7 +7,7 @@ class TabNav extends React.Component {
 
   navBar = () => {
     return (
-      <Nav variant="tabs" defaultActiveKey="/home">
+      <Nav variant="tabs" defaultActiveKey="/">
         <Nav.Item>
           <Nav.Link
             onClick={() => {

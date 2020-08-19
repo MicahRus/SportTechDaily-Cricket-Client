@@ -954,6 +954,25 @@ class Home extends React.Component {
       "All Run Metres",
       "Post Contact Metres",
     ];
+
+    if (this.state.graphType === "bar") {
+      return (
+        <div>
+          <Form inline>
+            <Row>
+              <Col>
+                <Form.Label> Stat</Form.Label>
+                <Form.Control as="select" custom>
+                  {options.map((options) => {
+                    return <option>{options}</option>;
+                  })}
+                </Form.Control>
+              </Col>
+            </Row>
+          </Form>
+        </div>
+      );
+    }
     return (
       <div>
         <Form inline>
@@ -1026,7 +1045,6 @@ class Home extends React.Component {
   renderStatCheckBox = () => {
     return (
       <div>
-        <h3> Stats </h3>
         <Form>
           <Form.Row>
             <Col>
@@ -1150,7 +1168,6 @@ class Home extends React.Component {
     return (
       <div>
         <Form>
-          <h3>Dates</h3>
           <DatePicker
             selected={this.state.startDate.date}
             onChange={(date) => this.setState({ startDate: { date: date } })}
@@ -1199,7 +1216,43 @@ class Home extends React.Component {
           <Tab eventKey="radar" title="Radar"></Tab>
           <Tab eventKey="scatter" title="Scatter"></Tab>
           <Tab eventKey="bar" title="Bar"></Tab>
+          <Tab eventKey="rankings" title="Rankings"></Tab>
         </Tabs>
+      </div>
+    );
+  };
+
+  renderMinimumGamesPlayed = () => {
+    return (
+      <div>
+        <Form>
+          <Form.Group controlId="formBasicRangeCustom">
+            <Form.Label> Minimum Games Played</Form.Label>
+            <Form.Control
+              type="range"
+              value={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+              custom
+            />
+          </Form.Group>
+        </Form>
+      </div>
+    );
+  };
+
+  renderAverageOrTotalCheckbox = () => {
+    return (
+      <div>
+        <Form>
+          <Row>
+            <Col>
+              <Form.Label> Test</Form.Label>
+              <Form.Control as="checkbox">
+                <option> Asdf</option>
+                <option>Test</option>
+              </Form.Control>
+            </Col>
+          </Row>
+        </Form>
       </div>
     );
   };
@@ -1248,21 +1301,16 @@ class Home extends React.Component {
     return (
       <>
         {this.renderStatDropDowns()}
-        {this.renderTeamDropDown()}
+        {this.state.playerOrTeam === "team"
+          ? this.renderTeamDropDown()
+          : this.renderPlayerDropDowns()}
       </>
     );
   };
 
   // Renders the controls for the bar graph
   barGraphControls = () => {
-    return (
-      <>
-        <div>
-          {" "}
-          <p>To be implemented</p>
-        </div>
-      </>
-    );
+    return <>{this.renderStatDropDowns("bar")}</>;
   };
 
   // Handles logic to decide which graph to display
@@ -1285,17 +1333,26 @@ class Home extends React.Component {
       <div style={{ height: "100%", width: "25%" }}>
         <Form.Group>
           <div>
+            <br></br>
+            {this.renderPlayerAndTeamTabs()}
+            <br></br>
             {this.renderGraphTabs()}
+            <br></br>
             {this.graphSelect()}
-
-            <h2> Filters </h2>
 
             {this.state.playerOrTeam === "team"
               ? this.renderPositionToggle()
               : null}
+            <br></br>
             {this.renderDateButtons()}
+            <br></br>
             {this.renderVenueDropDown()}
-            {this.renderAdvancedOptions()}
+            <br></br>
+            {this.renderAverageOrTotalCheckbox()}
+            <br></br>
+            {this.renderMinimumGamesPlayed()}
+            <br></br>
+            {/* {this.renderAdvancedOptions()} */}
           </div>
         </Form.Group>
       </div>
@@ -1316,7 +1373,6 @@ class Home extends React.Component {
     }
     return (
       <>
-        {this.renderPlayerAndTeamTabs()}
         {/* {this.renderMotionDiv()} */}
         <div
           style={{
