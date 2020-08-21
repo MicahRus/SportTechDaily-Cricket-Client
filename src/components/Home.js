@@ -98,6 +98,7 @@ class Home extends React.Component {
   };
 
   componentDidMount() {
+    console.log(`${process.env.REACT_APP_BACKEND_URL}`);
     this.getAllPlayersData();
     this.getAllTeamsData();
     this.getCurrentPlayers();
@@ -109,7 +110,9 @@ class Home extends React.Component {
   }
 
   getPlayerPercentiles = async () => {
-    const response = await fetch("http://192.168.0.7:3001/percentiles");
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/percentiles`
+    );
     const data = await response.json();
     console.log(data.rows);
 
@@ -118,13 +121,17 @@ class Home extends React.Component {
 
   // Retrieves all player data from database
   getAllPlayersData = async () => {
-    const response = await fetch("http://192.168.0.7:3001/players");
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/players`
+    );
     const data = await response.json();
     this.setState({ players: data.rows });
   };
 
   getCurrentPlayers = async () => {
-    const response = await fetch("http://192.168.0.7:3001/currentplayers");
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/currentplayers`
+    );
     const data = await response.json();
 
     this.setState({
@@ -272,7 +279,7 @@ class Home extends React.Component {
   getPlayerData = async (playerId, playerName, playerNumber) => {
     playerId = parseInt(playerId);
     const response = await fetch(
-      `http://192.168.0.7:3001/player/id?playerId=${playerId}`
+      `${process.env.REACT_APP_BACKEND_URL}/player/id?playerId=${playerId}`
     );
     const data = await response.json();
 
@@ -302,7 +309,7 @@ class Home extends React.Component {
   };
 
   getAllTeamsData = async () => {
-    const response = await fetch("http://192.168.0.7:3001/teams");
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/teams`);
     const data = await response.json();
     this.setState({ teams: data.rows });
   };
