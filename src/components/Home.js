@@ -8,14 +8,15 @@ import Select from "react-select";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { ResponsiveRadar, Radar } from "@nivo/radar";
+import { ResponsiveRadar } from "@nivo/radar";
 import { ResponsiveScatterPlot } from "@nivo/scatterplot";
+import { ResponsiveBar } from "@nivo/bar";
+
+import BarChart from "./BarChart";
 
 import Popup from "reactjs-popup";
 
 import { motion } from "framer-motion";
-
-import BarChart from "./BarChart";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
@@ -24,14 +25,26 @@ import RangeSlider from "react-bootstrap-range-slider";
 class Home extends React.Component {
   state = {
     visibility: null,
-    selectedStats: ["all_run_metres", "minutes_played", "tries"],
+    selectedStats: [
+      "all_run_metres",
+      "errors",
+      "tries",
+      "try_assists",
+      "tackle_breaks",
+      "line_breaks",
+    ],
     stats: [{ kicks: 0 }, { passes: 0 }],
+    barStat1: ["Conversions"],
     currentPlayers: [],
     checked: true,
     templateChecked: true,
+    selectedPlayers: [
+      { value: "500663", label: "James Tedesco" },
+      { value: "504870", label: "Kalyn Ponga" },
+    ],
     value: 5,
     players: [],
-    graphType: "radar",
+    graphType: "bar",
     redirect: null,
     showPositionButtons: false,
     hide: true,
@@ -42,6 +55,10 @@ class Home extends React.Component {
     playerOrTeam: "player",
     teams: ["test"],
     toggleAdvancedOptions: false,
+    barGraphData: [
+      { playerName: "James Tedesco", conversions: 50 },
+      { playerName: "Kalyn Ponga", conversions: 98 },
+    ],
     currentPlayersData: {
       player1: { data: null, playerName: "player1" },
       player2: { data: null, playerName: "player2" },
@@ -53,12 +70,27 @@ class Home extends React.Component {
         player2: 80,
       },
       {
-        stat: "minutes_played",
+        stat: "errors",
+        player1: 99,
+        player2: 75,
+      },
+      {
+        stat: "line_breaks",
         player1: 99,
         player2: 75,
       },
       {
         stat: "tries",
+        player1: 99,
+        player2: 75,
+      },
+      {
+        stat: "tackle_breaks",
+        player1: 99,
+        player2: 75,
+      },
+      {
+        stat: "try_assists",
         player1: 99,
         player2: 75,
       },
@@ -69,7 +101,20 @@ class Home extends React.Component {
     this.getAllPlayersData();
     this.getAllTeamsData();
     this.getCurrentPlayers();
+    this.getPlayerPercentiles();
+
+    if (this.state.refreshBarChart) {
+      this.setBarChartData(this.state.selectedPlayers);
+    }
   }
+
+  getPlayerPercentiles = async () => {
+    const response = await fetch("http://192.168.0.7:3001/percentiles");
+    const data = await response.json();
+    console.log(data.rows);
+
+    this.setState({ playerPercentiles: data.rows });
+  };
 
   // Retrieves all player data from database
   getAllPlayersData = async () => {
@@ -95,7 +140,7 @@ class Home extends React.Component {
       "all_run_metres",
       "conversions",
       "errors",
-      "fantasy",
+      "fantasy_points_total",
       "field_goals",
       "intercepts",
       "kick_metres",
@@ -116,7 +161,7 @@ class Home extends React.Component {
     let all_run_metres = [];
     let conversions = [];
     let errors = [];
-    let fantasy = [];
+    let fantasy_points_total = [];
     let field_goals = [];
     let intercepts = [];
     let kick_metres = [];
@@ -133,64 +178,64 @@ class Home extends React.Component {
     let tries = [];
     let try_assists = [];
     this.state.currentPlayers.map((player) => {
-      stats.map((stat, i) => {
-        switch (i) {
+      stats.map((stat) => {
+        switch (stat) {
           default:
             all_run_metres.push(player[stat]);
             break;
-          case 1:
+          case "conversions":
             conversions.push(player[stat]);
             break;
-          case 2:
+          case "errors":
             errors.push(player[stat]);
             break;
-          case 3:
-            fantasy.push(player[stat]);
+          case "fantasy_points_total":
+            fantasy_points_total.push(player[stat]);
             break;
-          case 4:
+          case "field_goals":
             field_goals.push(player[stat]);
             break;
-          case 5:
+          case "intercepts":
+            intercepts.push(player[stat]);
+            break;
+          case "kick_metres":
             kick_metres.push(player[stat]);
             break;
-          case 6:
+          case "line_break_assists":
             line_break_assists.push(player[stat]);
             break;
-          case 7:
+          case "line_breaks":
             line_breaks.push(player[stat]);
             break;
-          case 8:
+          case "minutes_played":
             minutes_played.push(player[stat]);
             break;
-          case 9:
+          case "missed_tackles":
+            missed_tackles.push(player[stat]);
+            break;
+          case "offloads":
             offloads.push(player[stat]);
             break;
-          case 10:
-            minutes_played.push(player[stat]);
-            break;
-          case 11:
+          case "one_on_one_steal":
             one_on_one_steal.push(player[stat]);
             break;
-          case 12:
+          case "post_contact_metres":
             post_contact_metres.push(player[stat]);
             break;
-          case 13:
+          case "tackle_breaks":
             tackle_breaks.push(player[stat]);
             break;
-          case 14:
+          case "tackle_efficiency":
             tackle_efficiency.push(player[stat]);
             break;
-          case 15:
+          case "tackles_made":
             tackles_made.push(player[stat]);
             break;
-          case 16:
+          case "tries":
             tries.push(player[stat]);
             break;
-          case 17:
+          case "try_assists":
             try_assists.push(player[stat]);
-            break;
-          case 18:
-            missed_tackles.push(player[stat]);
             break;
         }
       });
@@ -199,7 +244,7 @@ class Home extends React.Component {
       { all_run_metres },
       { conversions },
       { errors },
-      { fantasy },
+      { fantasy_points_total },
       { field_goals },
       { intercepts },
       { kick_metres },
@@ -217,17 +262,19 @@ class Home extends React.Component {
       { try_assists },
     ];
     this.setState({ stats: allStats });
+
+    // This will get the 2 'Template players' we want to display
+    this.getPlayerData("500663", "James Tedesco", "player1");
+    this.getPlayerData("504870", "Kalyn Ponga", "player2");
   };
 
   // Retrieves individual player data from the database
   getPlayerData = async (playerId, playerName, playerNumber) => {
     playerId = parseInt(playerId);
-    console.log(typeof playerId);
     const response = await fetch(
       `http://192.168.0.7:3001/player/id?playerId=${playerId}`
     );
     const data = await response.json();
-    console.log(data);
 
     // Sets the state if the player number is 1
     if (playerNumber === "player1") {
@@ -262,11 +309,38 @@ class Home extends React.Component {
 
   componentDidUpdate() {
     console.log(this.state);
+    if (this.state.refreshBarChart) {
+      this.setBarChartData(this.state.selectedPlayers);
+    }
   }
+
+  handleRefresh = () => {
+    if (this.state.getNewPlayer1Data) {
+      this.setGraphData(
+        [this.state.currentPlayersData.player1.playerName],
+        "player1"
+      );
+      this.setState({ getNewPlayer1Data: false, getNewPlayer2Data: true });
+    }
+    if (this.state.getNewPlayer2Data) {
+      console.log("hit");
+      this.setGraphData(
+        [this.state.currentPlayersData.player2.playerName],
+        "player2"
+      );
+      this.setState({ getNewPlayer2Data: false });
+    }
+
+    if (!this.state.getNewPlayer1Data && !this.state.getNewPlayer2Data) {
+      this.setState({ redirect: null });
+    }
+  };
+
   // This function handles setting up the data that the graph will display
   setGraphData = (playerName, playerNumber) => {
     const player = this.state.currentPlayersData?.[playerNumber];
 
+    // A function used to find the percentile of our players data
     const percentileFinder = (arr, val) =>
       (100 *
         arr.reduce(
@@ -278,36 +352,81 @@ class Home extends React.Component {
     let newData = [];
     let x = null;
 
-    console.log(this.state.stats);
-
+    // A function that will select the stats being compared and then find the percentile of them and pass that data to state
     this.state.selectedStats.map((stat, i) => {
       let keys = Object.keys(this.state.graphData[i]);
       let values = Object.values(this.state.graphData[i]);
-      console.log(values[0]);
 
+      // Selects the stat which is being compared
       switch (values[0]) {
         default:
           x = 0;
           break;
+        case "conversions":
+          x = 1;
+          break;
+        case "errors":
+          x = 2;
+          break;
+        case "fantasy_points_total":
+          x = 3;
+          break;
+        case "field_goals":
+          x = 4;
+          break;
+        case "intercepts":
+          x = 5;
+          break;
+        case "kick_metres":
+          x = 6;
+          break;
+        case "line_break_assists":
+          x = 7;
+          break;
+        case "line_breaks":
+          x = 8;
+          break;
         case "minutes_played":
-          console.log("hit minutes played");
           x = 9;
           break;
+        case "missed_tackles":
+          x = 10;
+          break;
+        case "offloads":
+          x = 11;
+          break;
+        case "one_on_one_steal":
+          x = 12;
+          break;
+        case "post_contact_metres":
+          x = 13;
+          break;
+        case "tackle_breaks":
+          x = 14;
+          break;
+        case "tackle_efficiency":
+          x = 15;
+          break;
+        case "tackles_made":
+          x = 16;
+          break;
         case "tries":
-          console.log("hit tries");
           x = 17;
           break;
+        case "try_assists":
+          x = 18;
+          break;
       }
-      console.log(x);
-      console.log(stat);
-      let array = this.state.stats[x][stat];
-      console.log(this.state.stats[x]);
-      console.log(array);
+
+      // Sets an array that will be passed to the percentile based off the stats selected
+      let array = this.state.stats[x][values[0]];
       array.sort((a, b) => a - b);
 
+      // Finds the percentile based off the array and player stat passed in
       let percentile = percentileFinder(array, player.data[0][stat]);
       percentile = Math.round(percentile);
 
+      // Checks which player is selected
       if (playerNumber === "player1") {
         newData.push({
           stat: stat,
@@ -323,9 +442,7 @@ class Home extends React.Component {
       }
     });
 
-    this.setState({ graphData: newData });
-    console.log(this.state.graphData);
-    console.log(newData);
+    this.setState({ graphData: newData, redirect: "/" });
   };
 
   toggleAdvancedOptions = () => {
@@ -333,7 +450,6 @@ class Home extends React.Component {
   };
 
   playerButtonSelectHandler1 = (event) => {
-    console.log("hit player select button 1");
     let playerId = event.value;
     let playerName = event.label;
     let playerNumber = "player1";
@@ -342,12 +458,202 @@ class Home extends React.Component {
   };
 
   playerButtonSelectHandler2 = (event) => {
-    console.log("hit player select button 2");
     let playerId = event.value;
     let playerName = event.label;
     let playerNumber = "player2";
 
     this.getPlayerData(playerId, playerName, playerNumber);
+  };
+
+  statCheckBoxChangeHandler = (event) => {
+    let key = event.target.id;
+    if (this.state.selectedStats.includes(key)) {
+      let filteredArray = this.state.selectedStats.filter(
+        (item) => item !== key
+      );
+      this.setState({ selectedStats: filteredArray });
+    } else {
+      this.setState((prevState) => ({
+        selectedStats: [...prevState.selectedStats, key],
+      }));
+    }
+    // Deep clones an array from state
+    let clonedArray = JSON.parse(JSON.stringify(this.state.graphData));
+    let counter = 0;
+
+    // This will handle setting the graph data variables when we want to remove checkboxes
+    clonedArray.map((item, i) => {
+      if (item.stat === key) {
+        clonedArray.splice(i, 1);
+      } else {
+        if (item.stat !== key) {
+          counter++;
+        }
+        if (counter === clonedArray.length) {
+          clonedArray.push({
+            stat: key,
+            [this.state.currentPlayersData.player1.playerName]: 5,
+            [this.state.currentPlayersData.player2.playerName]: 10,
+          });
+        }
+      }
+    });
+    this.setState({
+      graphData: clonedArray,
+      redirect: "/",
+      getNewPlayer1Data: true,
+    });
+  };
+
+  renderPlayerSelect = () => {
+    const playerOptions = [];
+    this.state.currentPlayers.map((player) => {
+      playerOptions.push({
+        value: player.player_id,
+        label: player.player_name,
+      });
+    });
+
+    return (
+      <div>
+        <Select
+          isMulti
+          closeMenuOnSelect={false}
+          name="players"
+          options={playerOptions}
+          className="basic-multi-select"
+          classNamePrefix="select"
+          defaultValue={this.state.selectedPlayers}
+          onChange={(players) => {
+            this.setBarChartData(players);
+          }}
+        />
+      </div>
+    );
+  };
+
+  setBarChartData = (players) => {
+    const graphData = [];
+    let stat = this.state.barStat1;
+    let lowerStat = stat[0].toLowerCase().split(" ").join("_");
+
+    // "country": "AD",
+    // "hot dog": 94,
+    players.map((player) => {
+      this.state.playerPercentiles.map((percentile) => {
+        if (player.value === percentile.player_id) {
+          graphData.push({
+            playerName: player.label,
+            [lowerStat]: percentile[lowerStat],
+          });
+        }
+      });
+    });
+    this.setState({
+      barGraphData: graphData,
+      selectedPlayers: players,
+      refreshBarChart: false,
+    });
+  };
+
+  renderBarChart = () => {
+    let stat = this.state.barStat1;
+    let lowerStat = stat[0].toLowerCase().split(" ").join("_");
+    return (
+      <ResponsiveBar
+        data={this.state.barGraphData}
+        layout="horizontal"
+        keys={[lowerStat]}
+        indexBy="playerName"
+        margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
+        padding={0.3}
+        colors={{ scheme: "nivo" }}
+        maxValue={100}
+        defs={[
+          {
+            id: "dots",
+            type: "patternDots",
+            background: "inherit",
+            color: "#38bcb2",
+            size: 4,
+            padding: 1,
+            stagger: true,
+          },
+          {
+            id: "lines",
+            type: "patternLines",
+            background: "inherit",
+            color: "#eed312",
+            rotation: -45,
+            lineWidth: 6,
+            spacing: 10,
+          },
+        ]}
+        fill={[
+          {
+            match: {
+              id: "fries",
+            },
+            id: "dots",
+          },
+          {
+            match: {
+              id: "sandwich",
+            },
+            id: "lines",
+          },
+        ]}
+        borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+        axisTop={null}
+        axisRight={null}
+        axisBottom={{
+          tickSize: 5,
+          tickPadding: 5,
+          tickRotation: 0,
+          legend: [this.state.barStat1],
+          legendPosition: "middle",
+          legendOffset: 32,
+        }}
+        axisLeft={{
+          tickSize: 5,
+          tickPadding: 5,
+          tickRotation: 0,
+          legend: "Player Name",
+          legendPosition: "middle",
+          legendOffset: -40,
+        }}
+        labelSkipWidth={12}
+        labelSkipHeight={12}
+        labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+        legends={[
+          {
+            dataFrom: "keys",
+            anchor: "bottom-right",
+            direction: "column",
+            justify: false,
+            translateX: 120,
+            translateY: 0,
+            itemsSpacing: 2,
+            itemWidth: 100,
+            itemHeight: 20,
+            itemDirection: "left-to-right",
+            itemOpacity: 0.85,
+            symbolSize: 20,
+            effects: [
+              {
+                on: "hover",
+                style: {
+                  itemOpacity: 1,
+                },
+              },
+            ],
+          },
+        ]}
+        animate={true}
+        motionStiffness={90}
+        motionDamping={15}
+      />
+    );
   };
 
   // Renders the scatter-plot graph
@@ -991,7 +1297,7 @@ class Home extends React.Component {
               this.setState({ templateChecked: !this.state.templateChecked });
             }}
             type="checkbox"
-            checked={this.state.templateChecked}
+            checked={!this.state.templateChecked}
             id="checkbox"
             label="Forward"
           ></Form.Check>
@@ -1001,7 +1307,7 @@ class Home extends React.Component {
             }}
             type="checkbox"
             id="checkbox"
-            checked={!this.state.templateChecked}
+            checked={this.state.templateChecked}
             label="Backs"
           ></Form.Check>
         </Form>
@@ -1115,7 +1421,7 @@ class Home extends React.Component {
     const options = [
       "Conversions",
       "Errors",
-      "Fantasy",
+      "Fantasy Points Total",
       "Intercepts",
       "Kick Metres",
       "Field Goals",
@@ -1141,7 +1447,16 @@ class Home extends React.Component {
             <Row>
               <Col>
                 <Form.Label> Stat</Form.Label>
-                <Form.Control as="select" custom>
+                <Form.Control
+                  as="select"
+                  custom
+                  onChange={(e) => {
+                    this.setState({
+                      barStat1: [e.target.value],
+                      refreshBarChart: true,
+                    });
+                  }}
+                >
                   {options.map((options) => {
                     return <option>{options}</option>;
                   })}
@@ -1158,7 +1473,13 @@ class Home extends React.Component {
           <Row>
             <Col>
               <Form.Label> Stat 1</Form.Label>
-              <Form.Control as="select" custom>
+              <Form.Control
+                as="select"
+                custom
+                onChange={(e) => {
+                  this.setState({ scatterStat1: [e.target.value] });
+                }}
+              >
                 {options.map((options) => {
                   return <option>{options}</option>;
                 })}
@@ -1168,7 +1489,13 @@ class Home extends React.Component {
           <Row>
             <Col>
               <Form.Label> Stat 2</Form.Label>
-              <Form.Control as="select" custom>
+              <Form.Control
+                onChange={(e) => {
+                  this.setState({ scatterStat2: [e.target.value] });
+                }}
+                as="select"
+                custom
+              >
                 {options.map((options) => {
                   return <option>{options}</option>;
                 })}
@@ -1214,9 +1541,17 @@ class Home extends React.Component {
     return (
       <div>
         <span> Player 1 </span>
-        <Select options={options} onChange={this.playerButtonSelectHandler1} />
+        <Select
+          options={options}
+          onChange={this.playerButtonSelectHandler1}
+          placeholder={this.state.currentPlayersData.player1.playerName}
+        />
         <span> Player 2 </span>
-        <Select options={options} onChange={this.playerButtonSelectHandler2} />
+        <Select
+          options={options}
+          onChange={this.playerButtonSelectHandler2}
+          placeholder={this.state.currentPlayersData.player2.playerName}
+        />
       </div>
     );
   };
@@ -1227,114 +1562,206 @@ class Home extends React.Component {
         <Form>
           <Form.Row>
             <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Conversions" />
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id="conversions"
+                label="Conversions"
+                checked={this.state.selectedStats.includes("conversions")}
+              />
             </Col>
             <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Errors" />
-            </Col>
-          </Form.Row>
-
-          <Form.Row>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Fantasy" />
-            </Col>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Intercepts" />
-            </Col>
-          </Form.Row>
-
-          <Form.Row>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Kick Metres" />
-            </Col>
-            <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Field Goals" />
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id="errors"
+                label="Errors"
+                checked={this.state.selectedStats.includes("errors")}
+              />
             </Col>
           </Form.Row>
 
           <Form.Row>
             <Col>
               <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
                 type="checkbox"
-                id="checkbox"
+                id="fantasy_points_total"
+                label="Fantasy"
+                checked={this.state.selectedStats.includes(
+                  "fantasy_points_total"
+                )}
+              />
+            </Col>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id="intercepts"
+                label="Intercepts"
+                checked={this.state.selectedStats.includes("intercepts")}
+              />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id="kick_metres"
+                label="Kick Metres"
+                checked={this.state.selectedStats.includes("kick_metres")}
+              />
+            </Col>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id="field_goals"
+                label="Field Goals"
+                checked={this.state.selectedStats.includes("field_goals")}
+              />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id="line_break_assists"
                 label="Line Break Assists"
+                checked={this.state.selectedStats.includes(
+                  "line_break_assists"
+                )}
               />
             </Col>
             <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Line Breaks" />
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id="line_breaks"
+                label="Line Breaks"
+                checked={this.state.selectedStats.includes("line_breaks")}
+              />
             </Col>
           </Form.Row>
 
           <Form.Row>
             <Col>
               <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
                 type="checkbox"
-                id="checkbox"
+                id="minutes_played"
                 label="Minutes Played"
+                checked={this.state.selectedStats.includes("minutes_played")}
               />
             </Col>
             <Col>
               <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
                 type="checkbox"
-                id="checkbox"
+                id="missed_tackles"
                 label="Missed Tackles"
+                checked={this.state.selectedStats.includes("missed_tackles")}
               />
             </Col>
           </Form.Row>
 
           <Form.Row>
             <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Off loads" />
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id="offloads"
+                label="Off loads"
+                checked={this.state.selectedStats.includes("offloads")}
+              />
             </Col>
             <Col>
               <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
                 type="checkbox"
-                id="checkbox"
+                id="one_on_one_steal"
                 label="One On One Steal"
+                checked={this.state.selectedStats.includes("one_on_one_steal")}
               />
             </Col>
           </Form.Row>
 
           <Form.Row>
             <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Tackle Breaks" />
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id="tackle_breaks"
+                label="Tackle Breaks"
+                checked={this.state.selectedStats.includes("tackle_breaks")}
+              />
             </Col>
             <Col>
               <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
                 type="checkbox"
-                id="checkbox"
-                label="Tackle Efficiency"
+                id="tackle_efficiency"
+                label="Tackle"
+                checked={this.state.selectedStats.includes("tackle_efficiency")}
               />
             </Col>
           </Form.Row>
 
           <Form.Row>
             <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Tackles Made" />
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id="tackles_made"
+                label="Tackles Made"
+                checked={this.state.selectedStats.includes("tackles_made")}
+              />
             </Col>
             <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Tries" />
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id="tries"
+                label="Tries"
+                checked={this.state.selectedStats.includes("tries")}
+              />
             </Col>
           </Form.Row>
 
           <Form.Row>
             <Col>
-              <Form.Check type="checkbox" id="checkbox" label="Try Assists" />
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id="try_assists"
+                label="Try Assists"
+                checked={this.state.selectedStats.includes("try_assists")}
+              />
             </Col>
             <Col>
               <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
                 type="checkbox"
-                id="checkbox"
+                id="all_run_metres"
                 label="All Run Metres"
+                checked={this.state.selectedStats.includes("all_run_metres")}
               />
             </Col>
           </Form.Row>
           <Form.Row>
             <Col>
               <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
                 type="checkbox"
-                id="checkbox"
+                id="post_contact_metres"
                 label="Post Contact Metres"
+                checked={this.state.selectedStats.includes(
+                  "post_contact_metres"
+                )}
               />
             </Col>
           </Form.Row>
@@ -1361,7 +1788,7 @@ class Home extends React.Component {
     );
   };
 
-  renderVenueDropDown = () => {
+  renderVenueSelect = () => {
     const options = [
       { value: "Suncorp Stadium", label: "Suncorp Stadium" },
       { value: "GIO Stadium	", label: "	GIO Stadium" },
@@ -1467,7 +1894,7 @@ class Home extends React.Component {
       case "scatter":
         return this.renderScatterPlot();
       case "bar":
-        return BarChart();
+        return this.renderBarChart();
     }
   };
 
@@ -1499,7 +1926,12 @@ class Home extends React.Component {
 
   // Renders the controls for the bar graph
   barGraphControls = () => {
-    return <>{this.renderStatDropDowns("bar")}</>;
+    return (
+      <>
+        {this.renderStatDropDowns("bar")}
+        {this.renderPlayerSelect()}
+      </>
+    );
   };
 
   // Handles logic to decide which graph to display
@@ -1535,7 +1967,7 @@ class Home extends React.Component {
             <br></br>
             {this.renderDateButtons()}
             <br></br>
-            {this.renderVenueDropDown()}
+            {this.renderVenueSelect()}
             <br></br>
             {this.renderAverageOrTotalCheckbox()}
             <br></br>
@@ -1558,6 +1990,7 @@ class Home extends React.Component {
     //   )
     // }
     if (this.state.redirect) {
+      this.handleRefresh();
       return <Redirect to={this.state.redirect} />;
     }
     return (
