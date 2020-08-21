@@ -1,8 +1,6 @@
 import React from "react";
 import Nav from "react-bootstrap/Nav";
-import { Redirect } from "react-router-dom";
 import Navbar from "react-bootstrap/Navbar";
-import Button from "react-bootstrap/Button";
 
 class MainNav extends React.Component {
   navBar = () => {
