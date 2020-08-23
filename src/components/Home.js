@@ -428,6 +428,9 @@ class Home extends React.Component {
       // Sets an array that will be passed to the percentile based off the stats selected
       let array = this.state.stats[x][values[0]];
       array.sort((a, b) => a - b);
+      console.log(array);
+      array = [...new Set(array)];
+      console.log(array);
 
       // Finds the percentile based off the array and player stat passed in
       let percentile = percentileFinder(array, player.data[0][stat]);
