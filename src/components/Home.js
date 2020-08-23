@@ -44,7 +44,7 @@ class Home extends React.Component {
     ],
     value: 5,
     players: [],
-    graphType: "bar",
+    graphType: "scatter",
     redirect: null,
     showPositionButtons: false,
     hide: true,
@@ -625,7 +625,7 @@ class Home extends React.Component {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: "Player Name",
+          legend: null,
           legendPosition: "middle",
           legendOffset: -40,
         }}
@@ -667,7 +667,7 @@ class Home extends React.Component {
   renderScatterPlot = () => {
     const data = [
       {
-        id: "Sydney Roosters",
+        id: "Player 1",
         data: [
           {
             x: 1,
@@ -872,7 +872,7 @@ class Home extends React.Component {
         ],
       },
       {
-        id: "Brisbane Bronco's",
+        id: "Player 2",
         data: [
           {
             x: 86,
