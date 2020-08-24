@@ -12,8 +12,6 @@ import { ResponsiveRadar } from "@nivo/radar";
 import { ResponsiveScatterPlot } from "@nivo/scatterplot";
 import { ResponsiveBar } from "@nivo/bar";
 
-import BarChart from "./BarChart";
-
 import Popup from "reactjs-popup";
 
 import { motion } from "framer-motion";
@@ -103,6 +101,7 @@ class Home extends React.Component {
     this.getAllTeamsData();
     this.getCurrentPlayers();
     this.getPlayerPercentiles();
+    this.getMatches();
 
     if (this.state.refreshBarChart) {
       this.setBarChartData(this.state.selectedPlayers);
@@ -114,9 +113,15 @@ class Home extends React.Component {
       `${process.env.REACT_APP_BACKEND_URL}/percentiles`
     );
     const data = await response.json();
-    console.log(data.rows);
-
     this.setState({ playerPercentiles: data.rows });
+  };
+
+  getMatches = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/matches`
+    );
+    const data = await response.json();
+    this.setState({ matches: data.rows });
   };
 
   // Retrieves all player data from database
@@ -454,6 +459,16 @@ class Home extends React.Component {
 
     this.setState({ graphData: newData, redirect: "/" });
   };
+
+  // Scatter graph minimum games played could be number of games played?
+
+  // select all match player stats
+
+  // Push the number of games played into an array
+
+  // Push all the stats into that array
+
+  // Filter by that players stats for those fields
 
   toggleAdvancedOptions = () => {
     this.setState({ toggleAdvancedOptions: !this.state.toggleAdvancedOptions });
