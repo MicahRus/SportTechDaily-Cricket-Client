@@ -45,7 +45,7 @@ class Home extends React.Component {
     ],
     value: 5,
     players: [],
-    graphType: "rankings",
+    graphType: "radar",
     redirect: null,
     showPositionButtons: false,
     hide: true,
@@ -95,6 +95,27 @@ class Home extends React.Component {
         player1: 99,
         player2: 75,
       },
+    ],
+    options: [
+      { label: "Conversions", value: "Conversions" },
+      { label: "All Run Metres", value: "All Run Metres" },
+      { label: "Errors", value: "Errors" },
+      { label: "Fantasy Points Total", value: "Fantasy Points Total" },
+      { label: "Intercepts", value: "Intercepts" },
+      { label: "Kick Metres", value: "Kick Metres" },
+      { label: "Field Goals", value: "Field Goals" },
+      { label: "Line Break Assists", value: "Line Break Assists" },
+      { label: "Line Breaks", value: "Line Breaks" },
+      { label: "Minutes Played", value: "Minutes Played" },
+      { label: "Missed Tackles", value: "Missed Tackles" },
+      { label: "Offloads", value: "Offloads" },
+      { label: "One On One Steal", value: "One On One Steal" },
+      { label: "Tackle Breaks", value: "Tackle Breaks" },
+      { label: "Tackle Efficiency", value: "Tackle Efficiency" },
+      { label: "Tackles Made", value: "Tackles Made" },
+      { label: "Tries", value: "Tries" },
+      { label: "Try Assists", value: "Try Assists" },
+      { label: "Post Contact Metres", value: "Post Contact Metres" },
     ],
   };
 
@@ -1261,7 +1282,7 @@ class Home extends React.Component {
           dotColor={{ theme: "background" }}
           dotBorderWidth={2}
           dotBorderColor={{ from: "color" }}
-          enableDotLabel={true}
+          enableDotLabel={false}
           dotLabel="value"
           dotLabelYOffset={-12}
           colors={{ scheme: "nivo" }}
@@ -1396,8 +1417,9 @@ class Home extends React.Component {
   renderStatTemplates = () => {
     return (
       <div>
-        <Form inline>
+        <Form>
           <Form.Check
+            inline
             onChange={() => {
               this.setState({ templateChecked: !this.state.templateChecked });
             }}
@@ -1410,6 +1432,7 @@ class Home extends React.Component {
             onChange={() => {
               this.setState({ templateChecked: !this.state.templateChecked });
             }}
+            inline
             type="checkbox"
             id="backs-checkbox"
             checked={this.state.templateChecked}
@@ -1523,34 +1546,12 @@ class Home extends React.Component {
   };
 
   renderStatDropDowns = () => {
-    const options = [
-      { label: "Conversions", value: "Conversions" },
-      { label: "All Run Metres", value: "All Run Metres" },
-      { label: "Errors", value: "Errors" },
-      { label: "Fantasy Points Total", value: "Fantasy Points Total" },
-      { label: "Intercepts", value: "Intercepts" },
-      { label: "Kick Metres", value: "Kick Metres" },
-      { label: "Field Goals", value: "Field Goals" },
-      { label: "Line Break Assists", value: "Line Break Assists" },
-      { label: "Line Breaks", value: "Line Breaks" },
-      { label: "Minutes Played", value: "Minutes Played" },
-      { label: "Missed Tackles", value: "Missed Tackles" },
-      { label: "Offloads", value: "Offloads" },
-      { label: "One On One Steal", value: "One On One Steal" },
-      { label: "Tackle Breaks", value: "Tackle Breaks" },
-      { label: "Tackle Efficiency", value: "Tackle Efficiency" },
-      { label: "Tackles Made", value: "Tackles Made" },
-      { label: "Tries", value: "Tries" },
-      { label: "Try Assists", value: "Try Assists" },
-      { label: "Post Contact Metres", value: "Post Contact Metres" },
-    ];
-
     if (this.state.graphType === "bar" || this.state.graphType === "rankings") {
       return (
         <div>
           <span> Stat 1 </span>
           <Select
-            options={options}
+            options={this.state.options}
             onChange={(e) => {
               this.setState({
                 barStat1: [e.value],
@@ -1566,7 +1567,7 @@ class Home extends React.Component {
       <div>
         <span> Stat 1 </span>
         <Select
-          options={options}
+          options={this.state.options}
           onChange={(e) => {
             this.setState(
               {
@@ -1579,7 +1580,7 @@ class Home extends React.Component {
         />
         <span>Stat 2</span>
         <Select
-          options={options}
+          options={this.state.options}
           onChange={(e) => {
             this.setState(
               {
@@ -1644,6 +1645,32 @@ class Home extends React.Component {
   };
 
   renderStatCheckBox = () => {
+    // for (let i = 0; i < this.state.options.length; i += 1) {
+    //   console.log(i);
+    //   let stat1 = this.state.options[i].label
+    //     .toLowerCase()
+    //     .split(" ")
+    //     .join("_");
+    //   let stat2 = this.state.options[i + 1].label
+    //     .toLowerCase()
+    //     .split(" ")
+    //     .join("_");
+    //   let label1 = this.state.options[i].value;
+    //   let label2 = this.state.options[i + 1].value;
+    //   return (
+    //     <Form.Row>
+    //       <Col>
+    //         <Form.Check
+    //           onChange={this.statCheckBoxChangeHandler}
+    //           type="checkbox"
+    //           id={stat1}
+    //           label={label1}
+    //           checked={this.state.selectedStats.includes(stat1)}
+    //         />
+    //       </Col>
+    //     </Form.Row>
+    //   );
+    // }
     return (
       <div>
         <Form>
@@ -1861,14 +1888,22 @@ class Home extends React.Component {
     return (
       <div>
         <Form>
+          <span> Start Date</span>
           <DatePicker
+            dateFormat="dd/mm/yyyy"
+            showYearDropdown
             selected={this.state.startDate.date}
             onChange={(date) => this.setState({ startDate: { date: date } })}
+            maxDate={Date.now()}
           />
-
+          <br></br>
+          <span> End Date</span>
           <DatePicker
+            dateFormat="dd/mm/yyyy"
+            showYearDropdown
             selected={this.state.endDate.date}
             onChange={(date) => this.setState({ endDate: { date: date } })}
+            maxDate={Date.now()}
           />
         </Form>
       </div>
@@ -1934,22 +1969,24 @@ class Home extends React.Component {
   renderAverageOrTotalCheckbox = () => {
     return (
       <div>
-        <Form inline>
+        <Form>
           <Form.Check
+            inline
             onChange={() => {
               this.setState({ checked: !this.state.checked });
             }}
             type="checkbox"
             checked={this.state.checked}
-            id="checkbox"
+            id="average-checkbox"
             label="Average"
           ></Form.Check>
           <Form.Check
             onChange={() => {
               this.setState({ checked: !this.state.checked });
             }}
+            inline
             type="checkbox"
-            id="checkbox"
+            id="total-checkbox"
             checked={!this.state.checked}
             label="Total"
           ></Form.Check>
@@ -2000,7 +2037,6 @@ class Home extends React.Component {
       });
     });
 
-    console.log(topTenPlayers);
     return (
       <div>
         <Table striped bordered hover>
