@@ -24,8 +24,8 @@ class Home extends React.Component {
   state = {
     visibility: null,
     playerPercentiles: [{}, {}],
-    scatterStat1: ["Errors"],
-    scatterStat2: ["Intercepts"],
+    scatterStat1: ["All Run Metres"],
+    scatterStat2: ["Fantasy Points Total"],
     selectedStats: [
       "all_run_metres",
       "errors",
@@ -536,6 +536,7 @@ class Home extends React.Component {
 
   statCheckBoxChangeHandler = (event) => {
     let key = event.target.id;
+
     if (this.state.selectedStats.includes(key)) {
       let filteredArray = this.state.selectedStats.filter(
         (item) => item !== key
@@ -632,7 +633,6 @@ class Home extends React.Component {
     } else {
       maxGamesPlayed = this.state.player1Matches.length;
     }
-    console.log(maxGamesPlayed);
 
     for (let i = 0; i < maxGamesPlayed - 1; i++) {
       player1Data.push({
@@ -1414,28 +1414,90 @@ class Home extends React.Component {
     );
   }
 
+  checkStatTemplate = (type) => {
+    let arr = [];
+    if (type === "forward") {
+      arr = [
+        "all_run_metres",
+        "errors",
+        "tackle_breaks",
+        "offloads",
+        "post_contact_metres",
+        "tackle_efficiency",
+      ];
+    } else {
+      arr = [
+        "all_run_metres",
+        "errors",
+        "line_breaks",
+        "tackle_breaks",
+        "tries",
+        "try_assists",
+      ];
+    }
+
+    arr = arr.sort();
+    let y = JSON.parse(JSON.stringify(this.state.selectedStats));
+    let x = y.sort();
+
+    if (x.length > arr.length) {
+      return null;
+    } else {
+      for (let i = 0; i < arr.length; i++) {
+        if (x[i] !== arr[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
+  };
+
   renderStatTemplates = () => {
     return (
       <div>
         <Form>
           <Form.Check
+            disabled={true}
             inline
             onChange={() => {
-              this.setState({ templateChecked: !this.state.templateChecked });
+              this.setState({
+                selectedStats: [
+                  "all_run_metres",
+                  "errors",
+                  "tackle_breaks",
+                  "offloads",
+                  "post_contact_metres",
+                  "tackle_efficiency",
+                ],
+                redirect: "/",
+                getNewPlayer1Data: true,
+              });
             }}
             type="checkbox"
-            checked={!this.state.templateChecked}
+            checked={this.checkStatTemplate("forward")}
             id="forward-checkbox"
             label="Forward"
           ></Form.Check>
           <Form.Check
+            disabled={true}
             onChange={() => {
-              this.setState({ templateChecked: !this.state.templateChecked });
+              this.setState({
+                selectedStats: [
+                  "all_run_metres",
+                  "errors",
+                  "line_breaks",
+                  "tackle_breaks",
+                  "tries",
+                  "try_assists",
+                ],
+                redirect: "/",
+                getNewPlayer1Data: true,
+              });
             }}
             inline
             type="checkbox"
             id="backs-checkbox"
-            checked={this.state.templateChecked}
+            checked={this.checkStatTemplate("back")}
             label="Backs"
           ></Form.Check>
         </Form>
@@ -1456,7 +1518,7 @@ class Home extends React.Component {
           }}
         >
           <Tab eventKey="player" title="Player"></Tab>
-          <Tab eventKey="team" title="Team"></Tab>
+          <Tab disabled={true} eventKey="team" title="Team"></Tab>
         </Tabs>
       </div>
     );
@@ -1644,33 +1706,42 @@ class Home extends React.Component {
     );
   };
 
+  // renderStatCheckBoxes = () => {
+  //   for (let i = 0; i < this.state.options.length; i += 1) {
+  //     console.log(i);
+  //     let stat1 = this.state.options[i].label
+  //       .toLowerCase()
+  //       .split(" ")
+  //       .join("_");
+  //     let stat2 = this.state.options[i + 1].label
+  //       .toLowerCase()
+  //       .split(" ")
+  //       .join("_");
+  //     let label1 = this.state.options[i].value;
+  //     let label2 = this.state.options[i + 1].value;
+  //     return (
+  //       <Form.Row>
+  //         <Col>
+  //           <Form.Check
+  //             onChange={this.statCheckBoxChangeHandler}
+  //             type="checkbox"
+  //             id={stat1}
+  //             label={label1}
+  //             checked={this.state.selectedStats.includes(stat1)}
+  //           />
+  //         </Col>
+  //       </Form.Row>
+  //     )
+  // }
+  // }
+
   renderStatCheckBox = () => {
-    // for (let i = 0; i < this.state.options.length; i += 1) {
-    //   console.log(i);
-    //   let stat1 = this.state.options[i].label
-    //     .toLowerCase()
-    //     .split(" ")
-    //     .join("_");
-    //   let stat2 = this.state.options[i + 1].label
-    //     .toLowerCase()
-    //     .split(" ")
-    //     .join("_");
-    //   let label1 = this.state.options[i].value;
-    //   let label2 = this.state.options[i + 1].value;
     //   return (
-    //     <Form.Row>
-    //       <Col>
-    //         <Form.Check
-    //           onChange={this.statCheckBoxChangeHandler}
-    //           type="checkbox"
-    //           id={stat1}
-    //           label={label1}
-    //           checked={this.state.selectedStats.includes(stat1)}
-    //         />
-    //       </Col>
-    //     </Form.Row>
+    //     <div>
+    //       <Form>{this.renderStatCheckBoxes()}</Form>
+    //     </div>
     //   );
-    // }
+    // };
     return (
       <div>
         <Form>
@@ -1890,6 +1961,7 @@ class Home extends React.Component {
         <Form>
           <span> Start Date</span>
           <DatePicker
+            disabled={true}
             dateFormat="dd/mm/yyyy"
             showYearDropdown
             selected={this.state.startDate.date}
@@ -1899,6 +1971,7 @@ class Home extends React.Component {
           <br></br>
           <span> End Date</span>
           <DatePicker
+            disabled={true}
             dateFormat="dd/mm/yyyy"
             showYearDropdown
             selected={this.state.endDate.date}
@@ -1979,6 +2052,7 @@ class Home extends React.Component {
             checked={this.state.checked}
             id="average-checkbox"
             label="Average"
+            disabled={true}
           ></Form.Check>
           <Form.Check
             onChange={() => {
@@ -1989,6 +2063,7 @@ class Home extends React.Component {
             id="total-checkbox"
             checked={!this.state.checked}
             label="Total"
+            disabled={true}
           ></Form.Check>
         </Form>
       </div>
@@ -2155,11 +2230,11 @@ class Home extends React.Component {
             <br></br>
             {this.renderDateButtons()}
             <br></br>
-            {this.renderVenueSelect()}
+            {/* {this.renderVenueSelect()} */}
             <br></br>
             {this.renderAverageOrTotalCheckbox()}
             <br></br>
-            {this.renderMinimumGamesPlayed()}
+            {/* {this.renderMinimumGamesPlayed()} */}
             <br></br>
             {/* {this.renderAdvancedOptions()} */}
           </div>
