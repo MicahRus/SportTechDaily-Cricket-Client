@@ -1,7 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-import { Form, Col, Row, Tab, Tabs, Button } from "react-bootstrap";
+import { Form, Col, Row, Tab, Tabs, Button, Table } from "react-bootstrap";
 
 import Select from "react-select";
 
@@ -23,6 +23,7 @@ import RangeSlider from "react-bootstrap-range-slider";
 class Home extends React.Component {
   state = {
     visibility: null,
+    playerPercentiles: [{}, {}],
     scatterStat1: ["Errors"],
     scatterStat2: ["Intercepts"],
     selectedStats: [
@@ -1253,7 +1254,7 @@ class Home extends React.Component {
           borderWidth={2}
           borderColor={{ from: "color" }}
           gridLevels={5}
-          gridShape="circular"
+          gridShape="linear"
           gridLabelOffset={36}
           enableDots={true}
           dotSize={10}
@@ -1524,6 +1525,7 @@ class Home extends React.Component {
   renderStatDropDowns = () => {
     const options = [
       { label: "Conversions", value: "Conversions" },
+      { label: "All Run Metres", value: "All Run Metres" },
       { label: "Errors", value: "Errors" },
       { label: "Fantasy Points Total", value: "Fantasy Points Total" },
       { label: "Intercepts", value: "Intercepts" },
@@ -1540,7 +1542,6 @@ class Home extends React.Component {
       { label: "Tackles Made", value: "Tackles Made" },
       { label: "Tries", value: "Tries" },
       { label: "Try Assists", value: "Try Assists" },
-      { label: "All Run Metres", value: "All Run Metres" },
       { label: "Post Contact Metres", value: "Post Contact Metres" },
     ];
 
@@ -1973,7 +1974,59 @@ class Home extends React.Component {
   };
 
   renderRankings = () => {
-    return <div> Cheese </div>;
+    let playerNamesArray = [];
+    let statsArray = [];
+    let topTenArray = [];
+    let topTenPlayers = [];
+    let x = 0;
+    let stat = this.state.barStat1[0].toLowerCase().split(" ").join("_");
+
+    this.state.currentPlayers.map((player) => {
+      statsArray.push(player[stat]);
+    });
+
+    statsArray = statsArray.sort((a, b) => a - b);
+
+    for (let i = 1; i < 11; i++) {
+      topTenArray.push(statsArray[statsArray.length - i]);
+    }
+
+    topTenArray.map((number) => {
+      this.state.currentPlayers.map((player) => {
+        if (player[stat] === number && x < 10) {
+          topTenPlayers.push(player);
+          x++;
+        }
+      });
+    });
+
+    console.log(topTenPlayers);
+    return (
+      <div>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Name</th>
+              <th>Games Played</th>
+              <th>{this.state.barStat1}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {topTenPlayers.map((player, index) => {
+              return (
+                <tr>
+                  <td>{index + 1}</td>
+                  <td> {player.player_name}</td>
+                  <td>{player.games}</td>
+                  <td>{player[stat]}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      </div>
+    );
   };
 
   // This function contains a case statement that will determine which graph is rendered to the page
