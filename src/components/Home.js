@@ -49,7 +49,7 @@ class Home extends React.Component {
     redirect: null,
     showPositionButtons: false,
     hide: true,
-    startDate: { date: new Date() },
+    startDate: { date: Date.now() },
     endDate: { date: new Date() },
     disabled: false,
     fanType: "general",
@@ -97,25 +97,25 @@ class Home extends React.Component {
       },
     ],
     options: [
-      { label: "Conversions", value: "Conversions" },
       { label: "All Run Metres", value: "All Run Metres" },
+      { label: "Conversions", value: "Conversions" },
       { label: "Errors", value: "Errors" },
       { label: "Fantasy Points Total", value: "Fantasy Points Total" },
+      { label: "Field Goals", value: "Field Goals" },
       { label: "Intercepts", value: "Intercepts" },
       { label: "Kick Metres", value: "Kick Metres" },
-      { label: "Field Goals", value: "Field Goals" },
       { label: "Line Break Assists", value: "Line Break Assists" },
       { label: "Line Breaks", value: "Line Breaks" },
       { label: "Minutes Played", value: "Minutes Played" },
       { label: "Missed Tackles", value: "Missed Tackles" },
       { label: "Offloads", value: "Offloads" },
       { label: "One On One Steal", value: "One On One Steal" },
+      { label: "Post Contact Metres", value: "Post Contact Metres" },
       { label: "Tackle Breaks", value: "Tackle Breaks" },
       { label: "Tackle Efficiency", value: "Tackle Efficiency" },
       { label: "Tackles Made", value: "Tackles Made" },
       { label: "Tries", value: "Tries" },
       { label: "Try Assists", value: "Try Assists" },
-      { label: "Post Contact Metres", value: "Post Contact Metres" },
     ],
   };
 
@@ -417,7 +417,8 @@ class Home extends React.Component {
     this.state.selectedStats.map((stat, i) => {
       let keys = Object.keys(this.state.graphData[i]);
       let values = Object.values(this.state.graphData[i]);
-
+      // let values = [this.state.graphData[i].stat];
+      values[0] = values[0].split(" ").join("_").toLowerCase();
       // Selects the stat which is being compared
       switch (values[0]) {
         default:
@@ -480,7 +481,9 @@ class Home extends React.Component {
       }
 
       // Sets an array that will be passed to the percentile based off the stats selected
+      console.log(this.state.stats[x][values[0]]);
       let array = this.state.stats[x][values[0]];
+
       array.sort((a, b) => a - b);
       array = [...new Set(array)];
 
@@ -491,19 +494,19 @@ class Home extends React.Component {
       // Checks which player is selected
       if (playerNumber === "player1") {
         newData.push({
-          stat: stat,
+          stat: this.state.options[x].label,
           [playerName]: percentile,
           [keys[2]]: values[2],
         });
       } else {
         newData.push({
-          stat: stat,
+          stat: this.state.options[x].label,
           [keys[1]]: values[1],
           [playerName]: percentile,
         });
       }
     });
-
+    console.log(newData);
     this.setState({ graphData: newData, redirect: "/" });
   };
 
@@ -693,6 +696,7 @@ class Home extends React.Component {
         padding={0.3}
         colors={{ scheme: "nivo" }}
         maxValue={100}
+        minValue={-10}
         defs={[
           {
             id: "dots",
@@ -1198,14 +1202,19 @@ class Home extends React.Component {
     let stat2 = this.state.scatterStat2;
     return (
       <div style={{ height: "100%", width: "75%" }}>
+        <h1>
+          {" "}
+          {stat1} v {stat2}
+        </h1>
         <ResponsiveScatterPlot
           data={this.state.scatterGraphData || data}
           margin={{ top: 60, right: 140, bottom: 70, left: 90 }}
-          xScale={{ type: "linear", min: 0, max: "auto" }}
+          xScale={{ type: "linear", min: "auto", max: "auto" }}
           xFormat={function (e) {
+            console.log(e);
             return e + " " + stat1;
           }}
-          yScale={{ type: "linear", min: 0, max: "auto" }}
+          yScale={{ type: "linear", min: "auto", max: "auto" }}
           yFormat={function (e) {
             return e + " " + stat2;
           }}
@@ -1469,8 +1478,8 @@ class Home extends React.Component {
                   "post_contact_metres",
                   "tackle_efficiency",
                 ],
-                redirect: "/",
-                getNewPlayer1Data: true,
+                // redirect: "/",
+                // getNewPlayer1Data: true,
               });
             }}
             type="checkbox"
@@ -1490,8 +1499,8 @@ class Home extends React.Component {
                   "tries",
                   "try_assists",
                 ],
-                redirect: "/",
-                getNewPlayer1Data: true,
+                // redirect: "/",
+                // getNewPlayer1Data: true,
               });
             }}
             inline
@@ -1706,42 +1715,11 @@ class Home extends React.Component {
     );
   };
 
-  // renderStatCheckBoxes = () => {
-  //   for (let i = 0; i < this.state.options.length; i += 1) {
-  //     console.log(i);
-  //     let stat1 = this.state.options[i].label
-  //       .toLowerCase()
-  //       .split(" ")
-  //       .join("_");
-  //     let stat2 = this.state.options[i + 1].label
-  //       .toLowerCase()
-  //       .split(" ")
-  //       .join("_");
-  //     let label1 = this.state.options[i].value;
-  //     let label2 = this.state.options[i + 1].value;
-  //     return (
-  //       <Form.Row>
-  //         <Col>
-  //           <Form.Check
-  //             onChange={this.statCheckBoxChangeHandler}
-  //             type="checkbox"
-  //             id={stat1}
-  //             label={label1}
-  //             checked={this.state.selectedStats.includes(stat1)}
-  //           />
-  //         </Col>
-  //       </Form.Row>
-  //     )
-  // }
-  // }
+  renderSingleStat = (number) => {
+    return this.state.options[number].label.toLowerCase().split(" ").join("_");
+  };
 
   renderStatCheckBox = () => {
-    //   return (
-    //     <div>
-    //       <Form>{this.renderStatCheckBoxes()}</Form>
-    //     </div>
-    //   );
-    // };
     return (
       <div>
         <Form>
@@ -1750,31 +1728,10 @@ class Home extends React.Component {
               <Form.Check
                 onChange={this.statCheckBoxChangeHandler}
                 type="checkbox"
-                id="conversions"
-                label="Conversions"
-                checked={this.state.selectedStats.includes("conversions")}
-              />
-            </Col>
-            <Col>
-              <Form.Check
-                onChange={this.statCheckBoxChangeHandler}
-                type="checkbox"
-                id="errors"
-                label="Errors"
-                checked={this.state.selectedStats.includes("errors")}
-              />
-            </Col>
-          </Form.Row>
-
-          <Form.Row>
-            <Col>
-              <Form.Check
-                onChange={this.statCheckBoxChangeHandler}
-                type="checkbox"
-                id="fantasy_points_total"
-                label="Fantasy"
+                id={this.renderSingleStat(0)}
+                label={this.state.options[0].label}
                 checked={this.state.selectedStats.includes(
-                  "fantasy_points_total"
+                  this.renderSingleStat(0)
                 )}
               />
             </Col>
@@ -1782,43 +1739,24 @@ class Home extends React.Component {
               <Form.Check
                 onChange={this.statCheckBoxChangeHandler}
                 type="checkbox"
-                id="intercepts"
-                label="Intercepts"
-                checked={this.state.selectedStats.includes("intercepts")}
-              />
-            </Col>
-          </Form.Row>
-
-          <Form.Row>
-            <Col>
-              <Form.Check
-                onChange={this.statCheckBoxChangeHandler}
-                type="checkbox"
-                id="kick_metres"
-                label="Kick Metres"
-                checked={this.state.selectedStats.includes("kick_metres")}
-              />
-            </Col>
-            <Col>
-              <Form.Check
-                onChange={this.statCheckBoxChangeHandler}
-                type="checkbox"
-                id="field_goals"
-                label="Field Goals"
-                checked={this.state.selectedStats.includes("field_goals")}
-              />
-            </Col>
-          </Form.Row>
-
-          <Form.Row>
-            <Col>
-              <Form.Check
-                onChange={this.statCheckBoxChangeHandler}
-                type="checkbox"
-                id="line_break_assists"
-                label="Line Break Assists"
+                id={this.renderSingleStat(1)}
+                label={this.state.options[1].label}
                 checked={this.state.selectedStats.includes(
-                  "line_break_assists"
+                  this.renderSingleStat(1)
+                )}
+              />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id={this.renderSingleStat(2)}
+                label={this.state.options[2].label}
+                checked={this.state.selectedStats.includes(
+                  this.renderSingleStat(2)
                 )}
               />
             </Col>
@@ -1826,126 +1764,198 @@ class Home extends React.Component {
               <Form.Check
                 onChange={this.statCheckBoxChangeHandler}
                 type="checkbox"
-                id="line_breaks"
-                label="Line Breaks"
-                checked={this.state.selectedStats.includes("line_breaks")}
-              />
-            </Col>
-          </Form.Row>
-
-          <Form.Row>
-            <Col>
-              <Form.Check
-                onChange={this.statCheckBoxChangeHandler}
-                type="checkbox"
-                id="minutes_played"
-                label="Minutes Played"
-                checked={this.state.selectedStats.includes("minutes_played")}
-              />
-            </Col>
-            <Col>
-              <Form.Check
-                onChange={this.statCheckBoxChangeHandler}
-                type="checkbox"
-                id="missed_tackles"
-                label="Missed Tackles"
-                checked={this.state.selectedStats.includes("missed_tackles")}
-              />
-            </Col>
-          </Form.Row>
-
-          <Form.Row>
-            <Col>
-              <Form.Check
-                onChange={this.statCheckBoxChangeHandler}
-                type="checkbox"
-                id="offloads"
-                label="Off loads"
-                checked={this.state.selectedStats.includes("offloads")}
-              />
-            </Col>
-            <Col>
-              <Form.Check
-                onChange={this.statCheckBoxChangeHandler}
-                type="checkbox"
-                id="one_on_one_steal"
-                label="One On One Steal"
-                checked={this.state.selectedStats.includes("one_on_one_steal")}
-              />
-            </Col>
-          </Form.Row>
-
-          <Form.Row>
-            <Col>
-              <Form.Check
-                onChange={this.statCheckBoxChangeHandler}
-                type="checkbox"
-                id="tackle_breaks"
-                label="Tackle Breaks"
-                checked={this.state.selectedStats.includes("tackle_breaks")}
-              />
-            </Col>
-            <Col>
-              <Form.Check
-                onChange={this.statCheckBoxChangeHandler}
-                type="checkbox"
-                id="tackle_efficiency"
-                label="Tackle"
-                checked={this.state.selectedStats.includes("tackle_efficiency")}
-              />
-            </Col>
-          </Form.Row>
-
-          <Form.Row>
-            <Col>
-              <Form.Check
-                onChange={this.statCheckBoxChangeHandler}
-                type="checkbox"
-                id="tackles_made"
-                label="Tackles Made"
-                checked={this.state.selectedStats.includes("tackles_made")}
-              />
-            </Col>
-            <Col>
-              <Form.Check
-                onChange={this.statCheckBoxChangeHandler}
-                type="checkbox"
-                id="tries"
-                label="Tries"
-                checked={this.state.selectedStats.includes("tries")}
-              />
-            </Col>
-          </Form.Row>
-
-          <Form.Row>
-            <Col>
-              <Form.Check
-                onChange={this.statCheckBoxChangeHandler}
-                type="checkbox"
-                id="try_assists"
-                label="Try Assists"
-                checked={this.state.selectedStats.includes("try_assists")}
-              />
-            </Col>
-            <Col>
-              <Form.Check
-                onChange={this.statCheckBoxChangeHandler}
-                type="checkbox"
-                id="all_run_metres"
-                label="All Run Metres"
-                checked={this.state.selectedStats.includes("all_run_metres")}
-              />
-            </Col>
-          </Form.Row>
-          <Form.Row>
-            <Col>
-              <Form.Check
-                onChange={this.statCheckBoxChangeHandler}
-                type="checkbox"
-                id="post_contact_metres"
-                label="Post Contact Metres"
+                id={this.renderSingleStat(3)}
+                label={this.state.options[3].label}
                 checked={this.state.selectedStats.includes(
-                  "post_contact_metres"
+                  this.renderSingleStat(3)
+                )}
+              />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id={this.renderSingleStat(4)}
+                label={this.state.options[4].label}
+                checked={this.state.selectedStats.includes(
+                  this.renderSingleStat(4)
+                )}
+              />
+            </Col>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id={this.renderSingleStat(5)}
+                label={this.state.options[5].label}
+                checked={this.state.selectedStats.includes(
+                  this.renderSingleStat(5)
+                )}
+              />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id={this.renderSingleStat(6)}
+                label={this.state.options[6].label}
+                checked={this.state.selectedStats.includes(
+                  this.renderSingleStat(6)
+                )}
+              />
+            </Col>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id={this.renderSingleStat(7)}
+                label={this.state.options[7].label}
+                checked={this.state.selectedStats.includes(
+                  this.renderSingleStat(7)
+                )}
+              />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id={this.renderSingleStat(8)}
+                label={this.state.options[8].label}
+                checked={this.state.selectedStats.includes(
+                  this.renderSingleStat(8)
+                )}
+              />
+            </Col>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id={this.renderSingleStat(9)}
+                label={this.state.options[9].label}
+                checked={this.state.selectedStats.includes(
+                  this.renderSingleStat(9)
+                )}
+              />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id={this.renderSingleStat(10)}
+                label={this.state.options[10].label}
+                checked={this.state.selectedStats.includes(
+                  this.renderSingleStat(10)
+                )}
+              />
+            </Col>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id={this.renderSingleStat(11)}
+                label={this.state.options[11].label}
+                checked={this.state.selectedStats.includes(
+                  this.renderSingleStat(11)
+                )}
+              />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id={this.renderSingleStat(12)}
+                label={this.state.options[12].label}
+                checked={this.state.selectedStats.includes(
+                  this.renderSingleStat(12)
+                )}
+              />
+            </Col>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id={this.renderSingleStat(13)}
+                label={this.state.options[13].label}
+                checked={this.state.selectedStats.includes(
+                  this.renderSingleStat(13)
+                )}
+              />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id={this.renderSingleStat(14)}
+                label={this.state.options[14].label}
+                checked={this.state.selectedStats.includes(
+                  this.renderSingleStat(14)
+                )}
+              />
+            </Col>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id={this.renderSingleStat(15)}
+                label={this.state.options[15].label}
+                checked={this.state.selectedStats.includes(
+                  this.renderSingleStat(15)
+                )}
+              />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id={this.renderSingleStat(16)}
+                label={this.state.options[16].label}
+                checked={this.state.selectedStats.includes(
+                  this.renderSingleStat(16)
+                )}
+              />
+            </Col>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id={this.renderSingleStat(17)}
+                label={this.state.options[17].label}
+                checked={this.state.selectedStats.includes(
+                  this.renderSingleStat(17)
+                )}
+              />
+            </Col>
+          </Form.Row>
+          <Form.Row>
+            <Col>
+              <Form.Check
+                onChange={this.statCheckBoxChangeHandler}
+                type="checkbox"
+                id={this.renderSingleStat(18)}
+                label={this.state.options[18].label}
+                checked={this.state.selectedStats.includes(
+                  this.renderSingleStat(18)
                 )}
               />
             </Col>
@@ -1962,7 +1972,7 @@ class Home extends React.Component {
           <span> Start Date</span>
           <DatePicker
             disabled={true}
-            dateFormat="dd/mm/yyyy"
+            dateFormat="dd/MM/yyyy"
             showYearDropdown
             selected={this.state.startDate.date}
             onChange={(date) => this.setState({ startDate: { date: date } })}
@@ -1972,7 +1982,7 @@ class Home extends React.Component {
           <span> End Date</span>
           <DatePicker
             disabled={true}
-            dateFormat="dd/mm/yyyy"
+            dateFormat="dd/MM/yyyy"
             showYearDropdown
             selected={this.state.endDate.date}
             onChange={(date) => this.setState({ endDate: { date: date } })}
@@ -2090,7 +2100,9 @@ class Home extends React.Component {
     let statsArray = [];
     let topTenArray = [];
     let topTenPlayers = [];
+    // This is used in a map below, to ensure that the right amount of games are pushed into the array
     let x = 0;
+    let numberOfEntries = 50;
     let stat = this.state.barStat1[0].toLowerCase().split(" ").join("_");
 
     this.state.currentPlayers.map((player) => {
@@ -2099,13 +2111,13 @@ class Home extends React.Component {
 
     statsArray = statsArray.sort((a, b) => a - b);
 
-    for (let i = 1; i < 11; i++) {
+    for (let i = 1; i < numberOfEntries; i++) {
       topTenArray.push(statsArray[statsArray.length - i]);
     }
 
     topTenArray.map((number) => {
       this.state.currentPlayers.map((player) => {
-        if (player[stat] === number && x < 10) {
+        if (player[stat] === number && x < numberOfEntries) {
           topTenPlayers.push(player);
           x++;
         }
