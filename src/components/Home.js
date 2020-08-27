@@ -1,21 +1,37 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-import { Form, Col, Row, Check, Button } from "react-bootstrap";
+import { Form, Col, Row, Tab, Tabs, Button } from "react-bootstrap";
+
+import Select from "react-select";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { ResponsiveRadar } from "@nivo/radar";
+import { ResponsiveRadar, Radar } from "@nivo/radar";
 import { ResponsiveScatterPlot } from "@nivo/scatterplot";
 
 import Popup from "reactjs-popup";
 
 import { motion } from "framer-motion";
 
+import BarChart from "./BarChart";
+
+import "bootstrap/dist/css/bootstrap.css";
+import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
+import RangeSlider from "react-bootstrap-range-slider";
+
 class Home extends React.Component {
   state = {
+    visibility: null,
+    selectedStats: ["all_run_metres", "minutes_played", "tries"],
+    stats: [{ kicks: 0 }, { passes: 0 }],
+    currentPlayers: [],
+    checked: true,
+    templateChecked: true,
+    value: 5,
     players: [],
+    graphType: "radar",
     redirect: null,
     showPositionButtons: false,
     hide: true,
@@ -24,57 +40,194 @@ class Home extends React.Component {
     disabled: false,
     fanType: "general",
     playerOrTeam: "player",
+    teams: ["test"],
     toggleAdvancedOptions: false,
     currentPlayersData: {
-      player1: { data: null, playerName: "Micah Rus" },
-      player2: { data: null, playerName: "Test user" },
+      player1: { data: null, playerName: "player1" },
+      player2: { data: null, playerName: "player2" },
     },
     graphData: [
       {
-        stat: "kicks",
-        player1: 9,
-        player2: 7,
+        stat: "all_run_metres",
+        player1: 51,
+        player2: 80,
       },
       {
-        stat: "passes",
-        player1: 9,
-        player2: 7,
-      },
-      {
-        stat: "points",
-        player1: 9,
-        player2: 7,
-      },
-      {
-        stat: "tackles",
-        player1: 9,
-        player2: 7,
+        stat: "minutes_played",
+        player1: 99,
+        player2: 75,
       },
       {
         stat: "tries",
-        player1: 9,
-        player2: 7,
+        player1: 99,
+        player2: 75,
       },
     ],
   };
 
   componentDidMount() {
     this.getAllPlayersData();
+    this.getAllTeamsData();
+    this.getCurrentPlayers();
   }
 
   // Retrieves all player data from database
   getAllPlayersData = async () => {
-    const response = await fetch("http://localhost:3001/players");
+    const response = await fetch("http://192.168.0.7:3001/players");
     const data = await response.json();
     this.setState({ players: data.rows });
   };
 
+  getCurrentPlayers = async () => {
+    const response = await fetch("http://192.168.0.7:3001/currentplayers");
+    const data = await response.json();
+
+    this.setState({
+      currentPlayers: data.rows,
+    });
+
+    this.setStats();
+  };
+
+  // Pushes all the stats from the player data into an array, and then sets it to state.
+  setStats = () => {
+    const stats = [
+      "all_run_metres",
+      "conversions",
+      "errors",
+      "fantasy",
+      "field_goals",
+      "intercepts",
+      "kick_metres",
+      "line_break_assists",
+      "line_breaks",
+      "minutes_played",
+      "missed_tackles",
+      "offloads",
+      "one_on_one_steal",
+      "post_contact_metres",
+      "tackle_breaks",
+      "tackle_efficiency",
+      "tackles_made",
+      "tries",
+      "try_assists",
+    ];
+
+    let all_run_metres = [];
+    let conversions = [];
+    let errors = [];
+    let fantasy = [];
+    let field_goals = [];
+    let intercepts = [];
+    let kick_metres = [];
+    let line_break_assists = [];
+    let line_breaks = [];
+    let minutes_played = [];
+    let missed_tackles = [];
+    let offloads = [];
+    let one_on_one_steal = [];
+    let post_contact_metres = [];
+    let tackle_breaks = [];
+    let tackle_efficiency = [];
+    let tackles_made = [];
+    let tries = [];
+    let try_assists = [];
+    this.state.currentPlayers.map((player) => {
+      stats.map((stat, i) => {
+        switch (i) {
+          default:
+            all_run_metres.push(player[stat]);
+            break;
+          case 1:
+            conversions.push(player[stat]);
+            break;
+          case 2:
+            errors.push(player[stat]);
+            break;
+          case 3:
+            fantasy.push(player[stat]);
+            break;
+          case 4:
+            field_goals.push(player[stat]);
+            break;
+          case 5:
+            kick_metres.push(player[stat]);
+            break;
+          case 6:
+            line_break_assists.push(player[stat]);
+            break;
+          case 7:
+            line_breaks.push(player[stat]);
+            break;
+          case 8:
+            minutes_played.push(player[stat]);
+            break;
+          case 9:
+            offloads.push(player[stat]);
+            break;
+          case 10:
+            minutes_played.push(player[stat]);
+            break;
+          case 11:
+            one_on_one_steal.push(player[stat]);
+            break;
+          case 12:
+            post_contact_metres.push(player[stat]);
+            break;
+          case 13:
+            tackle_breaks.push(player[stat]);
+            break;
+          case 14:
+            tackle_efficiency.push(player[stat]);
+            break;
+          case 15:
+            tackles_made.push(player[stat]);
+            break;
+          case 16:
+            tries.push(player[stat]);
+            break;
+          case 17:
+            try_assists.push(player[stat]);
+            break;
+          case 18:
+            missed_tackles.push(player[stat]);
+            break;
+        }
+      });
+    });
+    const allStats = [
+      { all_run_metres },
+      { conversions },
+      { errors },
+      { fantasy },
+      { field_goals },
+      { intercepts },
+      { kick_metres },
+      { line_break_assists },
+      { line_breaks },
+      { minutes_played },
+      { missed_tackles },
+      { offloads },
+      { one_on_one_steal },
+      { post_contact_metres },
+      { tackle_breaks },
+      { tackle_efficiency },
+      { tackles_made },
+      { tries },
+      { try_assists },
+    ];
+    this.setState({ stats: allStats });
+  };
+
   // Retrieves individual player data from the database
   getPlayerData = async (playerId, playerName, playerNumber) => {
+    playerId = parseInt(playerId);
+    console.log(typeof playerId);
     const response = await fetch(
-      `http://localhost:3001/player/id?playerId=${playerId}`
+      `http://192.168.0.7:3001/player/id?playerId=${playerId}`
     );
     const data = await response.json();
+    console.log(data);
 
     // Sets the state if the player number is 1
     if (playerNumber === "player1") {
@@ -101,100 +254,520 @@ class Home extends React.Component {
     this.setGraphData(playerName, playerNumber);
   };
 
+  getAllTeamsData = async () => {
+    const response = await fetch("http://192.168.0.7:3001/teams");
+    const data = await response.json();
+    this.setState({ teams: data.rows });
+  };
+
   componentDidUpdate() {
     console.log(this.state);
   }
   // This function handles setting up the data that the graph will display
   setGraphData = (playerName, playerNumber) => {
     const player = this.state.currentPlayersData?.[playerNumber];
-    let kicks = 0;
-    let points = 0;
-    let tackles = 0;
-    let tries = 0;
-    let passes = 0;
-    // This loop will set the parameters that will be displayed in the graph
-    for (let i = 0; i <= 25; i++) {
-      kicks += player.data[i].kicks;
-      passes += player.data[i].passes;
-      points += player.data[i].points;
-      tackles += player.data[i].tackles_made;
-      tries += player.data[i].tries;
-      // This ensures that if the player has less than 25 games played the loop will exit at their last entry
-      if (i === player.data.length - 1) {
-        i = 25;
+
+    const percentileFinder = (arr, val) =>
+      (100 *
+        arr.reduce(
+          (acc, v) => acc + (v < val ? 1 : 0) + (v === val ? 0.5 : 0),
+          0
+        )) /
+      arr.length;
+
+    let newData = [];
+    let x = null;
+
+    console.log(this.state.stats);
+
+    this.state.selectedStats.map((stat, i) => {
+      let keys = Object.keys(this.state.graphData[i]);
+      let values = Object.values(this.state.graphData[i]);
+      console.log(values[0]);
+
+      switch (values[0]) {
+        default:
+          x = 0;
+          break;
+        case "minutes_played":
+          console.log("hit minutes played");
+          x = 9;
+          break;
+        case "tries":
+          console.log("hit tries");
+          x = 17;
+          break;
       }
+      console.log(x);
+      console.log(stat);
+      let array = this.state.stats[x][stat];
+      console.log(this.state.stats[x]);
+      console.log(array);
+      array.sort((a, b) => a - b);
 
-      // Ensures the loop gets a maximum of 25 games of stats
-      if (i === 25) {
-        let newData = [];
-        if (playerNumber === "player1") {
-          this.setState((prevState) => {
-            prevState.graphData.map((item) => {
-              let keys = Object.keys(item);
-              let values = Object.values(item);
-              let stat = eval(values[0]);
-              newData.push({
-                stat: values[0],
-                [playerName]: stat,
-                [keys[2]]: values[2],
-              });
-            });
-            return { graphData: newData };
-          });
-        }
+      let percentile = percentileFinder(array, player.data[0][stat]);
+      percentile = Math.round(percentile);
 
-        if (playerNumber === "player2") {
-          this.setState((prevState) => {
-            prevState.graphData.map((item) => {
-              let keys = Object.keys(item);
-              let values = Object.values(item);
-              let stat = eval(values[0]);
-              newData.push({
-                stat: values[0],
-                [playerName]: stat,
-                [keys[1]]: values[1],
-              });
-            });
-            return { graphData: newData };
-          });
-        }
+      if (playerNumber === "player1") {
+        newData.push({
+          stat: stat,
+          [playerName]: percentile,
+          [keys[2]]: values[2],
+        });
+      } else {
+        newData.push({
+          stat: stat,
+          [keys[1]]: values[1],
+          [playerName]: percentile,
+        });
       }
-    }
-  };
+    });
 
-  fanTypeClickHandler = (event) => {
-    this.setState({ fanType: event.target.value });
-  };
-
-  teamPlayerClickHandler = (event) => {
-    this.setState({ disabled: true, playerOrTeam: event.target.value });
+    this.setState({ graphData: newData });
+    console.log(this.state.graphData);
+    console.log(newData);
   };
 
   toggleAdvancedOptions = () => {
     this.setState({ toggleAdvancedOptions: !this.state.toggleAdvancedOptions });
   };
 
-  teamOrPlayerRadioChangeHandler = (event) => {
-    this.setState({ playerOrTeam: event.target.value });
-  };
-
-  fanTypeRadioChangeHandler = (event) => {
-    this.setState({ fanType: event.target.value });
-  };
-
-  playerButtonSelectHandler = (event) => {
-    let playerId = event.target.value;
-    let playerName = event.target[event.target.selectedIndex].innerText;
-    let playerNumber = event.target.parentNode.title;
+  playerButtonSelectHandler1 = (event) => {
+    console.log("hit player select button 1");
+    let playerId = event.value;
+    let playerName = event.label;
+    let playerNumber = "player1";
 
     this.getPlayerData(playerId, playerName, playerNumber);
   };
 
+  playerButtonSelectHandler2 = (event) => {
+    console.log("hit player select button 2");
+    let playerId = event.value;
+    let playerName = event.label;
+    let playerNumber = "player2";
+
+    this.getPlayerData(playerId, playerName, playerNumber);
+  };
+
+  // Renders the scatter-plot graph
   renderScatterPlot = () => {
+    const data = [
+      {
+        id: "Sydney Roosters",
+        data: [
+          {
+            x: 1,
+            y: 1,
+          },
+          {
+            x: 47,
+            y: 84,
+          },
+          {
+            x: 32,
+            y: 61,
+          },
+          {
+            x: 66,
+            y: 96,
+          },
+          {
+            x: 94,
+            y: 75,
+          },
+          {
+            x: 2,
+            y: 112,
+          },
+          {
+            x: 8,
+            y: 91,
+          },
+          {
+            x: 75,
+            y: 4,
+          },
+          {
+            x: 41,
+            y: 23,
+          },
+          {
+            x: 97,
+            y: 34,
+          },
+          {
+            x: 5,
+            y: 64,
+          },
+          {
+            x: 21,
+            y: 53,
+          },
+          {
+            x: 46,
+            y: 96,
+          },
+          {
+            x: 58,
+            y: 91,
+          },
+          {
+            x: 10,
+            y: 73,
+          },
+          {
+            x: 50,
+            y: 65,
+          },
+          {
+            x: 65,
+            y: 30,
+          },
+          {
+            x: 0,
+            y: 80,
+          },
+          {
+            x: 17,
+            y: 12,
+          },
+          {
+            x: 24,
+            y: 62,
+          },
+          {
+            x: 74,
+            y: 48,
+          },
+          {
+            x: 62,
+            y: 85,
+          },
+          {
+            x: 37,
+            y: 98,
+          },
+          {
+            x: 72,
+            y: 103,
+          },
+          {
+            x: 57,
+            y: 57,
+          },
+          {
+            x: 7,
+            y: 48,
+          },
+          {
+            x: 66,
+            y: 51,
+          },
+          {
+            x: 51,
+            y: 76,
+          },
+          {
+            x: 23,
+            y: 96,
+          },
+          {
+            x: 70,
+            y: 21,
+          },
+          {
+            x: 15,
+            y: 59,
+          },
+          {
+            x: 50,
+            y: 90,
+          },
+          {
+            x: 30,
+            y: 9,
+          },
+          {
+            x: 34,
+            y: 113,
+          },
+          {
+            x: 48,
+            y: 66,
+          },
+          {
+            x: 56,
+            y: 71,
+          },
+          {
+            x: 66,
+            y: 58,
+          },
+          {
+            x: 18,
+            y: 67,
+          },
+          {
+            x: 28,
+            y: 12,
+          },
+          {
+            x: 65,
+            y: 60,
+          },
+          {
+            x: 1,
+            y: 69,
+          },
+          {
+            x: 72,
+            y: 84,
+          },
+          {
+            x: 81,
+            y: 44,
+          },
+          {
+            x: 47,
+            y: 88,
+          },
+          {
+            x: 49,
+            y: 34,
+          },
+          {
+            x: 38,
+            y: 59,
+          },
+          {
+            x: 31,
+            y: 88,
+          },
+          {
+            x: 52,
+            y: 71,
+          },
+          {
+            x: 21,
+            y: 34,
+          },
+          {
+            x: 9,
+            y: 107,
+          },
+        ],
+      },
+      {
+        id: "Brisbane Bronco's",
+        data: [
+          {
+            x: 86,
+            y: 39,
+          },
+          {
+            x: 0,
+            y: 33,
+          },
+          {
+            x: 99,
+            y: 56,
+          },
+          {
+            x: 30,
+            y: 87,
+          },
+          {
+            x: 0,
+            y: 56,
+          },
+          {
+            x: 97,
+            y: 96,
+          },
+          {
+            x: 10,
+            y: 106,
+          },
+          {
+            x: 54,
+            y: 111,
+          },
+          {
+            x: 26,
+            y: 69,
+          },
+          {
+            x: 63,
+            y: 105,
+          },
+          {
+            x: 2,
+            y: 87,
+          },
+          {
+            x: 84,
+            y: 59,
+          },
+          {
+            x: 81,
+            y: 66,
+          },
+          {
+            x: 98,
+            y: 87,
+          },
+          {
+            x: 28,
+            y: 45,
+          },
+          {
+            x: 98,
+            y: 117,
+          },
+          {
+            x: 45,
+            y: 86,
+          },
+          {
+            x: 5,
+            y: 59,
+          },
+          {
+            x: 75,
+            y: 99,
+          },
+          {
+            x: 42,
+            y: 49,
+          },
+          {
+            x: 93,
+            y: 14,
+          },
+          {
+            x: 38,
+            y: 100,
+          },
+          {
+            x: 8,
+            y: 40,
+          },
+          {
+            x: 43,
+            y: 46,
+          },
+          {
+            x: 8,
+            y: 77,
+          },
+          {
+            x: 48,
+            y: 6,
+          },
+          {
+            x: 66,
+            y: 25,
+          },
+          {
+            x: 64,
+            y: 3,
+          },
+          {
+            x: 60,
+            y: 83,
+          },
+          {
+            x: 14,
+            y: 60,
+          },
+          {
+            x: 44,
+            y: 64,
+          },
+          {
+            x: 28,
+            y: 90,
+          },
+          {
+            x: 62,
+            y: 47,
+          },
+          {
+            x: 70,
+            y: 80,
+          },
+          {
+            x: 3,
+            y: 15,
+          },
+          {
+            x: 23,
+            y: 58,
+          },
+          {
+            x: 37,
+            y: 116,
+          },
+          {
+            x: 95,
+            y: 35,
+          },
+          {
+            x: 39,
+            y: 12,
+          },
+          {
+            x: 53,
+            y: 70,
+          },
+          {
+            x: 97,
+            y: 21,
+          },
+          {
+            x: 82,
+            y: 10,
+          },
+          {
+            x: 25,
+            y: 74,
+          },
+          {
+            x: 5,
+            y: 80,
+          },
+          {
+            x: 75,
+            y: 85,
+          },
+          {
+            x: 60,
+            y: 90,
+          },
+          {
+            x: 16,
+            y: 23,
+          },
+          {
+            x: 69,
+            y: 91,
+          },
+          {
+            x: 74,
+            y: 36,
+          },
+          {
+            x: 54,
+            y: 93,
+          },
+        ],
+      },
+    ];
     return (
-      <div style={{ height: "950px" }}>
+      <div div style={{ height: "100%", width: "75%" }}>
         <ResponsiveScatterPlot
-          data={this.state.data}
+          data={data}
           margin={{ top: 60, right: 140, bottom: 70, left: 90 }}
           xScale={{ type: "linear", min: 0, max: "auto" }}
           xFormat={function (e) {
@@ -212,7 +785,7 @@ class Home extends React.Component {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: "weight",
+            legend: "Stat 1",
             legendPosition: "middle",
             legendOffset: 46,
           }}
@@ -221,7 +794,7 @@ class Home extends React.Component {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: "size",
+            legend: "Stat 2",
             legendPosition: "middle",
             legendOffset: -60,
           }}
@@ -253,10 +826,10 @@ class Home extends React.Component {
     );
   };
 
+  // Renders the radar graph
   renderRadar = () => {
-    console.log(this.state);
     return (
-      <div style={{ height: "1000px" }}>
+      <div style={{ height: "100%", width: "75%" }}>
         <ResponsiveRadar
           data={this.state.graphData}
           keys={[
@@ -409,82 +982,61 @@ class Home extends React.Component {
     );
   }
 
-  renderTopControlBar = () => {
+  renderStatTemplates = () => {
     return (
       <div>
-        <Form.Row inline>
-          <Col>
-            <Form.Label>General</Form.Label>
-            <Form.Control as="radio">
-              <input
-                type="radio"
-                value="general"
-                checked={this.state.fanType === "general"}
-                onChange={this.fanTypeRadioChangeHandler}
-              />
-            </Form.Control>
-          </Col>
-          <Col>
-            <Form.Label>Fantasy</Form.Label>
-
-            <Form.Control as="radio">
-              <input
-                type="radio"
-                value="fantasy"
-                checked={this.state.fanType === "fantasy"}
-                onChange={this.fanTypeRadioChangeHandler}
-              />
-            </Form.Control>
-          </Col>
-          <Col>
-            <Form.Label>Betting</Form.Label>
-            <Form.Control as="radio">
-              <input
-                type="radio"
-                value="betting"
-                checked={this.state.fanType === "betting"}
-                onChange={this.fanTypeRadioChangeHandler}
-              />
-            </Form.Control>
-          </Col>
-        </Form.Row>
-        <Form.Row inline>
-          <Col>
-            <Form.Label>Team</Form.Label>
-            <Form.Control as="radio">
-              <input
-                type="radio"
-                value="team"
-                checked={this.state.playerOrTeam === "team"}
-                onChange={this.teamOrPlayerRadioChangeHandler}
-              />
-            </Form.Control>
-          </Col>
-          <Col>
-            <Form.Label>Player</Form.Label>
-            <Form.Control as="radio">
-              <input
-                type="radio"
-                value="player"
-                checked={this.state.playerOrTeam === "player"}
-                onChange={this.teamOrPlayerRadioChangeHandler}
-              />
-            </Form.Control>
-          </Col>
-        </Form.Row>
+        <Form inline>
+          <Form.Check
+            onChange={() => {
+              this.setState({ templateChecked: !this.state.templateChecked });
+            }}
+            type="checkbox"
+            checked={this.state.templateChecked}
+            id="checkbox"
+            label="Forward"
+          ></Form.Check>
+          <Form.Check
+            onChange={() => {
+              this.setState({ templateChecked: !this.state.templateChecked });
+            }}
+            type="checkbox"
+            id="checkbox"
+            checked={!this.state.templateChecked}
+            label="Backs"
+          ></Form.Check>
+        </Form>
       </div>
     );
   };
 
-  renderPositionButtons = () => {
+  // Contains the buttons for the fan type and the team/player buttons
+  renderPlayerAndTeamTabs = () => {
+    return (
+      <div>
+        <Tabs
+          defaultActiveKey="player"
+          id="teamOrPlayerSelector"
+          onSelect={(e) => {
+            if (this.state.playerOrTeam !== e)
+              this.setState({ playerOrTeam: e });
+          }}
+        >
+          <Tab eventKey="player" title="Player"></Tab>
+          <Tab eventKey="team" title="Team"></Tab>
+        </Tabs>
+      </div>
+    );
+  };
+
+  renderPositionToggle = () => {
     if (this.state.showPositionButtons) {
       return (
-        <div>
+        <div style={{ visibility: this.state.visibility }}>
           <Form>
             <Form.Check
               type="switch"
               id="custom-switch"
-              label="Positions"
+              label="positions"
               onChange={() => {
                 this.setState({
                   showPositionButtons: !this.state.showPositionButtons,
@@ -542,7 +1094,7 @@ class Home extends React.Component {
       );
     }
     return (
-      <div>
+      <div style={{ visibility: this.state.visibility }}>
         <Form>
           <Form.Check
             type="switch"
@@ -561,24 +1113,45 @@ class Home extends React.Component {
 
   renderStatDropDowns = () => {
     const options = [
-      "AllRunMetres",
       "Conversions",
       "Errors",
       "Fantasy",
       "Intercepts",
       "Kick Metres",
-      "LineBreakAssists",
-      "LineBreaks",
-      "MinutesPlayed",
-      "MissedTackles",
+      "Field Goals",
+      "Line Break Assists",
+      "Line Breaks",
+      "Minutes Played",
+      "Missed Tackles",
       "Offloads",
-      "OneOnOneSteal",
-      "TackleBreaks",
-      "TackleEfficiency",
-      "TacklesMade",
+      "One On One Steal",
+      "Tackle Breaks",
+      "Tackle Efficiency",
+      "Tackles Made",
       "Tries",
-      "TryAssists",
+      "Try Assists",
+      "All Run Metres",
+      "Post Contact Metres",
     ];
+
+    if (this.state.graphType === "bar") {
+      return (
+        <div>
+          <Form inline>
+            <Row>
+              <Col>
+                <Form.Label> Stat</Form.Label>
+                <Form.Control as="select" custom>
+                  {options.map((options) => {
+                    return <option>{options}</option>;
+                  })}
+                </Form.Control>
+              </Col>
+            </Row>
+          </Form>
+        </div>
+      );
+    }
     return (
       <div>
         <Form inline>
@@ -607,76 +1180,164 @@ class Home extends React.Component {
     );
   };
 
-  renderTeamButtons = () => {
+  renderTeamDropDown = () => {
+    const options = [];
+    this.state.teams.map((team) => {
+      options.push({ label: team.team_name, value: team.team_name });
+    });
     return (
       <div>
-        <Form inline>
-          <Row>
-            <Col>
-              <Form.Label> Team 1</Form.Label>
-              <Form.Control as="select" custom>
-                <option> Team</option>
-              </Form.Control>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col>
-              <Form.Label> Team 2</Form.Label>
-              <Form.Control as="select" custom>
-                <option> Team</option>
-              </Form.Control>
-            </Col>
-          </Row>
-        </Form>
+        <span> Team 1 </span>
+        <Select
+          options={options}
+          onMenuOpen={() => this.setState({ visibility: "hidden" })}
+          onMenuClose={() => this.setState({ visibility: null })}
+        />
+        <span> Team 2 </span>
+        <Select
+          options={options}
+          onMenuOpen={() => this.setState({ visibility: "hidden" })}
+          onMenuClose={() => this.setState({ visibility: null })}
+        />
       </div>
     );
   };
 
-  renderPlayerButtons = () => {
+  renderPlayerDropDowns = () => {
+    const options = [];
+    this.state.currentPlayers.map((player) => {
+      options.push({
+        value: player.player_id,
+        label: player.player_name,
+      });
+    });
     return (
       <div>
-        <Form inline>
-          <Form title="player1">
-            <Row>
-              <Col>
-                <Form.Label> Player 1 </Form.Label>
-                <Form.Control
-                  as="select"
-                  custom
-                  onChange={this.playerButtonSelectHandler}
-                >
-                  {this.state.players?.map((player) => {
-                    return (
-                      <option key={player.player_id} value={player.player_id}>
-                        {player.first_name} {player.last_name}
-                      </option>
-                    );
-                  })}
-                </Form.Control>
-              </Col>
-            </Row>
-          </Form>
-          <Form title="player2">
-            <Row>
-              <Col>
-                <Form.Label> Player 2 </Form.Label>
-                <Form.Control
-                  as="select"
-                  custom
-                  onChange={this.playerButtonSelectHandler}
-                >
-                  {this.state.players?.map((player) => {
-                    return (
-                      <option key={player.player_id} value={player.player_id}>
-                        {player.first_name} {player.last_name}
-                      </option>
-                    );
-                  })}
-                </Form.Control>
-              </Col>
-            </Row>
-          </Form>
+        <span> Player 1 </span>
+        <Select options={options} onChange={this.playerButtonSelectHandler1} />
+        <span> Player 2 </span>
+        <Select options={options} onChange={this.playerButtonSelectHandler2} />
+      </div>
+    );
+  };
+
+  renderStatCheckBox = () => {
+    return (
+      <div>
+        <Form>
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Conversions" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Errors" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Fantasy" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Intercepts" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Kick Metres" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Field Goals" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="Line Break Assists"
+              />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Line Breaks" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="Minutes Played"
+              />
+            </Col>
+            <Col>
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="Missed Tackles"
+              />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Off loads" />
+            </Col>
+            <Col>
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="One On One Steal"
+              />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Tackle Breaks" />
+            </Col>
+            <Col>
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="Tackle Efficiency"
+              />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Tackles Made" />
+            </Col>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Tries" />
+            </Col>
+          </Form.Row>
+
+          <Form.Row>
+            <Col>
+              <Form.Check type="checkbox" id="checkbox" label="Try Assists" />
+            </Col>
+            <Col>
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="All Run Metres"
+              />
+            </Col>
+          </Form.Row>
+          <Form.Row>
+            <Col>
+              <Form.Check
+                type="checkbox"
+                id="checkbox"
+                label="Post Contact Metres"
+              />
+            </Col>
+          </Form.Row>
         </Form>
       </div>
     );
@@ -686,7 +1347,6 @@ class Home extends React.Component {
     return (
       <div>
         <Form>
-          <h3>Dates</h3>
           <DatePicker
             selected={this.state.startDate.date}
             onChange={(date) => this.setState({ startDate: { date: date } })}
@@ -701,34 +1361,85 @@ class Home extends React.Component {
     );
   };
 
-  renderVenueButtons = () => {
+  renderVenueDropDown = () => {
+    const options = [
+      { value: "Suncorp Stadium", label: "Suncorp Stadium" },
+      { value: "GIO Stadium	", label: "	GIO Stadium" },
+      { value: "AAMI Park", label: "AAMI Park" },
+    ];
     return (
       <div>
-        <Form>
-          <Form.Label> Venue </Form.Label>
-          <Form.Control as="select" custom>
-            <option> MCG </option>
-          </Form.Control>
-        </Form>
+        <Select
+          defaultValue={options}
+          isMulti
+          closeMenuOnSelect={false}
+          name="venues"
+          options={options}
+          className="basic-multi-select"
+          classNamePrefix="select"
+        />
       </div>
     );
   };
 
-  renderGraphControlBar = () => {
+  renderGraphTabs = () => {
     return (
       <div>
-        <Form.Group>
-          <div>
-            {this.renderStatDropDowns()}
-            {this.renderPlayerButtons()}
-            <h2> Filters </h2>
-            {this.renderPositionButtons()}
-            {this.renderTeamButtons()}
-            {this.renderDateButtons()}
-            {this.renderVenueButtons()}
-            {this.renderAdvancedOptions()}
-          </div>
-        </Form.Group>
+        <Tabs
+          defaultActiveKey="radar"
+          id="graphTypeSelector"
+          onSelect={(e) => {
+            if (this.state.graphType !== e) this.setState({ graphType: e });
+          }}
+        >
+          <Tab eventKey="radar" title="Radar"></Tab>
+          <Tab eventKey="scatter" title="Scatter"></Tab>
+          <Tab eventKey="bar" title="Bar"></Tab>
+          <Tab eventKey="rankings" title="Rankings"></Tab>
+        </Tabs>
+      </div>
+    );
+  };
+
+  renderMinimumGamesPlayed = () => {
+    return (
+      <div>
+        <span> Minimum games played</span>
+        <RangeSlider
+          min={0}
+          max={10}
+          value={this.state.value}
+          onChange={(changeEvent) => {
+            this.setState({ value: changeEvent.target.value });
+          }}
+        />
+      </div>
+    );
+  };
+
+  renderAverageOrTotalCheckbox = () => {
+    return (
+      <div>
+        <Form inline>
+          <Form.Check
+            onChange={() => {
+              this.setState({ checked: !this.state.checked });
+            }}
+            type="checkbox"
+            checked={this.state.checked}
+            id="checkbox"
+            label="Average"
+          ></Form.Check>
+          <Form.Check
+            onChange={() => {
+              this.setState({ checked: !this.state.checked });
+            }}
+            type="checkbox"
+            id="checkbox"
+            checked={!this.state.checked}
+            label="Total"
+          ></Form.Check>
+        </Form>
       </div>
     );
   };
@@ -748,6 +1459,95 @@ class Home extends React.Component {
     );
   };
 
+  // This function contains a case statement that will determine which graph is rendered to the page
+  renderGraph = () => {
+    switch (this.state.graphType) {
+      default:
+        return this.renderRadar();
+      case "scatter":
+        return this.renderScatterPlot();
+      case "bar":
+        return BarChart();
+    }
+  };
+
+  // Renders the control for the radar graph
+  radarGraphControls = () => {
+    return (
+      <>
+        {this.renderStatCheckBox()}
+        <br></br>
+        {this.renderStatTemplates()}
+        {this.state.playerOrTeam === "team"
+          ? this.renderTeamDropDown()
+          : this.renderPlayerDropDowns()}
+      </>
+    );
+  };
+
+  // Renders the controls for the scatter graph
+  scatterGraphControls = () => {
+    return (
+      <>
+        {this.renderStatDropDowns()}
+        {this.state.playerOrTeam === "team"
+          ? this.renderTeamDropDown()
+          : this.renderPlayerDropDowns()}
+      </>
+    );
+  };
+
+  // Renders the controls for the bar graph
+  barGraphControls = () => {
+    return <>{this.renderStatDropDowns("bar")}</>;
+  };
+
+  // Handles logic to decide which graph to display
+  graphSelect = () => {
+    switch (this.state.graphType) {
+      default:
+        return this.radarGraphControls();
+
+      case "scatter":
+        return this.scatterGraphControls();
+
+      case "bar":
+        return this.barGraphControls();
+    }
+  };
+
+  // Renders the graph control to screen
+  renderGraphControl = () => {
+    return (
+      <div style={{ height: "100%", width: "25%" }}>
+        <Form.Group>
+          <div>
+            <br></br>
+            {this.renderPlayerAndTeamTabs()}
+            <br></br>
+            {this.renderGraphTabs()}
+            <br></br>
+            {this.graphSelect()}
+
+            {this.state.playerOrTeam === "team"
+              ? this.renderPositionToggle()
+              : null}
+            <br></br>
+            {this.renderDateButtons()}
+            <br></br>
+            {this.renderVenueDropDown()}
+            <br></br>
+            {this.renderAverageOrTotalCheckbox()}
+            <br></br>
+            {this.renderMinimumGamesPlayed()}
+            <br></br>
+            {/* {this.renderAdvancedOptions()} */}
+          </div>
+        </Form.Group>
+      </div>
+    );
+  };
+
   render() {
     // if (this.state.hide) {
     //   return (
@@ -762,11 +1562,17 @@ class Home extends React.Component {
     }
     return (
       <>
-        {this.renderTopControlBar()}
         {/* {this.renderMotionDiv()} */}
-        {this.renderGraphControlBar()}
-        {/* {this.renderRadar()} */}
-        {/* {this.renderScatterPlot()} */}
+        <div
+          style={{
+            display: "flex",
+            height: "80vh",
+            width: "100%",
+          }}
+        >
+          {this.renderGraphControl()}
+          {this.renderGraph()}
+        </div>
       </>
     );
   }

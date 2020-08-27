@@ -7,31 +7,35 @@ class TabNav extends React.Component {
 
   navBar = () => {
     return (
-      <Nav variant="tabs" defaultActiveKey="/home">
-        <Nav.Item>
-          <Nav.Link
-            onClick={() => {
-              this.setState({ redirect: "/sportsbetting" });
-            }}
-          >
-            Sports Betting
-          </Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link 
-            onClick={() => {
-              this.setState({ redirect: "/fantasysport" });
-            }}
-              eventKey="link-1">Fantasy Sports</Nav.Link>
-        </Nav.Item>
+      <Nav variant="tabs" defaultActiveKey="/">
         <Nav.Item>
           <Nav.Link
             onClick={() => {
               this.setState({ redirect: "/" });
             }}
-            eventKey="link-1"
+            eventKey="/"
           >
             Sports Analytics
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link
+            onClick={() => {
+              this.setState({ redirect: "/fantasysport" });
+            }}
+            eventKey="/fantasysport"
+          >
+            Fantasy Sports
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link
+            onClick={() => {
+              this.setState({ redirect: "/sportsbetting" });
+            }}
+            eventKey="/sportsbetting"
+          >
+            Sports Betting
           </Nav.Link>
         </Nav.Item>
       </Nav>
