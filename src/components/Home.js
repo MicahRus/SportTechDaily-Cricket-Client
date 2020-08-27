@@ -1279,7 +1279,7 @@ class Home extends React.Component {
   // Renders the radar graph
   renderRadar = () => {
     return (
-      <Col sm={12} lg={6}>
+      <Col sm={12} lg={8}>
         <div
           style={{
             minWidth: "65vw",
@@ -2246,7 +2246,7 @@ class Home extends React.Component {
   // Renders the graph control to screen
   renderGraphControl = () => {
     return (
-      <Col sm={12} lg={6}>
+      <Col sm={12} lg={4}>
         {/* {this.renderPlayerAndTeamTabs()} */}
         {this.renderGraphTabs()}
         <br></br>
