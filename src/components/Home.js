@@ -1282,13 +1282,8 @@ class Home extends React.Component {
       <Col sm={12} lg={8}>
         <div
           style={{
-            minWidth: "65vw",
-            maxWidth: "75%",
-            marginLeft: "auto",
-            marginRight: "auto",
-            minHeight: "50vh",
-            border: "solid grey 1.5px",
-            height: "50vh",
+            height: "100vh",
+            border: "solid black 3px",
           }}
         >
           <ResponsiveRadar
