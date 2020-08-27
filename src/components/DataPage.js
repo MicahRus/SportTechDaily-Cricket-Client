@@ -33,7 +33,12 @@ class DataPage extends React.Component {
   render() {
     return (
       <div>
-        <h1> On data page</h1>
+        <div>
+          <h1> hi</h1>,
+          <a href="logo.svg" download>
+            Click to download
+          </a>
+        </div>
       </div>
     );
   }
