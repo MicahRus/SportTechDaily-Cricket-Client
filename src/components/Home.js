@@ -32,6 +32,7 @@ import RangeSlider from "react-bootstrap-range-slider";
 class Home extends React.Component {
   state = {
     visibility: null,
+    averageOrTotal: "average",
     playerPercentiles: [{}, {}],
     scatterStat1: ["All Run Metres"],
     scatterStat2: ["Fantasy Points Total"],
@@ -44,7 +45,7 @@ class Home extends React.Component {
       "line_breaks",
     ],
     stats: [{ kicks: 0 }, { passes: 0 }],
-    barStat1: ["Conversions"],
+    barStat1: ["All Run Metres"],
     currentPlayers: [],
     checked: true,
     templateChecked: true,
@@ -66,8 +67,8 @@ class Home extends React.Component {
     teams: ["test"],
     toggleAdvancedOptions: false,
     barGraphData: [
-      { playerName: "James Tedesco", conversions: 50 },
-      { playerName: "Kalyn Ponga", conversions: 98 },
+      { playerName: "James Tedesco", all_run_metres: 96 },
+      { playerName: "Kalyn Ponga", all_run_metres: 68 },
     ],
     currentPlayersData: {
       player1: { data: null, playerName: "player1" },
@@ -133,11 +134,22 @@ class Home extends React.Component {
     this.getAllTeamsData();
     this.getCurrentPlayers();
     this.getPlayerPercentiles();
+    this.getCurrentStats();
+    this.getPlayerAveragePercentiles();
 
     if (this.state.refreshBarChart) {
       this.setBarChartData(this.state.selectedPlayers);
     }
   }
+
+  getPlayerAveragePercentiles = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/average_percentiles`
+    );
+    const data = await response.json();
+    console.log(data.rows);
+    this.setState({ averagePlayerPercentiles: data.rows });
+  };
 
   getPlayerPercentiles = async () => {
     const response = await fetch(
@@ -145,6 +157,14 @@ class Home extends React.Component {
     );
     const data = await response.json();
     this.setState({ playerPercentiles: data.rows });
+  };
+
+  getCurrentStats = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/currentstats`
+    );
+    const data = await response.json();
+    console.log(data.rows);
   };
 
   getMatches = async (playerId, playerName, playerNumber) => {
@@ -490,7 +510,6 @@ class Home extends React.Component {
       }
 
       // Sets an array that will be passed to the percentile based off the stats selected
-      console.log(this.state.stats[x][values[0]]);
       let array = this.state.stats[x][values[0]];
 
       array.sort((a, b) => a - b);
@@ -500,27 +519,56 @@ class Home extends React.Component {
       let percentile = percentileFinder(array, player.data[0][stat]);
       percentile = Math.round(percentile);
 
-      // Checks which player is selected
-      if (playerNumber === "player1") {
-        newData.push({
-          stat: this.state.options[x].label,
-          [playerName]: percentile,
-          [keys[2]]: values[2],
-        });
+      if (this.state.averageOrTotal === "total") {
+        // Checks which player is selected
+        if (playerNumber === "player1") {
+          newData.push({
+            stat: this.state.options[x].label,
+            [playerName]: percentile,
+            [keys[2]]: values[2],
+          });
+        } else {
+          newData.push({
+            stat: this.state.options[x].label,
+            [keys[1]]: values[1],
+            [playerName]: percentile,
+          });
+        }
       } else {
-        newData.push({
-          stat: this.state.options[x].label,
-          [keys[1]]: values[1],
-          [playerName]: percentile,
+        let playerStat = 1;
+        this.state.averagePlayerPercentiles.map((player) => {
+          if (
+            player.player_name === playerName[0] ||
+            player.player_name === playerName
+          ) {
+            playerStat =
+              player[
+                this.state.options[x].label.toLowerCase().split(" ").join("_")
+              ];
+          }
         });
+        if (playerNumber === "player1") {
+          newData.push({
+            stat: this.state.options[x].label,
+            [playerName]: playerStat,
+            [keys[2]]: values[2],
+          });
+        } else {
+          newData.push({
+            stat: this.state.options[x].label,
+            [keys[1]]: values[1],
+            [playerName]: playerStat,
+          });
+        }
       }
     });
-    console.log(newData);
     this.setState({ graphData: newData, redirect: "/" });
   };
 
   toggleAdvancedOptions = () => {
-    this.setState({ toggleAdvancedOptions: !this.state.toggleAdvancedOptions });
+    this.setState({
+      toggleAdvancedOptions: !this.state.toggleAdvancedOptions,
+    });
   };
 
   playerButtonSelectHandler1 = (event) => {
@@ -598,6 +646,7 @@ class Home extends React.Component {
 
     return (
       <div>
+        <span> Players</span>
         <Select
           isMulti
           closeMenuOnSelect={false}
@@ -696,100 +745,104 @@ class Home extends React.Component {
     let stat = this.state.barStat1;
     let lowerStat = stat[0].toLowerCase().split(" ").join("_");
     return (
-      <ResponsiveBar
-        data={this.state.barGraphData}
-        layout="horizontal"
-        keys={[lowerStat]}
-        indexBy="playerName"
-        margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
-        padding={0.3}
-        colors={{ scheme: "nivo" }}
-        maxValue={100}
-        minValue={-10}
-        defs={[
-          {
-            id: "dots",
-            type: "patternDots",
-            background: "inherit",
-            color: "#38bcb2",
-            size: 4,
-            padding: 1,
-            stagger: true,
-          },
-          {
-            id: "lines",
-            type: "patternLines",
-            background: "inherit",
-            color: "#eed312",
-            rotation: -45,
-            lineWidth: 6,
-            spacing: 10,
-          },
-        ]}
-        fill={[
-          {
-            match: {
-              id: "fries",
-            },
-            id: "dots",
-          },
-          {
-            match: {
-              id: "sandwich",
-            },
-            id: "lines",
-          },
-        ]}
-        borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
-        axisTop={null}
-        axisRight={null}
-        axisBottom={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: [this.state.barStat1],
-          legendPosition: "middle",
-          legendOffset: 32,
-        }}
-        axisLeft={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: null,
-          legendPosition: "middle",
-          legendOffset: -40,
-        }}
-        labelSkipWidth={12}
-        labelSkipHeight={12}
-        labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
-        legends={[
-          {
-            dataFrom: "keys",
-            anchor: "bottom-right",
-            direction: "column",
-            justify: false,
-            translateX: 120,
-            translateY: 0,
-            itemsSpacing: 2,
-            itemWidth: 100,
-            itemHeight: 20,
-            itemDirection: "left-to-right",
-            itemOpacity: 0.85,
-            symbolSize: 20,
-            effects: [
+      <Col lg={8} sm={12} style={{ marginLeft: "50px" }}>
+        <div className="graph-container">
+          <ResponsiveBar
+            data={this.state.barGraphData}
+            layout="horizontal"
+            keys={[lowerStat]}
+            indexBy="playerName"
+            margin={{ top: 50, right: 120, bottom: 50, left: 120 }}
+            padding={0.3}
+            colors={{ scheme: "set1" }}
+            maxValue={100}
+            minValue={0}
+            defs={[
               {
-                on: "hover",
-                style: {
-                  itemOpacity: 1,
-                },
+                id: "dots",
+                type: "patternDots",
+                background: "inherit",
+                color: "#38bcb2",
+                size: 4,
+                padding: 1,
+                stagger: true,
               },
-            ],
-          },
-        ]}
-        animate={true}
-        motionStiffness={90}
-        motionDamping={15}
-      />
+              {
+                id: "lines",
+                type: "patternLines",
+                background: "inherit",
+                color: "#eed312",
+                rotation: -45,
+                lineWidth: 6,
+                spacing: 10,
+              },
+            ]}
+            fill={[
+              {
+                match: {
+                  id: "fries",
+                },
+                id: "dots",
+              },
+              {
+                match: {
+                  id: "sandwich",
+                },
+                id: "lines",
+              },
+            ]}
+            borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+            axisTop={null}
+            axisRight={null}
+            axisBottom={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              legend: [this.state.barStat1],
+              legendPosition: "middle",
+              legendOffset: 32,
+            }}
+            axisLeft={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              legend: null,
+              legendPosition: "middle",
+              legendOffset: -40,
+            }}
+            labelSkipWidth={12}
+            labelSkipHeight={12}
+            labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+            legends={[
+              {
+                dataFrom: "keys",
+                anchor: "bottom-right",
+                direction: "column",
+                justify: false,
+                translateX: 120,
+                translateY: 0,
+                itemsSpacing: 2,
+                itemWidth: 100,
+                itemHeight: 20,
+                itemDirection: "left-to-right",
+                itemOpacity: 0.85,
+                symbolSize: 20,
+                effects: [
+                  {
+                    on: "hover",
+                    style: {
+                      itemOpacity: 1,
+                    },
+                  },
+                ],
+              },
+            ]}
+            animate={true}
+            motionStiffness={90}
+            motionDamping={15}
+          />
+        </div>
+      </Col>
     );
   };
 
@@ -1210,12 +1263,13 @@ class Home extends React.Component {
     let stat1 = this.state.scatterStat1;
     let stat2 = this.state.scatterStat2;
     return (
-      <div>
+      <div className="graph-container">
         <h1>
           {" "}
           {stat1} v {stat2}
         </h1>
         <ResponsiveScatterPlot
+          colors={{ scheme: "set1" }}
           data={this.state.scatterGraphData || data}
           margin={{ top: 60, right: 140, bottom: 70, left: 90 }}
           xScale={{ type: "linear", min: "auto", max: "auto" }}
@@ -1280,12 +1334,7 @@ class Home extends React.Component {
   renderRadar = () => {
     return (
       <Col sm={12} lg={8}>
-        <div
-          style={{
-            height: "100vh",
-            border: "solid black 3px",
-          }}
-        >
+        <div className="graph-container">
           <ResponsiveRadar
             data={this.state.graphData}
             keys={[
@@ -1309,8 +1358,8 @@ class Home extends React.Component {
             enableDotLabel={false}
             dotLabel="value"
             dotLabelYOffset={-12}
-            colors={{ scheme: "nivo" }}
-            fillOpacity={0.25}
+            colors={{ scheme: "set1" }}
+            fillOpacity={0.6}
             blendMode="multiply"
             animate={true}
             motionStiffness={90}
@@ -1739,7 +1788,7 @@ class Home extends React.Component {
     return (
       <Form>
         <Form.Row className="align-items-center">
-          <Col xs="auto">
+          <Col>
             <Form.Check
               onChange={this.statCheckBoxChangeHandler}
               type="checkbox"
@@ -1750,7 +1799,7 @@ class Home extends React.Component {
               )}
             />
           </Col>
-          <Col xs="auto">
+          <Col>
             <Form.Check
               onChange={this.statCheckBoxChangeHandler}
               type="checkbox"
@@ -2071,24 +2120,32 @@ class Home extends React.Component {
           <Form.Check
             inline
             onChange={() => {
-              this.setState({ checked: !this.state.checked });
+              this.setState({
+                redirect: "/",
+                getNewPlayer1Data: true,
+                averageOrTotal: "average",
+                checked: !this.state.checked,
+              });
             }}
             type="checkbox"
             checked={this.state.checked}
             id="average-checkbox"
             label="Average"
-            disabled={true}
           ></Form.Check>
           <Form.Check
             onChange={() => {
-              this.setState({ checked: !this.state.checked });
+              this.setState({
+                redirect: "/",
+                getNewPlayer1Data: true,
+                averageOrTotal: "total",
+                checked: !this.state.checked,
+              });
             }}
             inline
             type="checkbox"
             id="total-checkbox"
             checked={!this.state.checked}
             label="Total"
-            disabled={true}
           ></Form.Check>
         </Form>
       </div>
@@ -2184,7 +2241,7 @@ class Home extends React.Component {
   // Renders the control for the radar graph
   radarGraphControls = () => {
     return (
-      <Col xs>
+      <Col xs lg>
         {this.renderStatCheckBox()}
         <br></br>
         {/* {this.renderStatTemplates()} */}
@@ -2241,7 +2298,7 @@ class Home extends React.Component {
   // Renders the graph control to screen
   renderGraphControl = () => {
     return (
-      <Col sm={12} lg={4}>
+      <Col sm={12} lg={3} style={{ backgroundColor: "#eaecef" }}>
         {/* {this.renderPlayerAndTeamTabs()} */}
         {this.renderGraphTabs()}
         <br></br>
@@ -2253,7 +2310,7 @@ class Home extends React.Component {
         <br></br>
         {/* {this.renderDateButtons()} */}
         {/* {this.renderVenueSelect()} */}
-        {/* {this.renderAverageOrTotalCheckbox()} */}
+        {this.renderAverageOrTotalCheckbox()}
         {/* {this.renderMinimumGamesPlayed()} */}
         {/* {this.renderAdvancedOptions()} */}
       </Col>

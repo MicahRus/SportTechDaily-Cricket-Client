@@ -1,7 +1,21 @@
-.nav {
-  /* background-color: gray; */
+.container-fluid {
+  background-color: #f0f0f0;
+}
+.navbar.navbar-expand-lg.navbar-light {
 }
 
-.nav-item {
-  color: red;
+/* .nav-item {
+  color: #b4843c !important;
+} */
+
+.graph-container {
+  height: 100vh;
+}
+
+.nav-link {
+  color: #3cb44c !important;
+}
+
+.navbar-nav > .active > a {
+  background-color: silver !important;
 }
