@@ -67,8 +67,8 @@ class Home extends React.Component {
     teams: ["test"],
     toggleAdvancedOptions: false,
     barGraphData: [
-      { playerName: "James Tedesco", all_run_metres: 96 },
-      { playerName: "Kalyn Ponga", all_run_metres: 68 },
+      { playerName: "James Tedesco", all_run_metres: 98 },
+      { playerName: "Kalyn Ponga", all_run_metres: 95 },
     ],
     currentPlayersData: {
       player1: { data: null, playerName: "player1" },
@@ -136,18 +136,49 @@ class Home extends React.Component {
     this.getPlayerPercentiles();
     this.getCurrentStats();
     this.getPlayerAveragePercentiles();
-
-    if (this.state.refreshBarChart) {
-      this.setBarChartData(this.state.selectedPlayers);
-    }
+    this.getSeasonPlayerPercentilesAverage();
+    this.getSeasonPlayerPercentilesTotal();
+    this.getSeasonPlayerStatsAverage();
+    this.getSeasonPlayerStatsTotal();
   }
+
+  getSeasonPlayerStatsAverage = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/season/player/stats/average`
+    );
+    const data = await response.json();
+    this.setState({ seasonPlayerStatsAverage: data.rows });
+  };
+
+  getSeasonPlayerStatsTotal = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/season/player/stats/total`
+    );
+    const data = await response.json();
+    this.setState({ seasonPlayerStatsTotal: data.rows });
+  };
+
+  getSeasonPlayerPercentilesTotal = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/season/player/percentile/total`
+    );
+    const data = await response.json();
+    this.setState({ seasonPlayerPercentilesTotal: data.rows });
+  };
+
+  getSeasonPlayerPercentilesAverage = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/season/player/percentile/average`
+    );
+    const data = await response.json();
+    this.setState({ seasonPlayerPercentilesAverage: data.rows });
+  };
 
   getPlayerAveragePercentiles = async () => {
     const response = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}/average_percentiles`
     );
     const data = await response.json();
-    console.log(data.rows);
     this.setState({ averagePlayerPercentiles: data.rows });
   };
 
@@ -672,7 +703,7 @@ class Home extends React.Component {
   //
 
   setScatterChartData = () => {
-    let maxGamesPlayed = 10;
+    let maxGamesPlayed = null;
     let player1Data = [];
     let player2Data = [];
     let player1Name = null;
@@ -725,14 +756,25 @@ class Home extends React.Component {
     let stat = this.state.barStat1;
     let lowerStat = stat[0].toLowerCase().split(" ").join("_");
     players.map((player) => {
-      this.state.playerPercentiles.map((percentile) => {
-        if (player.value === percentile.player_id) {
-          graphData.push({
-            playerName: player.label,
-            [lowerStat]: percentile[lowerStat],
-          });
-        }
-      });
+      if (this.state.averageOrTotal === "total") {
+        this.state.playerPercentiles.map((percentile) => {
+          if (player.value === percentile.player_id) {
+            graphData.push({
+              playerName: player.label,
+              [lowerStat]: percentile[lowerStat],
+            });
+          }
+        });
+      } else {
+        this.state.averagePlayerPercentiles.map((percentile) => {
+          if (player.value === percentile.player_id) {
+            graphData.push({
+              playerName: player.label,
+              [lowerStat]: percentile[lowerStat],
+            });
+          }
+        });
+      }
     });
     this.setState({
       barGraphData: graphData,
@@ -1263,7 +1305,7 @@ class Home extends React.Component {
     let stat1 = this.state.scatterStat1;
     let stat2 = this.state.scatterStat2;
     return (
-      <div className="graph-container">
+      <Col lg={9} sm={12} className="graph-container">
         <h1>
           {" "}
           {stat1} v {stat2}
@@ -1271,7 +1313,7 @@ class Home extends React.Component {
         <ResponsiveScatterPlot
           colors={{ scheme: "set1" }}
           data={this.state.scatterGraphData || data}
-          margin={{ top: 60, right: 140, bottom: 70, left: 90 }}
+          margin={{ top: 60, right: 140, bottom: 150, left: 90 }}
           xScale={{ type: "linear", min: "auto", max: "auto" }}
           xFormat={function (e) {
             console.log(e);
@@ -1326,7 +1368,7 @@ class Home extends React.Component {
             },
           ]}
         />
-      </div>
+      </Col>
     );
   };
 
@@ -2120,11 +2162,14 @@ class Home extends React.Component {
           <Form.Check
             inline
             onChange={() => {
+              if (this.state.graphType === "bar") {
+                this.setState({ refreshBarChart: true });
+              }
               this.setState({
                 redirect: "/",
                 getNewPlayer1Data: true,
                 averageOrTotal: "average",
-                checked: !this.state.checked,
+                checked: true,
               });
             }}
             type="checkbox"
@@ -2134,11 +2179,14 @@ class Home extends React.Component {
           ></Form.Check>
           <Form.Check
             onChange={() => {
+              if (this.state.graphType === "bar") {
+                this.setState({ refreshBarChart: true });
+              }
               this.setState({
                 redirect: "/",
                 getNewPlayer1Data: true,
                 averageOrTotal: "total",
-                checked: !this.state.checked,
+                checked: false,
               });
             }}
             inline
@@ -2168,34 +2216,45 @@ class Home extends React.Component {
   };
 
   renderRankings = () => {
-    let playerNamesArray = [];
     let statsArray = [];
-    let topTenArray = [];
-    let topTenPlayers = [];
+    let topNumbersArray = [];
+    let topPlayersArray = [];
+    let players = null;
     // This is used in a map below, to ensure that the right amount of games are pushed into the array
     let x = 0;
     let numberOfEntries = 50;
     let stat = this.state.barStat1[0].toLowerCase().split(" ").join("_");
-
-    this.state.currentPlayers.map((player) => {
-      statsArray.push(player[stat]);
-    });
+    if (this.state.averageOrTotal === "average") {
+      this.state.seasonPlayerStatsAverage.map((player) => {
+        statsArray.push(player[stat]);
+      });
+      players = this.state.seasonPlayerStatsAverage;
+    } else {
+      this.state.seasonPlayerStatsTotal.map((player) => {
+        statsArray.push(player[stat]);
+      });
+      players = this.state.seasonPlayerStatsTotal;
+    }
 
     statsArray = statsArray.sort((a, b) => a - b);
 
-    for (let i = 1; i < numberOfEntries; i++) {
-      topTenArray.push(statsArray[statsArray.length - i]);
+    if (stat === "errors" || stat === "missed_tackles") {
+      statsArray.reverse();
     }
 
-    topTenArray.map((number) => {
-      this.state.currentPlayers.map((player) => {
+    for (let i = 1; i < numberOfEntries; i++) {
+      topNumbersArray.push(statsArray[statsArray.length - i]);
+    }
+    topNumbersArray.map((number) => {
+      players.map((player) => {
         if (player[stat] === number && x < numberOfEntries) {
-          topTenPlayers.push(player);
+          topPlayersArray.push(player);
           x++;
         }
       });
     });
 
+    console.log(topPlayersArray);
     return (
       <div>
         <Table striped bordered hover>
@@ -2208,7 +2267,7 @@ class Home extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {topTenPlayers.map((player, index) => {
+            {topPlayersArray.map((player, index) => {
               return (
                 <tr>
                   <td>{index + 1}</td>
@@ -2248,6 +2307,7 @@ class Home extends React.Component {
         {this.state.playerOrTeam === "team"
           ? this.renderTeamDropDown()
           : this.renderPlayerDropDowns()}
+        {this.renderAverageOrTotalCheckbox()}
       </Col>
     );
   };
@@ -2270,12 +2330,18 @@ class Home extends React.Component {
       <>
         {this.renderStatDropDowns("bar")}
         {this.renderPlayerSelect()}
+        {this.renderAverageOrTotalCheckbox()}
       </>
     );
   };
 
   rankingGraphControls = () => {
-    return <>{this.renderStatDropDowns("rankings")}</>;
+    return (
+      <>
+        {this.renderStatDropDowns("rankings")}
+        {this.renderAverageOrTotalCheckbox()}
+      </>
+    );
   };
 
   // Handles logic to decide which graph to display
@@ -2310,7 +2376,7 @@ class Home extends React.Component {
         <br></br>
         {/* {this.renderDateButtons()} */}
         {/* {this.renderVenueSelect()} */}
-        {this.renderAverageOrTotalCheckbox()}
+
         {/* {this.renderMinimumGamesPlayed()} */}
         {/* {this.renderAdvancedOptions()} */}
       </Col>
