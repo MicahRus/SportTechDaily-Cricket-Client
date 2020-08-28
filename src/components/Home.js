@@ -55,7 +55,7 @@ class Home extends React.Component {
     ],
     value: 5,
     players: [],
-    graphType: "scatter",
+    graphType: "bar",
     redirect: null,
     showPositionButtons: false,
     hide: true,
@@ -795,7 +795,7 @@ class Home extends React.Component {
             keys={[lowerStat]}
             indexBy="playerName"
             margin={{ top: 50, right: 120, bottom: 50, left: 120 }}
-            padding={0.3}
+            padding={0.8}
             colors={{ scheme: "set1" }}
             maxValue={100}
             minValue={0}
@@ -839,7 +839,7 @@ class Home extends React.Component {
             axisBottom={{
               tickSize: 5,
               tickPadding: 5,
-              tickRotation: 0,
+              tickRotation: 90,
               legend: [this.state.barStat1],
               legendPosition: "middle",
               legendOffset: 32,
