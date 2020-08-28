@@ -55,7 +55,7 @@ class Home extends React.Component {
     ],
     value: 5,
     players: [],
-    graphType: "radar",
+    graphType: "scatter",
     redirect: null,
     showPositionButtons: false,
     hide: true,
@@ -787,8 +787,8 @@ class Home extends React.Component {
     let stat = this.state.barStat1;
     let lowerStat = stat[0].toLowerCase().split(" ").join("_");
     return (
-      <Col lg={8} sm={12} style={{ marginLeft: "50px" }}>
-        <div className="graph-container">
+      <Col lg={8} sm={12}>
+        <div className="graph-container" style={{ height: "100vh" }}>
           <ResponsiveBar
             data={this.state.barGraphData}
             layout="horizontal"
@@ -1306,68 +1306,71 @@ class Home extends React.Component {
     let stat2 = this.state.scatterStat2;
     return (
       <Col lg={9} sm={12} className="graph-container">
-        <h1>
-          {" "}
-          {stat1} v {stat2}
-        </h1>
-        <ResponsiveScatterPlot
-          colors={{ scheme: "set1" }}
-          data={this.state.scatterGraphData || data}
-          margin={{ top: 60, right: 140, bottom: 150, left: 90 }}
-          xScale={{ type: "linear", min: "auto", max: "auto" }}
-          xFormat={function (e) {
-            console.log(e);
-            return e + " " + stat1;
-          }}
-          yScale={{ type: "linear", min: "auto", max: "auto" }}
-          yFormat={function (e) {
-            return e + " " + stat2;
-          }}
-          blendMode="multiply"
-          axisTop={null}
-          axisRight={null}
-          axisBottom={{
-            orient: "bottom",
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 0,
-            legend: stat1,
-            legendPosition: "middle",
-            legendOffset: 46,
-          }}
-          axisLeft={{
-            orient: "left",
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 0,
-            legend: stat2,
-            legendPosition: "middle",
-            legendOffset: -60,
-          }}
-          legends={[
-            {
-              anchor: "bottom-right",
-              direction: "column",
-              justify: false,
-              translateX: 130,
-              translateY: 0,
-              itemWidth: 100,
-              itemHeight: 12,
-              itemsSpacing: 5,
-              itemDirection: "left-to-right",
-              symbolSize: 12,
-              symbolShape: "circle",
-              effects: [
-                {
-                  on: "hover",
-                  style: {
-                    itemOpacity: 1,
+        <div style={{ height: "80vh" }}>
+          <h1 style={{ textAlign: "center" }}>
+            {" "}
+            {stat1} v {stat2}
+          </h1>
+          <ResponsiveScatterPlot
+            colors={{ scheme: "set1" }}
+            data={this.state.scatterGraphData || data}
+            margin={{ top: 60, right: 30, bottom: 80, left: 90 }}
+            xScale={{ type: "linear", min: "auto", max: "auto" }}
+            xFormat={function (e) {
+              console.log(e);
+              return e + " " + stat1;
+            }}
+            yScale={{ type: "linear", min: "auto", max: "auto" }}
+            yFormat={function (e) {
+              return e + " " + stat2;
+            }}
+            blendMode="multiply"
+            axisTop={null}
+            axisRight={null}
+            axisBottom={{
+              orient: "bottom",
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              legend: stat1,
+              legendPosition: "middle",
+              legendOffset: 46,
+            }}
+            axisLeft={{
+              orient: "left",
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              legend: stat2,
+              legendPosition: "middle",
+              legendOffset: -60,
+            }}
+            legends={[
+              {
+                anchor: "bottom-left",
+                direction: "column",
+                justify: false,
+                translateX: -100,
+                translateY: -15,
+                itemWidth: 100,
+                itemHeight: 15,
+                itemsSpacing: 20,
+                itemDirection: "top-to-bottom",
+                symbolSize: 12,
+                symbolShape: "circle",
+                anchor: "bottom-left",
+                effects: [
+                  {
+                    on: "hover",
+                    style: {
+                      itemOpacity: 1,
+                    },
                   },
-                },
-              ],
-            },
-          ]}
-        />
+                ],
+              },
+            ]}
+          />
+        </div>
       </Col>
     );
   };
