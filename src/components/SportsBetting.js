@@ -43,10 +43,10 @@ class SportsBetting extends React.Component {
   };
 
   // Retrieves data from ats_summary table
-  getAtsData = async () => {
+  getDfsData = async () => {
     console.log("THIS IS A LOG");
     const response = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/ats_summary`
+      `${process.env.REACT_APP_BACKEND_URL}/dfs_summary`
     );
     const data = await response.json();
     console.log("Here is the data:", data);
