@@ -29,6 +29,13 @@ import "bootstrap/dist/css/bootstrap.css";
 import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
 import RangeSlider from "react-bootstrap-range-slider";
 
+const saveSvgAsPng = require("save-svg-as-png");
+const imageOptions = {
+  scale: 5,
+  encoderOptions: 1,
+  backgroundColor: "white",
+};
+
 class Home extends React.Component {
   state = {
     visibility: null,
@@ -55,7 +62,7 @@ class Home extends React.Component {
     ],
     value: 5,
     players: [],
-    graphType: "bar",
+    graphType: "radar",
     redirect: null,
     showPositionButtons: false,
     hide: true,
@@ -1375,12 +1382,18 @@ class Home extends React.Component {
     );
   };
 
+  clickHandler = () => {
+    console.log(Math.round(0.659 * 100));
+  };
+
   // Renders the radar graph
   renderRadar = () => {
     return (
       <Col sm={12} lg={8}>
+        {/* <button onClick={this.clickHandler}> Download Me</button> */}
         <div className="graph-container">
           <ResponsiveRadar
+            id="test"
             data={this.state.graphData}
             keys={[
               this.state.currentPlayersData?.player1.playerName,
@@ -2127,7 +2140,7 @@ class Home extends React.Component {
     return (
       <div>
         <Tabs
-          defaultActiveKey="radar"
+          defaultActiveKey={this.state.graphType}
           id="graphTypeSelector"
           onSelect={(e) => {
             if (this.state.graphType !== e) this.setState({ graphType: e });
@@ -2259,8 +2272,8 @@ class Home extends React.Component {
 
     console.log(topPlayersArray);
     return (
-      <div>
-        <Table striped bordered hover>
+      <Container>
+        <Table style={{ backgroundColor: "silver" }} striped bordered hover>
           <thead>
             <tr>
               <th>Rank</th>
@@ -2282,7 +2295,7 @@ class Home extends React.Component {
             })}
           </tbody>
         </Table>
-      </div>
+      </Container>
     );
   };
 
