@@ -29,6 +29,7 @@ class SportsBetting extends React.Component {
       const data = await response.json();
       console.log("Here is the data:", data);
       this.setState({ ats_summary: data.rows });
+      // let highEmpPercentage = this.state.ats_summary.high_emp.toFixed(2)*100;
     };
 
     getFtsData = async () => {
@@ -142,8 +143,8 @@ class SportsBetting extends React.Component {
                         <th>Highest</th>
                         <th>ATS Historical</th>
                         <th>ATS Model</th>
-                        <th>Highest/Historical</th>
-                        <th>Highest/Model</th>
+                        <th>Highest/Historical (%)</th>
+                        <th>Highest/Model (%)</th>
                         <th>Match</th>
                         <th>Team</th>
                       </tr>
@@ -161,8 +162,8 @@ class SportsBetting extends React.Component {
                             <td>{item.highest}</td>
                             <td>{item.ats_empirical}</td>
                             <td>{item.ats_model}</td>
-                            <td>{item.high_emp}</td>
-                            <td>{item.high_mod}</td>
+                            <td>{Math.round((item.high_emp)*100)}</td>
+                            <td>{Math.round((item.high_mod)*100)}</td>
                             <td>{item.match_name}</td>
                             <td>{item.team}</td>
                           </tr>
@@ -194,8 +195,8 @@ class SportsBetting extends React.Component {
                       <th>Highest</th>
                       <th>FTS Historical</th>
                       <th>FTS Model</th>
-                      <th>Highest/Historical</th>
-                      <th>Highest/Model</th>
+                      <th>Highest/Historical (%)</th>
+                      <th>Highest/Model (%)</th>
                       <th>Match</th>
                       <th>Team</th>
                     </tr>
@@ -211,10 +212,10 @@ class SportsBetting extends React.Component {
                           <td>{item.pointsbet}</td>
                           <td>{item.topsport}</td>
                           <td>{item.highest}</td>
-                          <td>{item.ats_empirical}</td>
-                          <td>{item.ats_model}</td>
-                          <td>{item.high_emp}</td>
-                          <td>{item.high_mod}</td>
+                          <td>{item.fts_empirical}</td>
+                          <td>{item.fts_model}</td>
+                          <td>{Math.round((item.high_emp)*100)}</td>
+                          <td>{Math.round((item.high_mod)*100)}</td>
                           <td>{item.match_name}</td>
                           <td>{item.team}</td>
                         </tr>
