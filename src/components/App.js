@@ -3,7 +3,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Home from "./Home";
 import MainNav from "./MainNav";
 import SportsBetting from "./SportsBetting";
-import TabNav from "./TabNav";
+// import TabNav from "./TabNav";
 import FantasySport from "./FantasySport";
 import "./app.css";
 
@@ -17,7 +17,7 @@ function App() {
     <Container fluid>
       <BrowserRouter>
         <MainNav />
-        <TabNav />
+        {/* <TabNav /> */}
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/sportsbetting" component={SportsBetting} />
