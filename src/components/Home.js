@@ -1,8 +1,8 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-import logo from "./logo.svg";
-import downloadButton from "./downloadButton.png";
+import logo from "./images/logo.svg";
+import downloadButton from "./images/downloadButton.png";
 
 import {
   Form,
@@ -785,7 +785,7 @@ class Home extends React.Component {
     let lowerStat = stat[0].toLowerCase().split(" ").join("_");
     return (
       <Col lg={8} sm={12}>
-        <div className="graph-container" style={{ height: "100vh" }}>
+        <div className="graph-container" style={{ height: "80vh" }}>
           <ResponsiveBar
             data={this.state.barGraphData}
             layout="horizontal"
@@ -1472,9 +1472,12 @@ class Home extends React.Component {
             ]}
           />
         </div>
-        <button onClick={this.downloadHandler} style={{ border: "none" }}>
+        <Button variant="secondary" size="sm" active>
+          Download
+        </Button>
+        {/* <button onClick={this.downloadHandler} style={{ border: "none" }}>
           <img src={downloadButton} style={{ height: "30px", width: "30px" }} />
-        </button>
+        </button> */}
       </Col>
     );
   };
@@ -2175,21 +2178,28 @@ class Home extends React.Component {
 
   renderGraphTabs = () => {
     return (
-      <div>
-        <Tabs
-          defaultActiveKey={this.state.graphType}
-          id="graphTypeSelector"
-          onSelect={(e) => {
-            if (this.state.graphType !== e) this.setState({ graphType: e });
-          }}
-        >
-          <Tab eventKey="radar" title="Radar"></Tab>
-          <Tab eventKey="scatter" title="Scatter"></Tab>
-          <Tab eventKey="bar" title="Bar"></Tab>
-          <Tab eventKey="rankings" title="Rankings"></Tab>
-          <Tab eventKey="information" title="i"></Tab>
-        </Tabs>
-      </div>
+      <Row>
+        <Col lg={11} sm={11} id="graph-tabs">
+          <Tabs
+            defaultActiveKey={this.state.graphType}
+            id="graphTypeSelector"
+            onSelect={(e) => {
+              if (this.state.graphType !== e) this.setState({ graphType: e });
+            }}
+          >
+            <Tab eventKey="radar" title="Radar"></Tab>
+            <Tab eventKey="scatter" title="Scatter"></Tab>
+            <Tab eventKey="bar" title="Bar"></Tab>
+            <Tab eventKey="rankings" title="Rankings"></Tab>
+            {/* <Tab eventKey="information" title="i"></Tab> */}
+          </Tabs>
+        </Col>
+        <Col lg={1} sm={1}>
+          <span>
+            <img src={logo} height="100px" width="10px" />
+          </span>
+        </Col>
+      </Row>
     );
   };
 
