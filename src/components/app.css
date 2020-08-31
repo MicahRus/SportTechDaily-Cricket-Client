@@ -20,3 +20,11 @@
 .navbar-nav > .active > a {
   background-color: silver !important;
 }
+
+#graphTypeSelector-tab-information {
+  color: whitesmoke !important;
+  font-style: italic;
+  font-size: 15px;
+  background-color: cornflowerblue;
+  background-size: 5px;
+}

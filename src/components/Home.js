@@ -1,6 +1,9 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
+import logo from "./logo.svg";
+import downloadButton from "./downloadButton.png";
+
 import {
   Form,
   Col,
@@ -30,11 +33,6 @@ import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
 import RangeSlider from "react-bootstrap-range-slider";
 
 const saveSvgAsPng = require("save-svg-as-png");
-const imageOptions = {
-  scale: 5,
-  encoderOptions: 1,
-  backgroundColor: "white",
-};
 
 class Home extends React.Component {
   state = {
@@ -73,6 +71,7 @@ class Home extends React.Component {
     playerOrTeam: "player",
     teams: ["test"],
     toggleAdvancedOptions: false,
+    enableDotLabel: false,
     barGraphData: [
       { playerName: "James Tedesco", all_run_metres: 98 },
       { playerName: "Kalyn Ponga", all_run_metres: 95 },
@@ -202,7 +201,6 @@ class Home extends React.Component {
       `${process.env.REACT_APP_BACKEND_URL}/currentstats`
     );
     const data = await response.json();
-    console.log(data.rows);
   };
 
   getMatches = async (playerId, playerName, playerNumber) => {
@@ -700,14 +698,6 @@ class Home extends React.Component {
       </div>
     );
   };
-
-  // Click button
-
-  // Hit the api to get the matches where that player played
-
-  // Set these matches into state
-
-  //
 
   setScatterChartData = () => {
     let maxGamesPlayed = null;
@@ -1324,7 +1314,6 @@ class Home extends React.Component {
             margin={{ top: 60, right: 30, bottom: 80, left: 90 }}
             xScale={{ type: "linear", min: "auto", max: "auto" }}
             xFormat={function (e) {
-              console.log(e);
               return e + " " + stat1;
             }}
             yScale={{ type: "linear", min: "auto", max: "auto" }}
@@ -1338,7 +1327,7 @@ class Home extends React.Component {
               orient: "bottom",
               tickSize: 5,
               tickPadding: 5,
-              tickRotation: 0,
+              tickRotation: 90,
               legend: stat1,
               legendPosition: "middle",
               legendOffset: 46,
@@ -1382,8 +1371,53 @@ class Home extends React.Component {
     );
   };
 
-  clickHandler = () => {
-    console.log(Math.round(0.659 * 100));
+  downloadHandler = async () => {
+    const imageOptions = {
+      scale: 5,
+      encoderOptions: 1,
+      backgroundColor: "white",
+    };
+
+    const allSvg = document.querySelectorAll("svg");
+    const svg = allSvg[2];
+
+    this.setState({ enableDotLabel: true }, () => {
+      // const svgButton = document.createElementNS(
+      //   "http://www.w3.org/2000/svg",
+      //   "button"
+      // );
+      // const button = document.getElementById('button')
+      // button.innerHTML("PRESS ME LA");
+      // svgButton.setAttributeNS(null, "height", "200");
+      // svgButton.setAttributeNS(null, "width", "200");
+      // svgButton.setAttributeNS(null, "x", "800");
+      // svgButton.setAttributeNS(null, "y", "0");
+      // svgButton.setAttributeNS(null, "visibility", "visible");
+      // svgButton.setAttributeNS(null, "id", "button");
+      // svg.append(svgButton);
+
+      const svgImg = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "image"
+      );
+      svgImg.setAttributeNS(null, "height", "200");
+      svgImg.setAttributeNS(null, "width", "200");
+      svgImg.setAttributeNS("http://www.w3.org/1999/xlink", "href", logo);
+      svgImg.setAttributeNS(null, "x", "800");
+      svgImg.setAttributeNS(null, "y", "0");
+      svgImg.setAttributeNS(null, "visibility", "visible");
+      svgImg.setAttributeNS(null, "id", "logo");
+      svg.append(svgImg);
+
+      const getLogo = document.getElementById("logo");
+
+      saveSvgAsPng.saveSvgAsPng(svg, "sportTechDaily_graph.png", imageOptions);
+
+      setTimeout(() => {
+        getLogo.remove();
+        this.setState({ enableDotLabel: false });
+      }, 1000);
+    });
   };
 
   // Renders the radar graph
@@ -1413,9 +1447,9 @@ class Home extends React.Component {
             dotColor={{ theme: "background" }}
             dotBorderWidth={1.5}
             dotBorderColor={{ from: "color" }}
-            enableDotLabel={false}
+            enableDotLabel={this.state.enableDotLabel}
             dotLabel="value"
-            dotLabelYOffset={-12}
+            dotLabelYOffset={10}
             colors={{ scheme: "set1" }}
             fillOpacity={0.6}
             blendMode="multiply"
@@ -1438,6 +1472,9 @@ class Home extends React.Component {
             ]}
           />
         </div>
+        <button onClick={this.downloadHandler} style={{ border: "none" }}>
+          <img src={downloadButton} style={{ height: "30px", width: "30px" }} />
+        </button>
       </Col>
     );
   };
@@ -2150,6 +2187,7 @@ class Home extends React.Component {
           <Tab eventKey="scatter" title="Scatter"></Tab>
           <Tab eventKey="bar" title="Bar"></Tab>
           <Tab eventKey="rankings" title="Rankings"></Tab>
+          <Tab eventKey="information" title="i"></Tab>
         </Tabs>
       </div>
     );
@@ -2270,7 +2308,6 @@ class Home extends React.Component {
       });
     });
 
-    console.log(topPlayersArray);
     return (
       <Container>
         <Table style={{ backgroundColor: "silver" }} striped bordered hover>
