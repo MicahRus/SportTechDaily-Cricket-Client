@@ -1,6 +1,6 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
-import { Form, Row, Col, Button, Table } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 
 class FantasySport extends React.Component {
   state = { 
@@ -56,7 +56,7 @@ class FantasySport extends React.Component {
             <tr>
               <th>Player</th>
               <th>Expected Minutes</th>
-              <th>Price/Pred</th>
+              <th>Price/Pred (%)</th>
               <th>OS Prev Rd</th>
               <th>DS Price</th>
               <th>Match</th>
@@ -69,10 +69,10 @@ class FantasySport extends React.Component {
               return(
                 <tr>
                   <td>{item.player}</td>
-                  <td>{item.minutes}</td>
-                  <td>{item.price_pred}</td>
-                  <td>{item.os_prev}</td>
-                  <td>{item.ds_price}</td>
+                  <td>{Math.round(item.minutes)}</td>
+                  <td>{Math.round(item.price_pred)}</td>
+                  <td>{Math.round(item.os_prev)}</td>
+                  <td>{Math.round(item.ds_price)}</td>
                   <td>{item.match_name}</td>
                   <td>{item.team}</td>
                   <td>{item.pos}</td>

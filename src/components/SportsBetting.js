@@ -1,6 +1,6 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
-import {Table, Form, Row, Col} from "react-bootstrap";
+import {Table} from "react-bootstrap";
 import Select from "react-select";
 
 class SportsBetting extends React.Component {
@@ -24,19 +24,14 @@ class SportsBetting extends React.Component {
 
     // Retrieves data from ats_summary table
     getAtsData = async () => {
-      console.log("THIS IS A LOG")
       const response = await fetch("http://localhost:3001/ats_summary");
       const data = await response.json();
-      console.log("Here is the data:", data);
       this.setState({ ats_summary: data.rows });
-      // let highEmpPercentage = this.state.ats_summary.high_emp.toFixed(2)*100;
     };
 
     getFtsData = async () => {
-      console.log("THIS IS A LOG")
       const response = await fetch("http://localhost:3001/fts_summary");
       const data = await response.json();
-      console.log("Here is the FTS data:", data);
       this.setState({ fts_summary: data.rows });
     };
 
@@ -77,12 +72,29 @@ class SportsBetting extends React.Component {
           />
         </div>
       )
-    }
+    };
+
+    styleHighestOdds = (item, highest) => {
+      if (item === highest)
+      return(
+        {backgroundColor: 'lightGreen'}
+      )
+    }; 
+
+    stylePercentages = (item) => {
+      if ((item * 100) >= 125) {
+      return(
+        {backgroundColor: 'salmon'}
+      )} else if ((item * 100) >= 100 && (item * 100) <= 125) {
+            return(
+              {backgroundColor: 'yellow'}
+            )
+      }
+       else {
+      }
+    };
     
     renderAtsTable() {
-        // if (this.state.redirect) {
-        //     return <Redirect to={this.state.redirect} />;
-        // }
         return (
             <div>
                 <div>
@@ -154,16 +166,30 @@ class SportsBetting extends React.Component {
                         return(
                           <tr>
                             <td>{item.player}</td>
-                            <td>{item.sb}</td>
-                            <td>{item.beteasy}</td>
-                            <td>{item.neds}</td>
-                            <td>{item.pointsbet}</td>
-                            <td>{item.topsport}</td>
+                            <td
+                            style = {this.styleHighestOdds(item.sb, item.highest)}
+                            >{item.sb}</td>
+                            <td
+                            style = {this.styleHighestOdds(item.beteasy, item.highest)}
+                            >{item.beteasy}</td>
+                            <td
+                            style = {this.styleHighestOdds(item.neds, item.highest)}
+                            >{item.neds}</td>
+                            <td
+                            style = {this.styleHighestOdds(item.pointsbet, item.highest)}
+                            >{item.pointsbet}</td>
+                            <td
+                            style = {this.styleHighestOdds(item.topsport, item.highest)}
+                            >{item.topsport}</td>
                             <td>{item.highest}</td>
                             <td>{item.ats_empirical}</td>
                             <td>{item.ats_model}</td>
-                            <td>{Math.round((item.high_emp)*100)}</td>
-                            <td>{Math.round((item.high_mod)*100)}</td>
+                            <td
+                            style = {this.stylePercentages(item.high_emp)}
+                            >{Math.round((item.high_emp)*100)}</td>
+                            <td
+                            style = {this.stylePercentages(item.high_mod)}
+                            >{Math.round((item.high_mod)*100)}</td>
                             <td>{item.match_name}</td>
                             <td>{item.team}</td>
                           </tr>
@@ -206,16 +232,30 @@ class SportsBetting extends React.Component {
                       return(
                         <tr>
                           <td>{item.player}</td>
-                          <td>{item.sb}</td>
-                          <td>{item.beteasy}</td>
-                          <td>{item.neds}</td>
-                          <td>{item.pointsbet}</td>
-                          <td>{item.topsport}</td>
+                          <td
+                          style = {this.styleHighestOdds(item.sb, item.highest)}
+                          >{item.sb}</td>
+                          <td
+                          style = {this.styleHighestOdds(item.beteasy, item.highest)}
+                          >{item.beteasy}</td>
+                          <td
+                          style = {this.styleHighestOdds(item.neds, item.highest)}
+                          >{item.neds}</td>
+                          <td
+                          style = {this.styleHighestOdds(item.pointsbet, item.highest)}
+                          >{item.pointsbet}</td>
+                          <td
+                          style = {this.styleHighestOdds(item.topsport, item.highest)}
+                          >{item.topsport}</td>
                           <td>{item.highest}</td>
                           <td>{item.fts_empirical}</td>
                           <td>{item.fts_model}</td>
-                          <td>{Math.round((item.high_emp)*100)}</td>
-                          <td>{Math.round((item.high_mod)*100)}</td>
+                          <td
+                          style = {this.stylePercentages(item.high_emp)}
+                          >{Math.round((item.high_emp)*100)}</td>
+                          <td
+                          style = {this.stylePercentages(item.high_mod)}
+                          >{Math.round((item.high_mod)*100)}</td>
                           <td>{item.match_name}</td>
                           <td>{item.team}</td>
                         </tr>
