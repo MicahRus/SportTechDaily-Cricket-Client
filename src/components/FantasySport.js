@@ -3,23 +3,25 @@ import { Redirect } from "react-router-dom";
 import { Table } from "react-bootstrap";
 
 class FantasySport extends React.Component {
-  state = { 
+  state = {
     redirect: null,
     dfs_summary: [],
   };
 
   componentDidUpdate() {
-      console.log("true");
-      console.log(this.state);
-  };
+    console.log("true");
+    console.log(this.state);
+  }
 
   componentDidMount() {
     this.getDfsData();
-  };
+  }
 
   getDfsData = async () => {
-    console.log("THIS IS A LOG")
-    const response = await fetch("http://localhost:3001/dfs_summary");
+    console.log("THIS IS A LOG");
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/dfs_summary`
+    );
     const data = await response.json();
     console.log("Here is the data:", data);
     this.setState({ dfs_summary: data.rows });
@@ -49,7 +51,7 @@ class FantasySport extends React.Component {
   // }
 
   renderDfsTable() {
-    return(
+    return (
       <div>
         <Table striped bordered hover>
           <thead>
@@ -66,7 +68,7 @@ class FantasySport extends React.Component {
           </thead>
           <tbody>
             {this.state.dfs_summary.map((item) => {
-              return(
+              return (
                 <tr>
                   <td>{item.player}</td>
                   <td>{Math.round(item.minutes)}</td>
@@ -77,27 +79,25 @@ class FantasySport extends React.Component {
                   <td>{item.team}</td>
                   <td>{item.pos}</td>
                 </tr>
-              )
+              );
             })}
           </tbody>
         </Table>
       </div>
-    )
+    );
   }
   render() {
-      if (this.state.redirect) {
-          return <Redirect to={this.state.redirect} />;
-      }
-      return (
+    if (this.state.redirect) {
+      return <Redirect to={this.state.redirect} />;
+    }
+    return (
+      <div>
         <div>
-            <div>
-                <h1>Fantasy Sports DFS</h1>
-            </div>
-            <div>
-              {this.renderDfsTable()}
-            </div>
+          <h1>Fantasy Sports DFS</h1>
         </div>
-    )
+        <div>{this.renderDfsTable()}</div>
+      </div>
+    );
   }
 }
 

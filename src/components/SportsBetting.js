@@ -4,23 +4,33 @@ import {Table} from "react-bootstrap";
 import Select from "react-select";
 
 class SportsBetting extends React.Component {
+  state = {
+    redirect: null,
+    market: "ATS",
+    match: null,
+    ats_summary: [],
+    fts_summary: [],
+  };
 
-    state = { 
-      redirect: null,
-      market: "ATS",
-      match: null,
-      ats_summary: [],
-      fts_summary: [],
-    };
+  componentDidUpdate() {
+    console.log("true");
+    console.log(this.state);
+  }
+  componentDidMount() {
+    this.getAtsData();
+    this.getFtsData();
+  }
 
-    componentDidUpdate() {
-        console.log("true");
-        console.log(this.state);
-    }
-    componentDidMount() {
-      this.getAtsData();
-      this.getFtsData();
-    }
+  // Retrieves data from ats_summary table
+  getAtsData = async () => {
+    console.log("THIS IS A LOG");
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/ats_summary`
+    );
+    const data = await response.json();
+    console.log("Here is the data:", data);
+    this.setState({ ats_summary: data.rows });
+  };
 
     // Retrieves data from ats_summary table
     getAtsData = async () => {
@@ -35,41 +45,53 @@ class SportsBetting extends React.Component {
       this.setState({ fts_summary: data.rows });
     };
 
-    // marketButtonSelectHandler = (event) => {
-    //   let marketOption = event.target.value;
+  // marketButtonSelectHandler = (event) => {
+  //   let marketOption = event.target.value;
 
-    //   this.market(marketOption);
-    // };
+  //   this.market(marketOption);
+  // };
 
-    // matchButtonSelectHandler = (event) => {
-    //   let matchName = event.target.value;
+  // matchButtonSelectHandler = (event) => {
+  //   let matchName = event.target.value;
 
-    //   this.getAtsData(matchName);
-    // };
-    
-    // Retrieves player odds data, by match
-    // getPlayersByMatch = async (matchName) => {
-    //   const response = await fetch(`http://localhost:3001/ats_summary/match?matchName=${matchName}`);
-    //   const data = await response.json();
-    //   this.setState({ match_names: data.rows })
-    // };
+  //   this.getAtsData(matchName);
+  // };
 
-    renderMarketSelect() {
-      const marketOptions = [
-        { value: "ATS", label: "ATS"},
-        { value: "FTS", label: "FTS"},
-      ];
-      return(
+  // Retrieves player odds data, by match
+  // getPlayersByMatch = async (matchName) => {
+  //   const response = await fetch(`http://localhost:3001/ats_summary/match?matchName=${matchName}`);
+  //   const data = await response.json();
+  //   this.setState({ match_names: data.rows })
+  // };
+
+  renderMarketSelect() {
+    const marketOptions = [
+      { value: "ATS", label: "ATS" },
+      { value: "FTS", label: "FTS" },
+    ];
+    return (
+      <div>
+        <Select
+          options={marketOptions}
+          onChange={(e) => {
+            this.setState({
+              market: e.value,
+            });
+          }}
+          placeholder={marketOptions[0].label}
+        />
+      </div>
+    );
+  }
+
+  renderAtsTable() {
+    // if (this.state.redirect) {
+    //     return <Redirect to={this.state.redirect} />;
+    // }
+    return (
+      <div>
         <div>
-          <Select
-            options={marketOptions}
-            onChange={(e) => {
-              this.setState({
-                market: e.value,
-              });
-            }}
-            placeholder={marketOptions[0].label}
-          />
+          <h2>ATS Odds</h2>
         </div>
       )
     };
@@ -101,7 +123,7 @@ class SportsBetting extends React.Component {
                     <h2>ATS Odds</h2>
                 </div>
 
-                {/* <Form inline>
+        {/* <Form inline>
                   <Form title="market">
                     <Row>
                       <Col>
@@ -121,7 +143,7 @@ class SportsBetting extends React.Component {
                       </Col>
                     </Row>
                   </Form> */}
-                  {/* <Form title="match">
+        {/* <Form title="match">
                     <Row>
                       <Col>
                         <Form.Label> Match </Form.Label>
@@ -268,40 +290,32 @@ class SportsBetting extends React.Component {
       )
   }
 
-    render() {
-      if (this.state.redirect) {
-        return <Redirect to={this.state.redirect} />;
+  render() {
+    if (this.state.redirect) {
+      return <Redirect to={this.state.redirect} />;
     }
-      if (this.state.market === "ATS") {
-        return(
-          <>
-            <div>
-              <h2>Check the Odds</h2>
-            </div>
-            <div>
-              {this.renderMarketSelect()}
-            </div>
-            <div>
-              {this.renderAtsTable()}
-            </div>
-          </>
-        )
-      } else {
-        return(
-          <>
-            <div>
-              <h2>Check the Odds</h2>
-            </div>
-            <div>
-              {this.renderMarketSelect()}
-            </div>
-            <div>
-              {this.renderFtsTable()}
-            </div>
-          </>
-        )
-      }
+    if (this.state.market === "ATS") {
+      return (
+        <>
+          <div>
+            <h2>Check the Odds</h2>
+          </div>
+          <div>{this.renderMarketSelect()}</div>
+          <div>{this.renderAtsTable()}</div>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <div>
+            <h2>Check the Odds</h2>
+          </div>
+          <div>{this.renderMarketSelect()}</div>
+          <div>{this.renderFtsTable()}</div>
+        </>
+      );
     }
+  }
 }
 
 export default SportsBetting;
