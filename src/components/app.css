@@ -28,3 +28,25 @@
   background-color: cornflowerblue;
   background-size: 5px;
 }
+
+.tableFixHead {
+  overflow-y: auto;
+  height: 75vh;
+}
+
+th {
+  position: sticky;
+  top: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th,
+td {
+  padding: 8px 24px;
+}
+th {
+  background: #eee;
+}

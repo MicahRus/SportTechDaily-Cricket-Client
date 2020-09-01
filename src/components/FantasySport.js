@@ -27,39 +27,10 @@ class FantasySport extends React.Component {
     this.setState({ dfs_summary: data.rows });
   };
 
-  // renderDfsMatchSelect() {
-  //   return(
-
-  //     <Form>
-  //           <Form title="match-select">
-  //               <Row>
-  //                   <Col>
-  //                       <Form.Group>
-  //                           <Form.Label>Match</Form.Label>
-  //                           <Form.Control as="select">
-  //                               <option></option>
-  //                           </Form.Control>
-  //                       </Form.Group>
-  //                   </Col>
-  //               </Row>
-  //           </Form>
-  //           <Button>
-  //               Go!
-  //           </Button>
-  //     </Form>
-  //   )
-  // }
-
   renderDfsTable() {
     return (
-      <div>
-        <Table
-          style={{ height: "5px", width: "5px" }}
-          responsive={true}
-          striped
-          bordered
-          hover
-        >
+      <div className="tableFixHead">
+        <Table bordered striped hover>
           <thead>
             <tr>
               <th>Player</th>

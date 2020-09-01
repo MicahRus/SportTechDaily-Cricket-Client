@@ -95,8 +95,8 @@ class SportsBetting extends React.Component {
         <div>
           <h2>Attack Try Scorer Odds</h2>
         </div>
-        <div>
-          <Table responsive striped bordered hover size="sm">
+        <div className="tableFixHead">
+          <Table size="sm" bordered striped hover>
             <thead>
               <tr>
                 <th>Player</th>
@@ -170,8 +170,8 @@ class SportsBetting extends React.Component {
         <div>
           <h2>First Try Scorer Odds</h2>
         </div>
-        <div>
-          <Table striped bordered hover size="sm">
+        <div className="tableFixHead">
+          <Table size="sm" bordered striped hover>
             <thead>
               <tr>
                 <th>Player</th>
