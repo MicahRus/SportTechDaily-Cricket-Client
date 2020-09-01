@@ -71,7 +71,7 @@ class SportsBetting extends React.Component {
   renderAtsTable() {
     return (
       <div>
-        <h2>Attack Try Scorer Odds</h2>
+        <h2>Anytime Try Scorer Odds</h2>
       </div>
     );
   }
@@ -93,7 +93,7 @@ class SportsBetting extends React.Component {
     return (
       <div>
         <div>
-          <h2>Attack Try Scorer Odds</h2>
+          <h2>Anytime Try Scorer Odds</h2>
         </div>
         <div className="tableFixHead">
           <Table size="sm" bordered striped hover>
@@ -246,9 +246,6 @@ class SportsBetting extends React.Component {
     if (this.state.market === "ATS") {
       return (
         <>
-          <div>
-            <h2>Check the Odds</h2>
-          </div>
           <div>{this.renderMarketSelect()}</div>
           <div>{this.renderAtsTable()}</div>
         </>
@@ -256,9 +253,6 @@ class SportsBetting extends React.Component {
     } else {
       return (
         <>
-          <div>
-            <h2>Check the Odds</h2>
-          </div>
           <div>{this.renderMarketSelect()}</div>
           <div>{this.renderFtsTable()}</div>
         </>

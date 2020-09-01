@@ -9,9 +9,21 @@ import { Redirect } from "react-router-dom";
 import logo from "./images/logo.svg";
 import home from "./images/home_5.png";
 
+let x = window.location.href;
+let y = x.split("/");
+let eventKey = `/${y[y.length - 1]}`;
+
 class MainNav extends React.Component {
-  state = { redirect: null, eventKey: "/" };
+  componentDidMount() {
+    console.log("asdf");
+    this.navBar();
+  }
+  state = { redirect: null, eventKey: null };
   navBar = () => {
+    console.log(eventKey);
+    if (!this.state.eventKey) {
+      this.setState({ eventKey: "/" });
+    }
     return (
       <Row style={{ paddingBottom: "15px" }}>
         <Navbar variant="light" collapseOnSelect expand="lg">

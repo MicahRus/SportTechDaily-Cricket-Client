@@ -29,9 +29,13 @@
   background-size: 5px;
 }
 
+.form-check-label {
+  font-size: 1.5vh;
+}
+
 .tableFixHead {
   overflow-y: auto;
-  height: 75vh;
+  height: 1000px;
 }
 
 th {

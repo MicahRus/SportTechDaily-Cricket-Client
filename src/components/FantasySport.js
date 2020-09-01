@@ -9,7 +9,6 @@ class FantasySport extends React.Component {
   };
 
   componentDidUpdate() {
-    console.log("true");
     console.log(this.state);
   }
 
@@ -18,12 +17,10 @@ class FantasySport extends React.Component {
   }
 
   getDfsData = async () => {
-    console.log("THIS IS A LOG");
     const response = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}/dfs_summary`
     );
     const data = await response.json();
-    console.log("Here is the data:", data);
     this.setState({ dfs_summary: data.rows });
   };
 
@@ -33,7 +30,13 @@ class FantasySport extends React.Component {
         <Table bordered striped hover>
           <thead>
             <tr>
-              <th>Player</th>
+              <th
+                onHover={() => {
+                  console.log("hi");
+                }}
+              >
+                Player
+              </th>
               <th>Expected Minutes</th>
               <th>Price/Pred (%)</th>
               <th>OS Prev Rd</th>

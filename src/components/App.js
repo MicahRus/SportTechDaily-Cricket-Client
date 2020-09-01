@@ -14,7 +14,7 @@ import DataPage from "./DataPage";
 
 function App() {
   return (
-    <Container fluid>
+    <Container fluid style={{ height: "100vh" }}>
       <BrowserRouter>
         <MainNav />
         {/* <TabNav /> */}
