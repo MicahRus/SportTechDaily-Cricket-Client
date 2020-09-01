@@ -28,16 +28,7 @@ class SportsBetting extends React.Component {
       `${process.env.REACT_APP_BACKEND_URL}/ats_summary`
     );
     const data = await response.json();
-    this.setState({ ats_summary: data.rows });
-  };
-
-  // Retrieves data from ats_summary table
-  getAtsData = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/ats_summary`
-    );
-    const data = await response.json();
-    this.setState({ ats_summary: data.rows });
+    this.setState({ ats_summary: data.rows }, () => this.setMatchData());
   };
 
   getFtsData = async () => {
@@ -46,6 +37,37 @@ class SportsBetting extends React.Component {
     );
     const data = await response.json();
     this.setState({ fts_summary: data.rows });
+  };
+
+  setMatchData = () => {
+    const atsMatchArray = [];
+    let matchNames = [];
+
+    this.state.ats_summary.map((item) => atsMatchArray.push(item.match_name));
+
+    let cleanMatchArray = [...new Set(atsMatchArray)];
+
+    cleanMatchArray.map((match) => {
+      matchNames.push({ value: match, label: match });
+    });
+
+    this.setState({ matchNames });
+  };
+
+  renderTeamSelect = () => {
+    return (
+      <div>
+        <Select
+          options={this.state.matchNames}
+          onChange={(e) =>
+            this.setState({ selectedMatch: e.value }, () => {
+              this.setFilteredTable();
+            })
+          }
+          placeholder={"Choose a team"}
+        />
+      </div>
+    );
   };
 
   renderMarketSelect() {
@@ -89,7 +111,94 @@ class SportsBetting extends React.Component {
     }
   };
 
-  renderAtsTable() {
+  setFilteredTable = () => {
+    let lowerCaseMarket = `${this.state.market.toLowerCase()}_summary`;
+    let selectedTable = this.state[lowerCaseMarket];
+    let filteredMatches = [];
+    selectedTable.map((item) => {
+      if (item.match_name === this.state.selectedMatch) {
+        filteredMatches.push(item);
+      }
+    });
+    this.setState({ filteredMatches });
+  };
+
+  filteredTable = () => {
+    return (
+      <div>
+        <div>
+          <h2>Anytime Try Scorer Odds</h2>
+        </div>
+        <div className="tableFixHead">
+          <Table size="sm" bordered striped hover>
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>SB</th>
+                <th>Beteasy</th>
+                <th>Neds</th>
+                <th>Pointsbet</th>
+                <th>Topsport</th>
+                <th>Highest</th>
+                <th>ATS Historical</th>
+                <th>ATS Model</th>
+                <th>Highest/Historical (%)</th>
+                <th>Highest/Model (%)</th>
+                <th>Match</th>
+                <th>Team</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.filteredMatches?.map((item) => {
+                return (
+                  <tr>
+                    <td>{item.player}</td>
+                    <td style={this.styleHighestOdds(item.sb, item.highest)}>
+                      {item.sb}
+                    </td>
+                    <td
+                      style={this.styleHighestOdds(item.beteasy, item.highest)}
+                    >
+                      {item.beteasy}
+                    </td>
+                    <td style={this.styleHighestOdds(item.neds, item.highest)}>
+                      {item.neds}
+                    </td>
+                    <td
+                      style={this.styleHighestOdds(
+                        item.pointsbet,
+                        item.highest
+                      )}
+                    >
+                      {item.pointsbet}
+                    </td>
+                    <td
+                      style={this.styleHighestOdds(item.topsport, item.highest)}
+                    >
+                      {item.topsport}
+                    </td>
+                    <td>{item.highest}</td>
+                    <td>{item.ats_empirical}</td>
+                    <td>{item.ats_model}</td>
+                    <td style={this.stylePercentages(item.high_emp)}>
+                      {Math.round(item.high_emp * 100)}
+                    </td>
+                    <td style={this.stylePercentages(item.high_mod)}>
+                      {Math.round(item.high_mod * 100)}
+                    </td>
+                    <td>{item.match_name}</td>
+                    <td>{item.team}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+        </div>
+      </div>
+    );
+  };
+
+  atsTable = () => {
     return (
       <div>
         <div>
@@ -162,9 +271,17 @@ class SportsBetting extends React.Component {
         </div>
       </div>
     );
-  }
+  };
 
-  renderFtsTable() {
+  renderAtsTable = () => {
+    if (this.state.selectedMatch) {
+      return this.filteredTable();
+    } else {
+      return this.atsTable();
+    }
+  };
+
+  renderFtsTable = () => {
     return (
       <div>
         <div>
@@ -237,7 +354,7 @@ class SportsBetting extends React.Component {
         </div>
       </div>
     );
-  }
+  };
 
   render() {
     if (this.state.redirect) {
@@ -247,6 +364,7 @@ class SportsBetting extends React.Component {
       return (
         <>
           <div>{this.renderMarketSelect()}</div>
+          <div>{this.renderTeamSelect()}</div>
           <div>{this.renderAtsTable()}</div>
         </>
       );
@@ -254,6 +372,7 @@ class SportsBetting extends React.Component {
       return (
         <>
           <div>{this.renderMarketSelect()}</div>
+          <div>{this.renderTeamSelect()}</div>
           <div>{this.renderFtsTable()}</div>
         </>
       );
