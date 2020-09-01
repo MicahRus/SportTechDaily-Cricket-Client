@@ -3,6 +3,8 @@ import { Redirect } from "react-router-dom";
 import { Table } from "react-bootstrap";
 import Select from "react-select";
 
+import "./app.css";
+
 class SportsBetting extends React.Component {
   state = {
     redirect: null,
@@ -13,7 +15,6 @@ class SportsBetting extends React.Component {
   };
 
   componentDidUpdate() {
-    console.log("true");
     console.log(this.state);
   }
   componentDidMount() {
@@ -23,12 +24,10 @@ class SportsBetting extends React.Component {
 
   // Retrieves data from ats_summary table
   getAtsData = async () => {
-    console.log("THIS IS A LOG");
     const response = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}/ats_summary`
     );
     const data = await response.json();
-    console.log("Here is the data:", data);
     this.setState({ ats_summary: data.rows });
   };
 
@@ -49,29 +48,10 @@ class SportsBetting extends React.Component {
     this.setState({ fts_summary: data.rows });
   };
 
-  // marketButtonSelectHandler = (event) => {
-  //   let marketOption = event.target.value;
-
-  //   this.market(marketOption);
-  // };
-
-  // matchButtonSelectHandler = (event) => {
-  //   let matchName = event.target.value;
-
-  //   this.getAtsData(matchName);
-  // };
-
-  // Retrieves player odds data, by match
-  // getPlayersByMatch = async (matchName) => {
-  //   const response = await fetch(`http://localhost:3001/ats_summary/match?matchName=${matchName}`);
-  //   const data = await response.json();
-  //   this.setState({ match_names: data.rows })
-  // };
-
   renderMarketSelect() {
     const marketOptions = [
-      { value: "ATS", label: "ATS" },
-      { value: "FTS", label: "FTS" },
+      { value: "ATS", label: "Anytime Try Scorer" },
+      { value: "FTS", label: "First Try Scorer" },
     ];
     return (
       <div>
@@ -89,12 +69,9 @@ class SportsBetting extends React.Component {
   }
 
   renderAtsTable() {
-    // if (this.state.redirect) {
-    //     return <Redirect to={this.state.redirect} />;
-    // }
     return (
       <div>
-        <h2>ATS Odds</h2>
+        <h2>Attack Try Scorer Odds</h2>
       </div>
     );
   }
@@ -116,52 +93,10 @@ class SportsBetting extends React.Component {
     return (
       <div>
         <div>
-          <h2>ATS Odds</h2>
+          <h2>Attack Try Scorer Odds</h2>
         </div>
-
-        {/* <Form inline>
-                  <Form title="market">
-                    <Row>
-                      <Col>
-                        <Form.Label> Market </Form.Label>
-                        <Form.Control
-                          as="select"
-                          custom
-                          onChange={this.marketButtonSelectHandler}
-                        >
-                              <option value="atsOption">
-                              ATS
-                              </option>
-                              <option value="ftsOption">
-                                FTS
-                              </option>
-                        </Form.Control>
-                      </Col>
-                    </Row>
-                  </Form> */}
-        {/* <Form title="match">
-                    <Row>
-                      <Col>
-                        <Form.Label> Match </Form.Label>
-                        <Form.Control
-                          as="select"
-                          custom
-                          onChange={this.matchButtonSelectHandler}
-                        >
-                          {this.state.match_names?.map((match) => {
-                            return (
-                              <option key={match.match_name} value={match.match_name}>
-                                {match.match_name}
-                              </option>
-                            );
-                          })}
-                        </Form.Control>
-                      </Col>
-                    </Row>
-                  </Form> */}
-        {/* </Form> */}
         <div>
-          <Table striped bordered hover size="sm">
+          <Table responsive striped bordered hover size="sm">
             <thead>
               <tr>
                 <th>Player</th>
@@ -233,7 +168,7 @@ class SportsBetting extends React.Component {
     return (
       <div>
         <div>
-          <h2>FTS Odds</h2>
+          <h2>First Try Scorer Odds</h2>
         </div>
         <div>
           <Table striped bordered hover size="sm">

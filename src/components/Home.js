@@ -2282,7 +2282,6 @@ class Home extends React.Component {
                 variant="outline-info"
                 style={{
                   // border: "0px",
-                  marginLeft: "25%",
                   // width: "48px",
                   // height: "48px",
                   borderRadius: "50%",
@@ -2356,7 +2355,7 @@ class Home extends React.Component {
     });
 
     return (
-      <Container>
+      <Col>
         <Table style={{ backgroundColor: "silver" }} striped bordered hover>
           <thead>
             <tr>
@@ -2379,7 +2378,7 @@ class Home extends React.Component {
             })}
           </tbody>
         </Table>
-      </Container>
+      </Col>
     );
   };
 

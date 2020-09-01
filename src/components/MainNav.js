@@ -3,7 +3,6 @@ import React from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Row from "react-bootstrap/Row";
-import Container from "react-bootstrap/Container";
 
 import { Redirect } from "react-router-dom";
 
@@ -11,7 +10,7 @@ import logo from "./images/logo.svg";
 import home from "./images/home_5.png";
 
 class MainNav extends React.Component {
-  state = { redirect: null };
+  state = { redirect: null, eventKey: "/" };
   navBar = () => {
     return (
       <Row style={{ paddingBottom: "15px" }}>
@@ -36,39 +35,55 @@ class MainNav extends React.Component {
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav variant="tabs" className="main-nav">
-              <Nav justify variant="tabs" defaultActiveKey="/">
-                <Nav.Item>
-                  <Nav.Link
-                    onClick={() => {
-                      this.setState({ redirect: "/" });
-                    }}
-                    eventKey="/"
-                  >
-                    Analytics
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link
-                    onClick={() => {
-                      this.setState({ redirect: "/fantasysport" });
-                    }}
-                    eventKey="/fantasysport"
-                  >
-                    Fantasy
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link
-                    onClick={() => {
-                      this.setState({ redirect: "/sportsbetting" });
-                    }}
-                    eventKey="/sportsbetting"
-                  >
-                    Betting
-                  </Nav.Link>
-                </Nav.Item>
-              </Nav>
+            <Nav
+              variant="tabs"
+              className="main-nav"
+              justify
+              variant="tabs"
+              activeKey={this.state.activeKey}
+              defaultActiveKey={() => {
+                let x = window.location.href;
+                let y = x.split("/");
+                let eventKey = `/${y[y.length - 1]}`;
+                return eventKey;
+              }}
+            >
+              <Nav.Item>
+                <Nav.Link
+                  onClick={() => {
+                    this.setState({ redirect: "/", eventKey: "/" });
+                  }}
+                  eventKey="/"
+                >
+                  Analytics
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link
+                  onClick={() => {
+                    this.setState({
+                      redirect: "/fantasysport",
+                      eventKey: "/fantasysport",
+                    });
+                  }}
+                  eventKey="/fantasysport"
+                >
+                  Fantasy
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link
+                  onClick={() => {
+                    this.setState({
+                      redirect: "/sportsbetting",
+                      eventKey: "/sportsbetting",
+                    });
+                  }}
+                  eventKey="/sportsbetting"
+                >
+                  Betting
+                </Nav.Link>
+              </Nav.Item>
             </Nav>
           </Navbar.Collapse>
         </Navbar>

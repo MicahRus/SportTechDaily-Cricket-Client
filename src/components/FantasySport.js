@@ -53,7 +53,13 @@ class FantasySport extends React.Component {
   renderDfsTable() {
     return (
       <div>
-        <Table striped bordered hover>
+        <Table
+          style={{ height: "5px", width: "5px" }}
+          responsive={true}
+          striped
+          bordered
+          hover
+        >
           <thead>
             <tr>
               <th>Player</th>
@@ -93,7 +99,7 @@ class FantasySport extends React.Component {
     return (
       <div>
         <div>
-          <h1>Fantasy Sports DFS</h1>
+          <h1>Daily Fantasy Sports</h1>
         </div>
         <div>{this.renderDfsTable()}</div>
       </div>
