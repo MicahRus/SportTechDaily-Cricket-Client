@@ -3,6 +3,7 @@ import { Redirect } from "react-router-dom";
 
 import logo from "./images/logo.svg";
 import downloadButton from "./images/downloadButton.png";
+import informationLogo from "./images/information_i_1.jpeg";
 
 import {
   Form,
@@ -13,6 +14,8 @@ import {
   Button,
   Table,
   Container,
+  Popover,
+  OverlayTrigger,
 } from "react-bootstrap";
 
 import Select from "react-select";
@@ -480,12 +483,16 @@ class Home extends React.Component {
 
     // A function that will select the stats being compared and then find the percentile of them and pass that data to state
     this.state.selectedStats.map((stat, i) => {
+      console.log(stat);
       let keys = Object.keys(this.state.graphData[i]);
       let values = Object.values(this.state.graphData[i]);
+
       // let values = [this.state.graphData[i].stat];
-      values[0] = values[0].split(" ").join("_").toLowerCase();
+      let newValue = values[0].split(" ").join("_").toLowerCase();
+      console.log(newValue);
+
       // Selects the stat which is being compared
-      switch (values[0]) {
+      switch (stat) {
         default:
           x = 0;
           break;
@@ -546,7 +553,7 @@ class Home extends React.Component {
       }
 
       // Sets an array that will be passed to the percentile based off the stats selected
-      let array = this.state.stats[x][values[0]];
+      let array = this.state.stats[x][stat];
 
       array.sort((a, b) => a - b);
       array = [...new Set(array)];
@@ -598,6 +605,7 @@ class Home extends React.Component {
         }
       }
     });
+    console.log(newData);
     this.setState({ graphData: newData, redirect: "/" });
   };
 
@@ -1434,7 +1442,7 @@ class Home extends React.Component {
               this.state.currentPlayersData?.player2.playerName,
             ]}
             indexBy="stat"
-            maxValue="auto"
+            maxValue="99"
             margin={{ top: 70, right: 80, bottom: 40, left: 80 }}
             curve="linearClosed"
             borderWidth={2}
@@ -2179,7 +2187,7 @@ class Home extends React.Component {
   renderGraphTabs = () => {
     return (
       <Row>
-        <Col lg={11} sm={11} id="graph-tabs">
+        <Col lg={12} sm={12} id="graph-tabs">
           <Tabs
             defaultActiveKey={this.state.graphType}
             id="graphTypeSelector"
@@ -2193,11 +2201,6 @@ class Home extends React.Component {
             <Tab eventKey="rankings" title="Rankings"></Tab>
             {/* <Tab eventKey="information" title="i"></Tab> */}
           </Tabs>
-        </Col>
-        <Col lg={1} sm={1}>
-          <span>
-            <img src={logo} height="100px" width="10px" />
-          </span>
         </Col>
       </Row>
     );
@@ -2220,46 +2223,80 @@ class Home extends React.Component {
   };
 
   renderAverageOrTotalCheckbox = () => {
+    const popover = (
+      <Popover id="popover-information">
+        <Popover.Title as="h3">How we do it</Popover.Title>
+        <Popover.Content>
+          For the selected player/team we will use either the players
+          percentile(bar, radar) or the actual stat numbers (rankings, scatter)
+        </Popover.Content>
+      </Popover>
+    );
     return (
-      <div>
-        <Form>
-          <Form.Check
-            inline
-            onChange={() => {
-              if (this.state.graphType === "bar") {
-                this.setState({ refreshBarChart: true });
-              }
-              this.setState({
-                redirect: "/",
-                getNewPlayer1Data: true,
-                averageOrTotal: "average",
-                checked: true,
-              });
-            }}
-            type="checkbox"
-            checked={this.state.checked}
-            id="average-checkbox"
-            label="Average"
-          ></Form.Check>
-          <Form.Check
-            onChange={() => {
-              if (this.state.graphType === "bar") {
-                this.setState({ refreshBarChart: true });
-              }
-              this.setState({
-                redirect: "/",
-                getNewPlayer1Data: true,
-                averageOrTotal: "total",
-                checked: false,
-              });
-            }}
-            inline
-            type="checkbox"
-            id="total-checkbox"
-            checked={!this.state.checked}
-            label="Total"
-          ></Form.Check>
-        </Form>
+      <div style={{ marginTop: "15px" }}>
+        <Col>
+          <Form>
+            <Form.Check
+              inline
+              onChange={() => {
+                if (this.state.graphType === "bar") {
+                  this.setState({ refreshBarChart: true });
+                }
+                this.setState({
+                  redirect: "/",
+                  getNewPlayer1Data: true,
+                  averageOrTotal: "average",
+                  checked: true,
+                });
+              }}
+              type="checkbox"
+              checked={this.state.checked}
+              id="average-checkbox"
+              label="Average"
+            ></Form.Check>
+            <Form.Check
+              onChange={() => {
+                if (this.state.graphType === "bar") {
+                  this.setState({ refreshBarChart: true });
+                }
+                this.setState({
+                  redirect: "/",
+                  getNewPlayer1Data: true,
+                  averageOrTotal: "total",
+                  checked: false,
+                });
+              }}
+              inline
+              type="checkbox"
+              id="total-checkbox"
+              checked={!this.state.checked}
+              label="Total"
+            ></Form.Check>
+            <OverlayTrigger
+              trigger={["focus", "hover"]}
+              placement="auto"
+              overlay={popover}
+            >
+              <Button
+                id="info"
+                variant="outline-info"
+                style={{
+                  // border: "0px",
+                  marginLeft: "25%",
+                  // width: "48px",
+                  // height: "48px",
+                  borderRadius: "50%",
+                  fontSize: "18px",
+                  width: "38px",
+                  height: "38px",
+                  fontFamily: "Hoefler Text Bold Italic",
+                }}
+              >
+                i
+              </Button>
+            </OverlayTrigger>
+          </Form>
+        </Col>
       </div>
     );
   };

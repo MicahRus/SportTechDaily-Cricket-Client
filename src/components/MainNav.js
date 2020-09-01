@@ -8,7 +8,7 @@ import Container from "react-bootstrap/Container";
 import { Redirect } from "react-router-dom";
 
 import logo from "./images/logo.svg";
-import home from "./images/Home2.png";
+import home from "./images/home_5.png";
 
 class MainNav extends React.Component {
   state = { redirect: null };
@@ -16,6 +16,15 @@ class MainNav extends React.Component {
     return (
       <Row style={{ paddingBottom: "15px" }}>
         <Navbar variant="light" collapseOnSelect expand="lg">
+          <Navbar.Brand href="/">
+            <img
+              src={home}
+              width="40"
+              height="40"
+              className="d-inline-block align-top"
+              alt="Home button"
+            />
+          </Navbar.Brand>
           <Navbar.Brand href="https://sporttechdaily.com/">
             <img
               src={logo}
@@ -25,15 +34,6 @@ class MainNav extends React.Component {
               alt="Sport Tech Daily Logo"
             />
           </Navbar.Brand>
-          {/* <Navbar.Brand href="/">
-            <img
-              src={home}
-              width="60"
-              height="45"
-              className="d-inline-block align-top"
-              alt="Home button"
-            />
-          </Navbar.Brand> */}
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav variant="tabs" className="main-nav">
@@ -45,7 +45,7 @@ class MainNav extends React.Component {
                     }}
                     eventKey="/"
                   >
-                    Sports Analytics
+                    Analytics
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
@@ -55,7 +55,7 @@ class MainNav extends React.Component {
                     }}
                     eventKey="/fantasysport"
                   >
-                    Fantasy Sports
+                    Fantasy
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
@@ -65,7 +65,7 @@ class MainNav extends React.Component {
                     }}
                     eventKey="/sportsbetting"
                   >
-                    Sports Betting
+                    Betting
                   </Nav.Link>
                 </Nav.Item>
               </Nav>
