@@ -1,6 +1,10 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
-import { Table } from "react-bootstrap";
+import { Table, OverlayTrigger } from "react-bootstrap";
+
+import OwnershipPopover from "./Popovers/Ownership";
+import PredictedScorePopover from "./Popovers/PredictedScore";
+import PricePredPopover from "./Popovers/PricePred";
 
 class FantasySport extends React.Component {
   state = {
@@ -30,17 +34,29 @@ class FantasySport extends React.Component {
         <Table bordered striped hover>
           <thead>
             <tr>
-              <th
-                onHover={() => {
-                  console.log("hi");
-                }}
+              <th>Player</th>
+              <th>Draftstars Price</th>
+              <OverlayTrigger
+                placement="bottom"
+                trigger={["focus", "hover"]}
+                overlay={PredictedScorePopover}
               >
-                Player
-              </th>
-              <th>Expected Minutes</th>
-              <th>Price/Pred (%)</th>
-              <th>OS Prev Rd</th>
-              <th>DS Price</th>
+                <th>Predicted Score</th>
+              </OverlayTrigger>
+              <OverlayTrigger
+                placement="bottom"
+                trigger={["focus", "hover"]}
+                overlay={PricePredPopover}
+              >
+                <th>Price/Pred (%)</th>
+              </OverlayTrigger>
+              <OverlayTrigger
+                placement="bottom"
+                trigger={["focus", "hover"]}
+                overlay={OwnershipPopover}
+              >
+                <th>Ownership (%) Previous Round</th>
+              </OverlayTrigger>
               <th>Match</th>
               <th>Team</th>
               <th>Position</th>

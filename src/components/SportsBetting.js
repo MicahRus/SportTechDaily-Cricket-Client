@@ -1,7 +1,15 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
-import { Table } from "react-bootstrap";
+import { Table, OverlayTrigger } from "react-bootstrap";
 import Select from "react-select";
+
+import AtsBestHistoricalPopover from "./Popovers/AtsBestHistorical";
+import AtsBestModelPopover from "./Popovers/AtsBestModel";
+import BestOddsPopover from "./Popovers/BestOdds";
+import FtsBestHistoricalPopover from "./Popovers/FtsBestHistorical";
+import FtsBestModelPopover from "./Popovers/FtsBestModel";
+import HistoricalPopover from "./Popovers/Historical";
+import ModelPopover from "./Popovers/Model";
 
 import "./app.css";
 
@@ -41,7 +49,7 @@ class SportsBetting extends React.Component {
 
   setMatchData = () => {
     const atsMatchArray = [];
-    let matchNames = [];
+    let matchNames = [{ value: "All Teams", label: "All Teams" }];
 
     this.state.ats_summary.map((item) => atsMatchArray.push(item.match_name));
 
@@ -80,20 +88,17 @@ class SportsBetting extends React.Component {
         <Select
           options={marketOptions}
           onChange={(e) => {
-            this.setState({
-              market: e.value,
-            });
+            this.setState(
+              {
+                market: e.value,
+              },
+              () => {
+                this.setFilteredTable();
+              }
+            );
           }}
           placeholder={marketOptions[0].label}
         />
-      </div>
-    );
-  }
-
-  renderAtsTable() {
-    return (
-      <div>
-        <h2>Anytime Try Scorer Odds</h2>
       </div>
     );
   }
@@ -123,7 +128,7 @@ class SportsBetting extends React.Component {
     this.setState({ filteredMatches });
   };
 
-  filteredTable = () => {
+  filteredAtsTable = () => {
     return (
       <div>
         <div>
@@ -134,16 +139,46 @@ class SportsBetting extends React.Component {
             <thead>
               <tr>
                 <th>Player</th>
-                <th>SB</th>
-                <th>Beteasy</th>
+                <th>SportsBet</th>
+                <th>BetEasy</th>
                 <th>Neds</th>
-                <th>Pointsbet</th>
-                <th>Topsport</th>
-                <th>Highest</th>
-                <th>ATS Historical</th>
-                <th>ATS Model</th>
-                <th>Highest/Historical (%)</th>
-                <th>Highest/Model (%)</th>
+                <th>PointsBet</th>
+                <th>TopSport</th>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={BestOddsPopover}
+                >
+                  <th>Best Odds</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={HistoricalPopover}
+                >
+                  <th>ATS Historical</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={ModelPopover}
+                >
+                  <th>ATS Model</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={AtsBestHistoricalPopover}
+                >
+                  <th>Highest/Historical (%)</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={AtsBestModelPopover}
+                >
+                  <th>Highest/Model (%)</th>
+                </OverlayTrigger>
                 <th>Match</th>
                 <th>Team</th>
               </tr>
@@ -209,16 +244,46 @@ class SportsBetting extends React.Component {
             <thead>
               <tr>
                 <th>Player</th>
-                <th>SB</th>
-                <th>Beteasy</th>
+                <th>SportsBet</th>
+                <th>BetEasy</th>
                 <th>Neds</th>
-                <th>Pointsbet</th>
-                <th>Topsport</th>
-                <th>Highest</th>
-                <th>ATS Historical</th>
-                <th>ATS Model</th>
-                <th>Highest/Historical (%)</th>
-                <th>Highest/Model (%)</th>
+                <th>PointsBet</th>
+                <th>TopSport</th>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={BestOddsPopover}
+                >
+                  <th>Best Odds</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={HistoricalPopover}
+                >
+                  <th>ATS Historical</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={ModelPopover}
+                >
+                  <th>ATS Model</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={AtsBestHistoricalPopover}
+                >
+                  <th>Highest/Historical (%)</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={AtsBestModelPopover}
+                >
+                  <th>Highest/Model (%)</th>
+                </OverlayTrigger>
                 <th>Match</th>
                 <th>Team</th>
               </tr>
@@ -273,15 +338,23 @@ class SportsBetting extends React.Component {
     );
   };
 
-  renderAtsTable = () => {
-    if (this.state.selectedMatch) {
-      return this.filteredTable();
-    } else {
-      return this.atsTable();
+  renderTable = () => {
+    if (this.state.market === "ATS") {
+      if (
+        !this.state.selectedMatch ||
+        this.state.selectedMatch === "All Teams"
+      ) {
+        return this.atsTable();
+      }
+      return this.filteredAtsTable();
     }
+    if (!this.state.selectedMatch || this.state.selectedMatch === "All Teams") {
+      return this.ftsTable();
+    }
+    return this.filteredFtsTable();
   };
 
-  renderFtsTable = () => {
+  ftsTable = () => {
     return (
       <div>
         <div>
@@ -292,16 +365,46 @@ class SportsBetting extends React.Component {
             <thead>
               <tr>
                 <th>Player</th>
-                <th>SB</th>
-                <th>Beteasy</th>
+                <th>SportsBet</th>
+                <th>BetEasy</th>
                 <th>Neds</th>
-                <th>Pointsbet</th>
-                <th>Topsport</th>
-                <th>Highest</th>
-                <th>FTS Historical</th>
-                <th>FTS Model</th>
-                <th>Highest/Historical (%)</th>
-                <th>Highest/Model (%)</th>
+                <th>PointsBet</th>
+                <th>TopSport</th>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={BestOddsPopover}
+                >
+                  <th>Best Odds</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={HistoricalPopover}
+                >
+                  <th>ATS Historical</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={ModelPopover}
+                >
+                  <th>ATS Model</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={FtsBestHistoricalPopover}
+                >
+                  <th>Highest/Historical (%)</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={FtsBestModelPopover}
+                >
+                  <th>Highest/Model (%)</th>
+                </OverlayTrigger>
                 <th>Match</th>
                 <th>Team</th>
               </tr>
@@ -356,27 +459,122 @@ class SportsBetting extends React.Component {
     );
   };
 
+  filteredFtsTable = () => {
+    return (
+      <div>
+        <div>
+          <h2>First Try Scorer Odds</h2>
+        </div>
+        <div className="tableFixHead">
+          <Table size="sm" bordered striped hover>
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>SportsBet</th>
+                <th>BetEasy</th>
+                <th>Neds</th>
+                <th>PointsBet</th>
+                <th>TopSport</th>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={BestOddsPopover}
+                >
+                  <th>Best Odds</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={HistoricalPopover}
+                >
+                  <th>ATS Historical</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={ModelPopover}
+                >
+                  <th>ATS Model</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={FtsBestHistoricalPopover}
+                >
+                  <th>Highest/Historical (%)</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["focus", "hover"]}
+                  overlay={FtsBestModelPopover}
+                >
+                  <th>Highest/Model (%)</th>
+                </OverlayTrigger>
+                <th>Match</th>
+                <th>Team</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.filteredMatches?.map((item) => {
+                return (
+                  <tr>
+                    <td>{item.player}</td>
+                    <td style={this.styleHighestOdds(item.sb, item.highest)}>
+                      {item.sb}
+                    </td>
+                    <td
+                      style={this.styleHighestOdds(item.beteasy, item.highest)}
+                    >
+                      {item.beteasy}
+                    </td>
+                    <td style={this.styleHighestOdds(item.neds, item.highest)}>
+                      {item.neds}
+                    </td>
+                    <td
+                      style={this.styleHighestOdds(
+                        item.pointsbet,
+                        item.highest
+                      )}
+                    >
+                      {item.pointsbet}
+                    </td>
+                    <td
+                      style={this.styleHighestOdds(item.topsport, item.highest)}
+                    >
+                      {item.topsport}
+                    </td>
+                    <td>{item.highest}</td>
+                    <td>{item.fts_empirical}</td>
+                    <td>{item.fts_model}</td>
+                    <td style={this.stylePercentages(item.high_emp)}>
+                      {Math.round(item.high_emp * 100)}
+                    </td>
+                    <td style={this.stylePercentages(item.high_mod)}>
+                      {Math.round(item.high_mod * 100)}
+                    </td>
+                    <td>{item.match_name}</td>
+                    <td>{item.team}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     if (this.state.redirect) {
       return <Redirect to={this.state.redirect} />;
     }
-    if (this.state.market === "ATS") {
-      return (
-        <>
-          <div>{this.renderMarketSelect()}</div>
-          <div>{this.renderTeamSelect()}</div>
-          <div>{this.renderAtsTable()}</div>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <div>{this.renderMarketSelect()}</div>
-          <div>{this.renderTeamSelect()}</div>
-          <div>{this.renderFtsTable()}</div>
-        </>
-      );
-    }
+    return (
+      <>
+        <div>{this.renderMarketSelect()}</div>
+        <div>{this.renderTeamSelect()}</div>
+        <div>{this.renderTable()}</div>
+      </>
+    );
   }
 }
 
