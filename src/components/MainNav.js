@@ -3,67 +3,102 @@ import React from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Row from "react-bootstrap/Row";
-import Container from "react-bootstrap/Container";
 
 import { Redirect } from "react-router-dom";
 
-import logo from "./logo.svg";
+import logo from "./images/logo.svg";
+import home from "./images/home_5.png";
+
+let x = window.location.href;
+let y = x.split("/");
+let eventKey = `/${y[y.length - 1]}`;
 
 class MainNav extends React.Component {
-  state = { redirect: null };
+  componentDidMount() {
+    console.log("asdf");
+    this.navBar();
+  }
+  state = { redirect: null, eventKey: null };
   navBar = () => {
+    console.log(eventKey);
+    if (!this.state.eventKey) {
+      this.setState({ eventKey: "/" });
+    }
     return (
-      <Row>
-        <Container style={{ paddingBottom: "15px" }}>
-          <Navbar variant="light" collapseOnSelect expand="lg">
-            <Navbar.Brand href="https://sporttechdaily.com/">
-              <img
-                src={logo}
-                width="130"
-                height="50"
-                className="d-inline-block align-top"
-                alt="Sport Tech Daily Logo  "
-              />
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-            <Navbar.Collapse id="responsive-navbar-nav">
-              <Nav variant="tabs" className="main-nav">
-                <Nav justify variant="tabs" defaultActiveKey="/">
-                  <Nav.Item>
-                    <Nav.Link
-                      onClick={() => {
-                        this.setState({ redirect: "/" });
-                      }}
-                      eventKey="/"
-                    >
-                      Sports Analytics
-                    </Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link
-                      onClick={() => {
-                        this.setState({ redirect: "/fantasysport" });
-                      }}
-                      eventKey="/fantasysport"
-                    >
-                      Fantasy Sports
-                    </Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link
-                      onClick={() => {
-                        this.setState({ redirect: "/sportsbetting" });
-                      }}
-                      eventKey="/sportsbetting"
-                    >
-                      Sports Betting
-                    </Nav.Link>
-                  </Nav.Item>
-                </Nav>
-              </Nav>
-            </Navbar.Collapse>
-          </Navbar>
-        </Container>
+      <Row style={{ paddingBottom: "15px" }}>
+        <Navbar variant="light" collapseOnSelect expand="lg">
+          <Navbar.Brand href="/">
+            <img
+              src={home}
+              width="40"
+              height="40"
+              className="d-inline-block align-top"
+              alt="Home button"
+            />
+          </Navbar.Brand>
+          <Navbar.Brand href="https://sporttechdaily.com/">
+            <img
+              src={logo}
+              width="130"
+              height="50"
+              className="d-inline-block align-top"
+              alt="Sport Tech Daily Logo"
+            />
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav
+              variant="tabs"
+              className="main-nav"
+              justify
+              variant="tabs"
+              activeKey={this.state.activeKey}
+              defaultActiveKey={() => {
+                let x = window.location.href;
+                let y = x.split("/");
+                let eventKey = `/${y[y.length - 1]}`;
+                return eventKey;
+              }}
+            >
+              <Nav.Item>
+                <Nav.Link
+                  onClick={() => {
+                    this.setState({ redirect: "/", eventKey: "/" });
+                  }}
+                  eventKey="/"
+                >
+                  Analytics
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link
+                  onClick={() => {
+                    this.setState({
+                      redirect: "/fantasysport",
+                      eventKey: "/fantasysport",
+                    });
+                  }}
+                  eventKey="/fantasysport"
+                >
+                  Fantasy
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link
+                  onClick={() => {
+                    this.setState({
+                      redirect: "/sportsbetting",
+                      eventKey: "/sportsbetting",
+                    });
+                  }}
+                  eventKey="/sportsbetting"
+                >
+                  Betting
+                </Nav.Link>
+              </Nav.Item>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
       </Row>
     );
   };

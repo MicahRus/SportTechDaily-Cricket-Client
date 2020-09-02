@@ -1,6 +1,12 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
-import { Table } from "react-bootstrap";
+import { Table, OverlayTrigger } from "react-bootstrap";
+
+import Select from "react-select";
+
+import OwnershipPopover from "./Popovers/Ownership";
+import PredictedScorePopover from "./Popovers/PredictedScore";
+import PricePredPopover from "./Popovers/PricePred";
 
 class FantasySport extends React.Component {
   state = {
@@ -9,7 +15,6 @@ class FantasySport extends React.Component {
   };
 
   componentDidUpdate() {
-    console.log("true");
     console.log(this.state);
   }
 
@@ -17,61 +22,97 @@ class FantasySport extends React.Component {
     this.getDfsData();
   }
 
+  setMatchData = () => {
+    const atsMatchArray = [];
+    let matchNames = [{ value: "All Teams", label: "All Teams" }];
+
+    this.state.dfs_summary.map((item) => atsMatchArray.push(item.match_name));
+
+    let cleanMatchArray = [...new Set(atsMatchArray)];
+
+    cleanMatchArray.map((match) => {
+      matchNames.push({ value: match, label: match });
+    });
+
+    this.setState({ matchNames });
+  };
+
+  renderTeamSelect = () => {
+    return (
+      <div>
+        <Select
+          options={this.state.matchNames}
+          onChange={(e) =>
+            this.setState({ selectedMatch: e.value }, () => {
+              this.setFilteredTable();
+            })
+          }
+          placeholder={"Choose a team"}
+        />
+      </div>
+    );
+  };
+
+  setFilteredTable = () => {
+    let filteredMatches = [];
+    this.state.dfs_summary.map((item) => {
+      if (item.match_name === this.state.selectedMatch) {
+        filteredMatches.push(item);
+      }
+    });
+    this.setState({ filteredMatches });
+  };
+
   getDfsData = async () => {
-    console.log("THIS IS A LOG");
     const response = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}/dfs_summary`
     );
     const data = await response.json();
-    console.log("Here is the data:", data);
-    this.setState({ dfs_summary: data.rows });
+    this.setState({ dfs_summary: data.rows }, () => {
+      this.setMatchData();
+    });
   };
 
-  // renderDfsMatchSelect() {
-  //   return(
-
-  //     <Form>
-  //           <Form title="match-select">
-  //               <Row>
-  //                   <Col>
-  //                       <Form.Group>
-  //                           <Form.Label>Match</Form.Label>
-  //                           <Form.Control as="select">
-  //                               <option></option>
-  //                           </Form.Control>
-  //                       </Form.Group>
-  //                   </Col>
-  //               </Row>
-  //           </Form>
-  //           <Button>
-  //               Go!
-  //           </Button>
-  //     </Form>
-  //   )
-  // }
-
-  renderDfsTable() {
+  filteredDfsTable = () => {
     return (
-      <div>
-        <Table striped bordered hover>
+      <div className="tableFixHead">
+        <Table bordered striped hover>
           <thead>
             <tr>
               <th>Player</th>
-              <th>Expected Minutes</th>
-              <th>Price/Pred (%)</th>
-              <th>OS Prev Rd</th>
-              <th>DS Price</th>
+              <th>Draftstars Price</th>
+              <OverlayTrigger
+                placement="top"
+                trigger={["focus", "hover"]}
+                overlay={PredictedScorePopover}
+              >
+                <th>Predicted Score</th>
+              </OverlayTrigger>
+              <OverlayTrigger
+                placement="top"
+                trigger={["focus", "hover"]}
+                overlay={PricePredPopover}
+              >
+                <th>Price/Pred (%)</th>
+              </OverlayTrigger>
+              <OverlayTrigger
+                placement="top"
+                trigger={["focus", "hover"]}
+                overlay={OwnershipPopover}
+              >
+                <th>Ownership (%) Previous Round</th>
+              </OverlayTrigger>
               <th>Match</th>
               <th>Team</th>
               <th>Position</th>
             </tr>
           </thead>
           <tbody>
-            {this.state.dfs_summary.map((item) => {
+            {this.state.filteredMatches?.map((item) => {
               return (
                 <tr>
                   <td>{item.player}</td>
-                  <td>{Math.round(item.minutes)}</td>
+                  <td>{Math.round(item.ds_price)}</td>
                   <td>{Math.round(item.price_pred)}</td>
                   <td>{Math.round(item.os_prev)}</td>
                   <td>{Math.round(item.ds_price)}</td>
@@ -85,17 +126,81 @@ class FantasySport extends React.Component {
         </Table>
       </div>
     );
+  };
+
+  dfsTable() {
+    return (
+      <div className="tableFixHead">
+        <Table bordered striped hover>
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Draftstars Price</th>
+              <OverlayTrigger
+                placement="top"
+                trigger={["focus", "hover"]}
+                overlay={PredictedScorePopover}
+              >
+                <th>Predicted Score</th>
+              </OverlayTrigger>
+              <OverlayTrigger
+                placement="top"
+                trigger={["focus", "hover"]}
+                overlay={PricePredPopover}
+              >
+                <th>Price/Pred (%)</th>
+              </OverlayTrigger>
+              <OverlayTrigger
+                placement="top"
+                trigger={["focus", "hover"]}
+                overlay={OwnershipPopover}
+              >
+                <th>Ownership (%) Previous Round</th>
+              </OverlayTrigger>
+              <th>Match</th>
+              <th>Team</th>
+              <th>Position</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.state.dfs_summary.map((item) => {
+              return (
+                <tr>
+                  <td>{item.player}</td>
+                  <td>{Math.round(item.ds_price)}</td>
+                  <td>{Math.round(item.ds_pred)}</td>
+                  <td>{Math.round(item.price_pred)}</td>
+                  <td>{Math.round(item.os_prev)}</td>
+                  <td>{item.match_name}</td>
+                  <td>{item.team}</td>
+                  <td>{item.pos}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      </div>
+    );
   }
+
+  renderTable = () => {
+    if (!this.state.selectedMatch || this.state.selectedMatch === "All Teams") {
+      return this.dfsTable();
+    }
+    return this.filteredDfsTable();
+  };
+
   render() {
     if (this.state.redirect) {
       return <Redirect to={this.state.redirect} />;
     }
     return (
       <div>
+        <div>{this.renderTeamSelect()}</div>
         <div>
-          <h1>Fantasy Sports DFS</h1>
+          <h1>Daily Fantasy Sports</h1>
         </div>
-        <div>{this.renderDfsTable()}</div>
+        <div>{this.renderTable()}</div>
       </div>
     );
   }

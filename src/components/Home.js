@@ -1,8 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-import logo from "./logo.svg";
-import downloadButton from "./downloadButton.png";
+import logo from "./images/logo.svg";
 
 import {
   Form,
@@ -13,6 +12,8 @@ import {
   Button,
   Table,
   Container,
+  Popover,
+  OverlayTrigger,
 } from "react-bootstrap";
 
 import Select from "react-select";
@@ -53,6 +54,7 @@ class Home extends React.Component {
     barStat1: ["All Run Metres"],
     currentPlayers: [],
     checked: true,
+    year: 2020,
     templateChecked: true,
     selectedPlayers: [
       { value: "500663", label: "James Tedesco" },
@@ -116,7 +118,7 @@ class Home extends React.Component {
       { label: "All Run Metres", value: "All Run Metres" },
       { label: "Conversions", value: "Conversions" },
       { label: "Errors", value: "Errors" },
-      { label: "Fantasy Points Total", value: "Fantasy Points Total" },
+      { label: "Fantasy Points", value: "Fantasy Points Total" },
       { label: "Field Goals", value: "Field Goals" },
       { label: "Intercepts", value: "Intercepts" },
       { label: "Kick Metres", value: "Kick Metres" },
@@ -146,7 +148,16 @@ class Home extends React.Component {
     this.getSeasonPlayerPercentilesTotal();
     this.getSeasonPlayerStatsAverage();
     this.getSeasonPlayerStatsTotal();
+    this.getCurrentMatches();
   }
+
+  getCurrentMatches = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/current_matches`
+    );
+    const data = await response.json();
+    this.setState({ currentMatches: data.rows });
+  };
 
   getSeasonPlayerStatsAverage = async () => {
     const response = await fetch(
@@ -227,11 +238,15 @@ class Home extends React.Component {
     let player1Matches = [];
     let player2Matches = [];
     data.rows.map((match) => {
-      if (match.player_id === playerId1) {
-        player1Matches.push(match);
-      } else {
-        player2Matches.push(match);
-      }
+      this.state.currentMatches.map((currentMatch) => {
+        if (currentMatch.match_id === match.match_id) {
+          if (match.player_id === playerId1) {
+            player1Matches.push(match);
+          } else {
+            player2Matches.push(match);
+          }
+        }
+      });
     });
 
     this.setState({ player1Matches, player2Matches, selectedPlayers });
@@ -482,10 +497,11 @@ class Home extends React.Component {
     this.state.selectedStats.map((stat, i) => {
       let keys = Object.keys(this.state.graphData[i]);
       let values = Object.values(this.state.graphData[i]);
+
       // let values = [this.state.graphData[i].stat];
-      values[0] = values[0].split(" ").join("_").toLowerCase();
+
       // Selects the stat which is being compared
-      switch (values[0]) {
+      switch (stat) {
         default:
           x = 0;
           break;
@@ -546,7 +562,7 @@ class Home extends React.Component {
       }
 
       // Sets an array that will be passed to the percentile based off the stats selected
-      let array = this.state.stats[x][values[0]];
+      let array = this.state.stats[x][stat];
 
       array.sort((a, b) => a - b);
       array = [...new Set(array)];
@@ -559,13 +575,13 @@ class Home extends React.Component {
         // Checks which player is selected
         if (playerNumber === "player1") {
           newData.push({
-            stat: this.state.options[x].label,
+            stat: this.state.options[x].value,
             [playerName]: percentile,
             [keys[2]]: values[2],
           });
         } else {
           newData.push({
-            stat: this.state.options[x].label,
+            stat: this.state.options[x].value,
             [keys[1]]: values[1],
             [playerName]: percentile,
           });
@@ -579,25 +595,26 @@ class Home extends React.Component {
           ) {
             playerStat =
               player[
-                this.state.options[x].label.toLowerCase().split(" ").join("_")
+                this.state.options[x].value.toLowerCase().split(" ").join("_")
               ];
           }
         });
         if (playerNumber === "player1") {
           newData.push({
-            stat: this.state.options[x].label,
+            stat: this.state.options[x].value,
             [playerName]: playerStat,
             [keys[2]]: values[2],
           });
         } else {
           newData.push({
-            stat: this.state.options[x].label,
+            stat: this.state.options[x].value,
             [keys[1]]: values[1],
             [playerName]: playerStat,
           });
         }
       }
     });
+    console.log(newData);
     this.setState({ graphData: newData, redirect: "/" });
   };
 
@@ -632,7 +649,7 @@ class Home extends React.Component {
 
   statCheckBoxChangeHandler = (event) => {
     let key = event.target.id;
-
+    console.log(key);
     if (this.state.selectedStats.includes(key)) {
       let filteredArray = this.state.selectedStats.filter(
         (item) => item !== key
@@ -691,6 +708,7 @@ class Home extends React.Component {
           className="basic-multi-select"
           classNamePrefix="select"
           defaultValue={this.state.selectedPlayers}
+          placeholder={this.state.selectedPlayers}
           onChange={(players) => {
             this.setBarChartData(players);
           }}
@@ -754,7 +772,7 @@ class Home extends React.Component {
     let lowerStat = stat[0].toLowerCase().split(" ").join("_");
     players.map((player) => {
       if (this.state.averageOrTotal === "total") {
-        this.state.playerPercentiles.map((percentile) => {
+        this.state.seasonPlayerPercentilesTotal.map((percentile) => {
           if (player.value === percentile.player_id) {
             graphData.push({
               playerName: player.label,
@@ -763,7 +781,7 @@ class Home extends React.Component {
           }
         });
       } else {
-        this.state.averagePlayerPercentiles.map((percentile) => {
+        this.state.seasonPlayerPercentilesAverage.map((percentile) => {
           if (player.value === percentile.player_id) {
             graphData.push({
               playerName: player.label,
@@ -814,20 +832,6 @@ class Home extends React.Component {
                 rotation: -45,
                 lineWidth: 6,
                 spacing: 10,
-              },
-            ]}
-            fill={[
-              {
-                match: {
-                  id: "fries",
-                },
-                id: "dots",
-              },
-              {
-                match: {
-                  id: "sandwich",
-                },
-                id: "lines",
               },
             ]}
             borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
@@ -1302,8 +1306,8 @@ class Home extends React.Component {
     let stat1 = this.state.scatterStat1;
     let stat2 = this.state.scatterStat2;
     return (
-      <Col lg={9} sm={12} className="graph-container">
-        <div style={{ height: "80vh" }}>
+      <Col lg={8} sm={12} className="graph-container">
+        <div style={{ height: "100vh" }}>
           <h1 style={{ textAlign: "center" }}>
             {" "}
             {stat1} v {stat2}
@@ -1423,18 +1427,17 @@ class Home extends React.Component {
   // Renders the radar graph
   renderRadar = () => {
     return (
-      <Col sm={12} lg={8}>
-        {/* <button onClick={this.clickHandler}> Download Me</button> */}
+      <Col sm={12} lg={8} md={8} xl={8}>
         <div className="graph-container">
           <ResponsiveRadar
-            id="test"
+            id="radarGraph"
             data={this.state.graphData}
             keys={[
               this.state.currentPlayersData?.player1.playerName,
               this.state.currentPlayersData?.player2.playerName,
             ]}
             indexBy="stat"
-            maxValue="auto"
+            maxValue="99"
             margin={{ top: 70, right: 80, bottom: 40, left: 80 }}
             curve="linearClosed"
             borderWidth={2}
@@ -1472,9 +1475,9 @@ class Home extends React.Component {
             ]}
           />
         </div>
-        <button onClick={this.downloadHandler} style={{ border: "none" }}>
-          <img src={downloadButton} style={{ height: "30px", width: "30px" }} />
-        </button>
+        <Button variant="secondary" size="sm" active>
+          Download
+        </Button>
       </Col>
     );
   };
@@ -1638,8 +1641,6 @@ class Home extends React.Component {
                   "post_contact_metres",
                   "tackle_efficiency",
                 ],
-                // redirect: "/",
-                // getNewPlayer1Data: true,
               });
             }}
             type="checkbox"
@@ -1659,8 +1660,6 @@ class Home extends React.Component {
                   "tries",
                   "try_assists",
                 ],
-                // redirect: "/",
-                // getNewPlayer1Data: true,
               });
             }}
             inline
@@ -1857,26 +1856,45 @@ class Home extends React.Component {
         label: player.player_name,
       });
     });
-    return (
-      <div>
-        <span> Player 1 </span>
-        <Select
-          options={options}
-          onChange={this.playerButtonSelectHandler1}
-          placeholder={this.state.currentPlayersData.player1.playerName}
-        />
-        <span> Player 2 </span>
-        <Select
-          options={options}
-          onChange={this.playerButtonSelectHandler2}
-          placeholder={this.state.currentPlayersData.player2.playerName}
-        />
-      </div>
-    );
+    if (this.state.graphType === "radar") {
+      return (
+        <div>
+          <span> Player 1 </span>
+          <Select
+            options={options}
+            onChange={this.playerButtonSelectHandler1}
+            placeholder={this.state.currentPlayersData.player1.playerName}
+          />
+          <span> Player 2 </span>
+          <Select
+            options={options}
+            onChange={this.playerButtonSelectHandler2}
+            placeholder={this.state.currentPlayersData.player2.playerName}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <span> Player 1 </span>
+          <Select
+            options={options}
+            onChange={this.playerButtonSelectHandler1}
+            placeholder={"James Tedesco"}
+          />
+          <span> Player 2 </span>
+          <Select
+            options={options}
+            onChange={this.playerButtonSelectHandler2}
+            placeholder={"Kalyn Ponga"}
+          />
+        </div>
+      );
+    }
   };
 
   renderSingleStat = (number) => {
-    return this.state.options[number].label.toLowerCase().split(" ").join("_");
+    return this.state.options[number].value.toLowerCase().split(" ").join("_");
   };
 
   renderStatCheckBox = () => {
@@ -2175,21 +2193,23 @@ class Home extends React.Component {
 
   renderGraphTabs = () => {
     return (
-      <div>
-        <Tabs
-          defaultActiveKey={this.state.graphType}
-          id="graphTypeSelector"
-          onSelect={(e) => {
-            if (this.state.graphType !== e) this.setState({ graphType: e });
-          }}
-        >
-          <Tab eventKey="radar" title="Radar"></Tab>
-          <Tab eventKey="scatter" title="Scatter"></Tab>
-          <Tab eventKey="bar" title="Bar"></Tab>
-          <Tab eventKey="rankings" title="Rankings"></Tab>
-          <Tab eventKey="information" title="i"></Tab>
-        </Tabs>
-      </div>
+      <Row>
+        <Col lg={12} sm={12} id="graph-tabs">
+          <Tabs
+            defaultActiveKey={this.state.graphType}
+            id="graphTypeSelector"
+            onSelect={(e) => {
+              if (this.state.graphType !== e) this.setState({ graphType: e });
+            }}
+          >
+            <Tab eventKey="radar" title="Radar"></Tab>
+            <Tab eventKey="scatter" title="Scatter"></Tab>
+            <Tab eventKey="bar" title="Bar"></Tab>
+            <Tab eventKey="rankings" title="Rankings"></Tab>
+            {/* <Tab eventKey="information" title="i"></Tab> */}
+          </Tabs>
+        </Col>
+      </Row>
     );
   };
 
@@ -2209,47 +2229,86 @@ class Home extends React.Component {
     );
   };
 
+  renderPopover = () => {
+    const popover = (
+      <Popover id="popover-information">
+        <Popover.Title as="h3">How we do it</Popover.Title>
+        <Popover.Content>
+          For the selected player/team we will use either the players
+          percentile(bar, radar) or the actual stat numbers (rankings, scatter)
+        </Popover.Content>
+      </Popover>
+    );
+    return (
+      <OverlayTrigger
+        trigger={["focus", "hover"]}
+        placement="auto"
+        overlay={popover}
+      >
+        <Button
+          id="info"
+          variant="outline-info"
+          style={{
+            // border: "0px",
+            // width: "48px",
+            // height: "48px",
+            borderRadius: "50%",
+            fontSize: "18px",
+            width: "38px",
+            height: "38px",
+            fontFamily: "Hoefler Text Bold Italic",
+          }}
+        >
+          i
+        </Button>
+      </OverlayTrigger>
+    );
+  };
+
   renderAverageOrTotalCheckbox = () => {
     return (
-      <div>
-        <Form>
-          <Form.Check
-            inline
-            onChange={() => {
-              if (this.state.graphType === "bar") {
-                this.setState({ refreshBarChart: true });
-              }
-              this.setState({
-                redirect: "/",
-                getNewPlayer1Data: true,
-                averageOrTotal: "average",
-                checked: true,
-              });
-            }}
-            type="checkbox"
-            checked={this.state.checked}
-            id="average-checkbox"
-            label="Average"
-          ></Form.Check>
-          <Form.Check
-            onChange={() => {
-              if (this.state.graphType === "bar") {
-                this.setState({ refreshBarChart: true });
-              }
-              this.setState({
-                redirect: "/",
-                getNewPlayer1Data: true,
-                averageOrTotal: "total",
-                checked: false,
-              });
-            }}
-            inline
-            type="checkbox"
-            id="total-checkbox"
-            checked={!this.state.checked}
-            label="Total"
-          ></Form.Check>
-        </Form>
+      <div style={{ marginTop: "15px" }}>
+        <Col>
+          <Form>
+            <Form.Check
+              inline
+              onChange={() => {
+                if (this.state.graphType === "bar") {
+                  this.setState({ refreshBarChart: true });
+                }
+                this.setState({
+                  redirect: "/",
+                  getNewPlayer1Data: true,
+                  averageOrTotal: "average",
+                  checked: true,
+                });
+              }}
+              type="checkbox"
+              checked={this.state.checked}
+              id="average-checkbox"
+              label="Average"
+            ></Form.Check>
+            <Form.Check
+              onChange={() => {
+                if (this.state.graphType === "bar") {
+                  this.setState({ refreshBarChart: true });
+                }
+                this.setState({
+                  redirect: "/",
+                  getNewPlayer1Data: true,
+                  averageOrTotal: "total",
+                  checked: false,
+                });
+              }}
+              inline
+              type="checkbox"
+              id="total-checkbox"
+              checked={!this.state.checked}
+              label="Total"
+            ></Form.Check>
+            {this.renderPopover()}
+          </Form>
+        </Col>
       </div>
     );
   };
@@ -2292,10 +2351,6 @@ class Home extends React.Component {
 
     statsArray = statsArray.sort((a, b) => a - b);
 
-    if (stat === "errors" || stat === "missed_tackles") {
-      statsArray.reverse();
-    }
-
     for (let i = 1; i < numberOfEntries; i++) {
       topNumbersArray.push(statsArray[statsArray.length - i]);
     }
@@ -2309,30 +2364,32 @@ class Home extends React.Component {
     });
 
     return (
-      <Container>
-        <Table style={{ backgroundColor: "silver" }} striped bordered hover>
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Name</th>
-              <th>Games Played</th>
-              <th>{this.state.barStat1}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {topPlayersArray.map((player, index) => {
-              return (
-                <tr>
-                  <td>{index + 1}</td>
-                  <td> {player.player_name}</td>
-                  <td>{player.games}</td>
-                  <td>{player[stat]}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-      </Container>
+      <Col>
+        <div className="tableFixHead">
+          <Table bordered striped hover>
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Games Played</th>
+                <th>{this.state.barStat1}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {topPlayersArray.map((player, index) => {
+                return (
+                  <tr>
+                    <td>{index + 1}</td>
+                    <td> {player.player_name}</td>
+                    <td>{player.games}</td>
+                    <td>{player[stat]}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+        </div>
+      </Col>
     );
   };
 
@@ -2353,7 +2410,7 @@ class Home extends React.Component {
   // Renders the control for the radar graph
   radarGraphControls = () => {
     return (
-      <Col xs lg>
+      <Col>
         {this.renderStatCheckBox()}
         <br></br>
         {/* {this.renderStatTemplates()} */}
@@ -2373,6 +2430,7 @@ class Home extends React.Component {
         {this.state.playerOrTeam === "team"
           ? this.renderTeamDropDown()
           : this.renderPlayerDropDowns()}
+        <div style={{ marginTop: "10px" }}>{this.renderPopover()}</div>
       </>
     );
   };
@@ -2417,7 +2475,7 @@ class Home extends React.Component {
   // Renders the graph control to screen
   renderGraphControl = () => {
     return (
-      <Col sm={12} lg={3} style={{ backgroundColor: "#eaecef" }}>
+      <Col sm={12} lg={4} md={4} xl={4} style={{ backgroundColor: "#eaecef" }}>
         {/* {this.renderPlayerAndTeamTabs()} */}
         {this.renderGraphTabs()}
         <br></br>
@@ -2452,7 +2510,7 @@ class Home extends React.Component {
     return (
       <>
         {/* {this.renderMotionDiv()} */}
-        <Row>
+        <Row style={{ height: "100vh" }}>
           {this.renderGraphControl()}
           {this.renderGraph()}
         </Row>

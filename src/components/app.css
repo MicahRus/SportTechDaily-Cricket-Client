@@ -1,5 +1,5 @@
 .container-fluid {
-  background-color: #f0f0f0;
+  /* background-color: #f0f0f0; */
 }
 
 .navbar.navbar-expand-lg.navbar-light {
@@ -27,4 +27,30 @@
   font-size: 15px;
   background-color: cornflowerblue;
   background-size: 5px;
+}
+
+.form-check-label {
+  font-size: 1.5vh;
+}
+
+.tableFixHead {
+  overflow-y: auto;
+  height: 1000px;
+}
+
+th {
+  position: sticky;
+  top: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th,
+td {
+  padding: 8px 24px;
+}
+th {
+  background: #eee;
 }
