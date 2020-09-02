@@ -113,9 +113,9 @@ class FantasySport extends React.Component {
                 <tr>
                   <td>{item.player}</td>
                   <td>{Math.round(item.ds_price)}</td>
+                  <td>{Math.round(item.ds_pred)}</td>
                   <td>{Math.round(item.price_pred)}</td>
                   <td>{Math.round(item.os_prev)}</td>
-                  <td>{Math.round(item.ds_price)}</td>
                   <td>{item.match_name}</td>
                   <td>{item.team}</td>
                   <td>{item.pos}</td>
