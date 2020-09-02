@@ -14,10 +14,6 @@ let y = x.split("/");
 let eventKey = `/${y[y.length - 1]}`;
 
 class MainNav extends React.Component {
-  componentDidMount() {
-    console.log("asdf");
-    this.navBar();
-  }
   state = { redirect: null, eventKey: null };
   navBar = () => {
     console.log(eventKey);

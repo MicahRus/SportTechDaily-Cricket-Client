@@ -707,8 +707,6 @@ class Home extends React.Component {
           options={playerOptions}
           className="basic-multi-select"
           classNamePrefix="select"
-          defaultValue={this.state.selectedPlayers}
-          placeholder={this.state.selectedPlayers}
           onChange={(players) => {
             this.setBarChartData(players);
           }}
