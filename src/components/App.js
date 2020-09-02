@@ -22,7 +22,7 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route exact path="/sportsbetting" component={SportsBetting} />
           <Route exact path="/fantasysport" component={FantasySport} />
-          <Route exact path="/datapage" component={DataPage} />
+          {/* <Route exact path="/datapage" component={DataPage} /> */}
         </Switch>
       </BrowserRouter>
     </Container>
