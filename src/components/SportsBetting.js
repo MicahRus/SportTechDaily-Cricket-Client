@@ -145,35 +145,35 @@ class SportsBetting extends React.Component {
                 <th>PointsBet</th>
                 <th>TopSport</th>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={BestOddsPopover}
                 >
                   <th>Best Odds</th>
                 </OverlayTrigger>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={HistoricalPopover}
                 >
                   <th>ATS Historical</th>
                 </OverlayTrigger>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={ModelPopover}
                 >
                   <th>ATS Model</th>
                 </OverlayTrigger>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={AtsBestHistoricalPopover}
                 >
                   <th>Highest/Historical (%)</th>
                 </OverlayTrigger>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={AtsBestModelPopover}
                 >
@@ -250,35 +250,35 @@ class SportsBetting extends React.Component {
                 <th>PointsBet</th>
                 <th>TopSport</th>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={BestOddsPopover}
                 >
                   <th>Best Odds</th>
                 </OverlayTrigger>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={HistoricalPopover}
                 >
                   <th>ATS Historical</th>
                 </OverlayTrigger>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={ModelPopover}
                 >
                   <th>ATS Model</th>
                 </OverlayTrigger>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={AtsBestHistoricalPopover}
                 >
                   <th>Highest/Historical (%)</th>
                 </OverlayTrigger>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={AtsBestModelPopover}
                 >
@@ -371,35 +371,35 @@ class SportsBetting extends React.Component {
                 <th>PointsBet</th>
                 <th>TopSport</th>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={BestOddsPopover}
                 >
                   <th>Best Odds</th>
                 </OverlayTrigger>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={HistoricalPopover}
                 >
                   <th>ATS Historical</th>
                 </OverlayTrigger>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={ModelPopover}
                 >
                   <th>ATS Model</th>
                 </OverlayTrigger>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={FtsBestHistoricalPopover}
                 >
                   <th>Highest/Historical (%)</th>
                 </OverlayTrigger>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={FtsBestModelPopover}
                 >
@@ -476,35 +476,35 @@ class SportsBetting extends React.Component {
                 <th>PointsBet</th>
                 <th>TopSport</th>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={BestOddsPopover}
                 >
                   <th>Best Odds</th>
                 </OverlayTrigger>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={HistoricalPopover}
                 >
                   <th>ATS Historical</th>
                 </OverlayTrigger>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={ModelPopover}
                 >
                   <th>ATS Model</th>
                 </OverlayTrigger>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={FtsBestHistoricalPopover}
                 >
                   <th>Highest/Historical (%)</th>
                 </OverlayTrigger>
                 <OverlayTrigger
-                  placement="bottom"
+                  placement="top"
                   trigger={["focus", "hover"]}
                   overlay={FtsBestModelPopover}
                 >

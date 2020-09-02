@@ -2,7 +2,6 @@ import React from "react";
 import Popover from "react-bootstrap/Popover";
 const FtsBestHistoricalPopover = (
   <Popover id="FtsBestHistoricalPopover">
-    <Popover.Title as="h3">Best/Historical</Popover.Title>
     <Popover.Content>
       Simple way to assess how the odds compare to a player's historical record
       at scoring the first try in a match. This is more relevant for backs and

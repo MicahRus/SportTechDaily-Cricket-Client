@@ -489,7 +489,6 @@ class Home extends React.Component {
           0
         )) /
       arr.length;
-    h;
 
     let newData = [];
     let x = null;
@@ -709,6 +708,7 @@ class Home extends React.Component {
           className="basic-multi-select"
           classNamePrefix="select"
           defaultValue={this.state.selectedPlayers}
+          placeholder={this.state.selectedPlayers}
           onChange={(players) => {
             this.setBarChartData(players);
           }}
@@ -832,20 +832,6 @@ class Home extends React.Component {
                 rotation: -45,
                 lineWidth: 6,
                 spacing: 10,
-              },
-            ]}
-            fill={[
-              {
-                match: {
-                  id: "fries",
-                },
-                id: "dots",
-              },
-              {
-                match: {
-                  id: "sandwich",
-                },
-                id: "lines",
               },
             ]}
             borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
@@ -1442,10 +1428,9 @@ class Home extends React.Component {
   renderRadar = () => {
     return (
       <Col sm={12} lg={8} md={8} xl={8}>
-        {/* <button onClick={this.clickHandler}> Download Me</button> */}
         <div className="graph-container">
           <ResponsiveRadar
-            id="test"
+            id="radarGraph"
             data={this.state.graphData}
             keys={[
               this.state.currentPlayersData?.player1.playerName,
@@ -1493,9 +1478,6 @@ class Home extends React.Component {
         <Button variant="secondary" size="sm" active>
           Download
         </Button>
-        {/* <button onClick={this.downloadHandler} style={{ border: "none" }}>
-          <img src={downloadButton} style={{ height: "30px", width: "30px" }} />
-        </button> */}
       </Col>
     );
   };
@@ -1874,22 +1856,41 @@ class Home extends React.Component {
         label: player.player_name,
       });
     });
-    return (
-      <div>
-        <span> Player 1 </span>
-        <Select
-          options={options}
-          onChange={this.playerButtonSelectHandler1}
-          placeholder={this.state.currentPlayersData.player1.playerName}
-        />
-        <span> Player 2 </span>
-        <Select
-          options={options}
-          onChange={this.playerButtonSelectHandler2}
-          placeholder={this.state.currentPlayersData.player2.playerName}
-        />
-      </div>
-    );
+    if (this.state.graphType === "radar") {
+      return (
+        <div>
+          <span> Player 1 </span>
+          <Select
+            options={options}
+            onChange={this.playerButtonSelectHandler1}
+            placeholder={this.state.currentPlayersData.player1.playerName}
+          />
+          <span> Player 2 </span>
+          <Select
+            options={options}
+            onChange={this.playerButtonSelectHandler2}
+            placeholder={this.state.currentPlayersData.player2.playerName}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <span> Player 1 </span>
+          <Select
+            options={options}
+            onChange={this.playerButtonSelectHandler1}
+            placeholder={"James Tedesco"}
+          />
+          <span> Player 2 </span>
+          <Select
+            options={options}
+            onChange={this.playerButtonSelectHandler2}
+            placeholder={"Kalyn Ponga"}
+          />
+        </div>
+      );
+    }
   };
 
   renderSingleStat = (number) => {
@@ -2349,10 +2350,6 @@ class Home extends React.Component {
     }
 
     statsArray = statsArray.sort((a, b) => a - b);
-
-    if (stat === "errors" || stat === "missed_tackles") {
-      statsArray.reverse();
-    }
 
     for (let i = 1; i < numberOfEntries; i++) {
       topNumbersArray.push(statsArray[statsArray.length - i]);
