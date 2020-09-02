@@ -47,7 +47,7 @@ class FantasySport extends React.Component {
               this.setFilteredTable();
             })
           }
-          placeholder={"Choose a team"}
+          placeholder={"Choose a game"}
         />
       </div>
     );
