@@ -2,8 +2,6 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 
 import logo from "./images/logo.svg";
-import downloadButton from "./images/downloadButton.png";
-import informationLogo from "./images/information_i_1.jpeg";
 
 import {
   Form,
@@ -56,6 +54,7 @@ class Home extends React.Component {
     barStat1: ["All Run Metres"],
     currentPlayers: [],
     checked: true,
+    year: 2020,
     templateChecked: true,
     selectedPlayers: [
       { value: "500663", label: "James Tedesco" },
@@ -149,7 +148,16 @@ class Home extends React.Component {
     this.getSeasonPlayerPercentilesTotal();
     this.getSeasonPlayerStatsAverage();
     this.getSeasonPlayerStatsTotal();
+    this.getCurrentMatches();
   }
+
+  getCurrentMatches = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/current_matches`
+    );
+    const data = await response.json();
+    this.setState({ currentMatches: data.rows });
+  };
 
   getSeasonPlayerStatsAverage = async () => {
     const response = await fetch(
@@ -230,11 +238,15 @@ class Home extends React.Component {
     let player1Matches = [];
     let player2Matches = [];
     data.rows.map((match) => {
-      if (match.player_id === playerId1) {
-        player1Matches.push(match);
-      } else {
-        player2Matches.push(match);
-      }
+      this.state.currentMatches.map((currentMatch) => {
+        if (currentMatch.match_id === match.match_id) {
+          if (match.player_id === playerId1) {
+            player1Matches.push(match);
+          } else {
+            player2Matches.push(match);
+          }
+        }
+      });
     });
 
     this.setState({ player1Matches, player2Matches, selectedPlayers });
@@ -477,6 +489,7 @@ class Home extends React.Component {
           0
         )) /
       arr.length;
+    h;
 
     let newData = [];
     let x = null;
@@ -759,7 +772,7 @@ class Home extends React.Component {
     let lowerStat = stat[0].toLowerCase().split(" ").join("_");
     players.map((player) => {
       if (this.state.averageOrTotal === "total") {
-        this.state.playerPercentiles.map((percentile) => {
+        this.state.seasonPlayerPercentilesTotal.map((percentile) => {
           if (player.value === percentile.player_id) {
             graphData.push({
               playerName: player.label,
@@ -768,7 +781,7 @@ class Home extends React.Component {
           }
         });
       } else {
-        this.state.averagePlayerPercentiles.map((percentile) => {
+        this.state.seasonPlayerPercentilesAverage.map((percentile) => {
           if (player.value === percentile.player_id) {
             graphData.push({
               playerName: player.label,
