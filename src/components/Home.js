@@ -1473,7 +1473,12 @@ class Home extends React.Component {
             ]}
           />
         </div>
-        <Button variant="secondary" size="sm" active>
+        <Button
+          onClick={this.downloadHandler}
+          variant="secondary"
+          size="sm"
+          active
+        >
           Download
         </Button>
       </Col>
