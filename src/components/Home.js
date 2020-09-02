@@ -707,8 +707,6 @@ class Home extends React.Component {
           options={playerOptions}
           className="basic-multi-select"
           classNamePrefix="select"
-          defaultValue={this.state.selectedPlayers}
-          placeholder={this.state.selectedPlayers}
           onChange={(players) => {
             this.setBarChartData(players);
           }}
@@ -2236,6 +2234,7 @@ class Home extends React.Component {
         <Popover.Content>
           For the selected player/team we will use either the players
           percentile(bar, radar) or the actual stat numbers (rankings, scatter)
+          this data is based off the 2020 season
         </Popover.Content>
       </Popover>
     );
@@ -2249,9 +2248,6 @@ class Home extends React.Component {
           id="info"
           variant="outline-info"
           style={{
-            // border: "0px",
-            // width: "48px",
-            // height: "48px",
             borderRadius: "50%",
             fontSize: "18px",
             width: "38px",
