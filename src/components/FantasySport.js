@@ -100,7 +100,7 @@ class FantasySport extends React.Component {
   filteredDfsTable = () => {
     return (
       <div className="tableFixHead">
-        <Table bordered striped hover>
+        <Table bordered striped hover size="sm">
           <thead>
             <tr>
               <th>Player</th>
