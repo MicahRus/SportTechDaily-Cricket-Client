@@ -16,7 +16,6 @@ let eventKey = `/${y[y.length - 1]}`;
 class MainNav extends React.Component {
   state = { redirect: null, eventKey: null };
   navBar = () => {
-    console.log(eventKey);
     if (!this.state.eventKey) {
       this.setState({ eventKey: "/" });
     }

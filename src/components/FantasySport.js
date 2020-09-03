@@ -65,8 +65,7 @@ class FantasySport extends React.Component {
 
   getDfsData = async () => {
     const response = await fetch(
-      "http://localhost:3001/dfs_summary"
-      //`${process.env.REACT_APP_BACKEND_URL}/dfs_summary`
+      `${process.env.REACT_APP_BACKEND_URL}/dfs_summary`
     );
     const data = await response.json();
     this.setState({ dfs_summary: data.rows }, () => {
@@ -140,11 +139,15 @@ class FantasySport extends React.Component {
                   <td>{Math.round(item.ds_price)}</td>
                   <td>{Math.round(item.ds_pred)}</td>
                   <td
-                  style={this.styleDFSConditionalFormatting(item.price_pred)}
-                  >{Math.round(item.price_pred)}</td>
+                    style={this.styleDFSConditionalFormatting(item.price_pred)}
+                  >
+                    {Math.round(item.price_pred)}
+                  </td>
                   <td
-                  style={this.styleOSPrevConditionalFormatting(item.os_prev)}
-                  >{Math.round(item.os_prev)}</td>
+                    style={this.styleOSPrevConditionalFormatting(item.os_prev)}
+                  >
+                    {Math.round(item.os_prev)}
+                  </td>
                   <td>{item.match_name}</td>
                   <td>{item.team}</td>
                   <td>{item.pos}</td>
@@ -199,11 +202,15 @@ class FantasySport extends React.Component {
                   <td>{Math.round(item.ds_price)}</td>
                   <td>{Math.round(item.ds_pred)}</td>
                   <td
-                  style={this.styleDFSConditionalFormatting(item.price_pred)}
-                  >{Math.round(item.price_pred)}</td>
+                    style={this.styleDFSConditionalFormatting(item.price_pred)}
+                  >
+                    {Math.round(item.price_pred)}
+                  </td>
                   <td
-                  style={this.styleOSPrevConditionalFormatting(item.os_prev)}
-                  >{Math.round(item.os_prev)}</td>
+                    style={this.styleOSPrevConditionalFormatting(item.os_prev)}
+                  >
+                    {Math.round(item.os_prev)}
+                  </td>
                   <td>{item.match_name}</td>
                   <td>{item.team}</td>
                   <td>{item.pos}</td>

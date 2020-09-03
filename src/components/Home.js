@@ -42,7 +42,7 @@ class Home extends React.Component {
     playerPercentiles: [{}, {}],
     scatterStat1: ["All Run Metres"],
     scatterStat2: ["Fantasy Points Total"],
-    initialDisable: true,
+    initialDisable: false,
     selectedStats: [
       "all_run_metres",
       "errors",
@@ -139,17 +139,17 @@ class Home extends React.Component {
   };
 
   componentDidMount() {
+    this.getSeasonPlayerPercentilesAverage();
+    this.getSeasonPlayerPercentilesTotal();
+    this.getPlayerAveragePercentiles();
+    this.getSeasonPlayerStatsAverage();
+    this.getSeasonPlayerStatsTotal();
+    this.getCurrentMatches();
     this.getAllPlayersData();
     this.getAllTeamsData();
     this.getCurrentPlayers();
     this.getPlayerPercentiles();
     this.getCurrentStats();
-    this.getPlayerAveragePercentiles();
-    this.getSeasonPlayerPercentilesAverage();
-    this.getSeasonPlayerPercentilesTotal();
-    this.getSeasonPlayerStatsAverage();
-    this.getSeasonPlayerStatsTotal();
-    this.getCurrentMatches();
     this.setDelay();
   }
 
@@ -564,16 +564,6 @@ class Home extends React.Component {
           x = 18;
           break;
       }
-
-      // Sets an array that will be passed to the percentile based off the stats selected
-      let array = this.state.stats[x][stat];
-
-      array.sort((a, b) => a - b);
-      array = [...new Set(array)];
-
-      // Finds the percentile based off the array and player stat passed in
-      let percentile = percentileFinder(array, player.data[0][stat]);
-      percentile = Math.round(percentile);
 
       if (this.state.averageOrTotal === "total") {
         seasonStats = this.state.seasonPlayerPercentilesTotal;
