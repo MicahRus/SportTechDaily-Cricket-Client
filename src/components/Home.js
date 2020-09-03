@@ -926,7 +926,7 @@ class Home extends React.Component {
             yScale={{ type: "linear", min: "auto", max: "auto" }}
             yFormat={function (e) {
               if (x < player1Matches.length - 1) x++;
-              return ` ${e}, ${stat2}, ${player1Matches[x].round_name}, ${
+              return ` ${e} - ${player1Matches[x].round_name}, ${
                 player1Matches[x].match_date.split("T")[0]
               }`;
             }}
@@ -1508,9 +1508,9 @@ class Home extends React.Component {
     return this.state.options[number].value.toLowerCase().split(" ").join("_");
   };
 
+  // This is used to set an initial delay on the page, so the buttons are disabled until the page properly renders
   setDelay = () => {
     setTimeout(() => {
-      console.log("here");
       this.setState({ initialDisable: false });
     }, 4000);
   };
