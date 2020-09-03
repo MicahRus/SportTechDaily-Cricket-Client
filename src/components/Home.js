@@ -41,8 +41,8 @@ class Home extends React.Component {
     averageOrTotal: "average",
     playerPercentiles: [{}, {}],
     scatterStat1: ["All Run Metres"],
-    scatterStat2: ["Fantasy Points Total"],
-    initialDisable: false,
+    scatterStat2: ["Post Contact Metres"],
+    initialDisable: true,
     selectedStats: [
       "all_run_metres",
       "errors",
@@ -614,6 +614,7 @@ class Home extends React.Component {
     } else {
       this.getPlayerData(playerId, playerName, playerNumber);
     }
+    this.setState({ scatterPlayer1: playerName });
   };
 
   playerButtonSelectHandler2 = (event) => {
@@ -626,6 +627,7 @@ class Home extends React.Component {
     } else {
       this.getPlayerData(playerId, playerName, playerNumber);
     }
+    this.setState({ scatterPlayer2: playerName });
   };
 
   statCheckBoxChangeHandler = (event) => {
@@ -1380,7 +1382,7 @@ class Home extends React.Component {
     if (this.state.graphType === "bar" || this.state.graphType === "rankings") {
       return (
         <div>
-          <span> Stat 1 </span>
+          <span> Stat</span>
           <Select
             options={this.state.options}
             onChange={(e) => {
@@ -1408,6 +1410,10 @@ class Home extends React.Component {
             );
           }}
           placeholder={this.state.scatterStat1[0]}
+          isOptionDisabled={(option) =>
+            option.label === this.state.scatterStat1[0] ||
+            option.label === this.state.scatterStat2[0]
+          }
         />
         <span>Stat 2</span>
         <Select
@@ -1421,6 +1427,10 @@ class Home extends React.Component {
             );
           }}
           placeholder={this.state.scatterStat2[0]}
+          isOptionDisabled={(option) =>
+            option.label === this.state.scatterStat1[0] ||
+            option.label === this.state.scatterStat2[0]
+          }
         />
       </div>
     );
@@ -1463,12 +1473,22 @@ class Home extends React.Component {
           <span> Player 1 </span>
           <Select
             options={options}
+            isOptionDisabled={(option) =>
+              option.label ===
+                this.state.currentPlayersData.player1.playerName ||
+              option.label === this.state.currentPlayersData.player2.playerName
+            }
             onChange={this.playerButtonSelectHandler1}
             placeholder={this.state.currentPlayersData.player1.playerName}
           />
           <span> Player 2 </span>
           <Select
             options={options}
+            isOptionDisabled={(option) =>
+              option.label ===
+                this.state.currentPlayersData.player1.playerName ||
+              option.label === this.state.currentPlayersData.player2.playerName
+            }
             onChange={this.playerButtonSelectHandler2}
             placeholder={this.state.currentPlayersData.player2.playerName}
           />
@@ -1481,13 +1501,21 @@ class Home extends React.Component {
           <Select
             options={options}
             onChange={this.playerButtonSelectHandler1}
-            placeholder={"James Tedesco"}
+            placeholder={this.state.scatterPlayer1 || "James Tedesco"}
+            isOptionDisabled={(option) =>
+              option.label === this.state.scatterPlayer1 ||
+              option.label === this.state.scatterPlayer2
+            }
           />
           <span> Player 2 </span>
           <Select
             options={options}
             onChange={this.playerButtonSelectHandler2}
-            placeholder={"Kalyn Ponga"}
+            placeholder={this.state.scatterPlayer2 || "Kalyn Ponga"}
+            isOptionDisabled={(option) =>
+              option.label === this.state.scatterPlayer1 ||
+              option.label === this.state.scatterPlayer2
+            }
           />
         </div>
       );
