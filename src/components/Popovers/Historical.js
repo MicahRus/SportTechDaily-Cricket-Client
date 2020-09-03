@@ -3,9 +3,8 @@ import Popover from "react-bootstrap/Popover";
 const HistoricalPopover = (
   <Popover id="HistoricalPopover">
     <Popover.Content>
-      Simple way to assess how the odds compare to what our model thinks the
-      player's odds should be. 100% = priced accurately. Yellow = 100-124%, Red
-      = 125% and above.
+      What the player's odds should be based on their career try scoring strike
+      rate
     </Popover.Content>
   </Popover>
 );

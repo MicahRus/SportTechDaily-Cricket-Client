@@ -1383,7 +1383,7 @@ class Home extends React.Component {
     const allSvg = document.querySelectorAll("svg");
     const svg = allSvg[2];
 
-    this.setState({ enableDotLabel: true }, () => {
+    this.setState({ enableDotLabel: false }, () => {
       // const svgButton = document.createElementNS(
       //   "http://www.w3.org/2000/svg",
       //   "button"
@@ -1405,7 +1405,7 @@ class Home extends React.Component {
       svgImg.setAttributeNS(null, "height", "200");
       svgImg.setAttributeNS(null, "width", "200");
       svgImg.setAttributeNS("http://www.w3.org/1999/xlink", "href", logo);
-      svgImg.setAttributeNS(null, "x", "800");
+      svgImg.setAttributeNS(null, "x", "10%");
       svgImg.setAttributeNS(null, "y", "0");
       svgImg.setAttributeNS(null, "visibility", "visible");
       svgImg.setAttributeNS(null, "id", "logo");
@@ -1473,7 +1473,12 @@ class Home extends React.Component {
             ]}
           />
         </div>
-        <Button variant="secondary" size="sm" active>
+        <Button
+          onClick={this.downloadHandler}
+          variant="secondary"
+          size="sm"
+          active
+        >
           Download
         </Button>
       </Col>
