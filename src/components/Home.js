@@ -219,6 +219,7 @@ class Home extends React.Component {
   getMatches = async (playerId, playerName, playerNumber) => {
     let playerId1 = playerId;
     let playerId2 = null;
+    let sang = null;
     let selectedPlayers = JSON.parse(
       JSON.stringify(this.state.selectedPlayers)
     );
