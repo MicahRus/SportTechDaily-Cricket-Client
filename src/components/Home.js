@@ -480,6 +480,8 @@ class Home extends React.Component {
   // This function handles setting up the data that the graph will display
   setGraphData = (playerName, playerNumber) => {
     const player = this.state.currentPlayersData?.[playerNumber];
+    let playerStat = 1;
+    let seasonStats = null;
 
     // A function used to find the percentile of our players data
     const percentileFinder = (arr, val) =>
@@ -572,49 +574,36 @@ class Home extends React.Component {
       percentile = Math.round(percentile);
 
       if (this.state.averageOrTotal === "total") {
-        // Checks which player is selected
-        if (playerNumber === "player1") {
-          newData.push({
-            stat: this.state.options[x].value,
-            [playerName]: percentile,
-            [keys[2]]: values[2],
-          });
-        } else {
-          newData.push({
-            stat: this.state.options[x].value,
-            [keys[1]]: values[1],
-            [playerName]: percentile,
-          });
-        }
+        seasonStats = this.state.seasonPlayerPercentilesTotal;
       } else {
-        let playerStat = 1;
-        this.state.averagePlayerPercentiles.map((player) => {
-          if (
-            player.player_name === playerName[0] ||
-            player.player_name === playerName
-          ) {
-            playerStat =
-              player[
-                this.state.options[x].value.toLowerCase().split(" ").join("_")
-              ];
-          }
-        });
-        if (playerNumber === "player1") {
-          newData.push({
-            stat: this.state.options[x].value,
-            [playerName]: playerStat,
-            [keys[2]]: values[2],
-          });
-        } else {
-          newData.push({
-            stat: this.state.options[x].value,
-            [keys[1]]: values[1],
-            [playerName]: playerStat,
-          });
+        seasonStats = this.state.seasonPlayerPercentilesAverage;
+      }
+
+      seasonStats.map((player) => {
+        if (
+          player.player_name === playerName[0] ||
+          player.player_name === playerName
+        ) {
+          playerStat =
+            player[
+              this.state.options[x].value.toLowerCase().split(" ").join("_")
+            ];
         }
+      });
+      if (playerNumber === "player1") {
+        newData.push({
+          stat: this.state.options[x].value,
+          [playerName]: playerStat,
+          [keys[2]]: values[2],
+        });
+      } else {
+        newData.push({
+          stat: this.state.options[x].value,
+          [keys[1]]: values[1],
+          [playerName]: playerStat,
+        });
       }
     });
-    console.log(newData);
     this.setState({ graphData: newData, redirect: "/" });
   };
 
