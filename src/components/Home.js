@@ -2028,7 +2028,11 @@ class Home extends React.Component {
     }
     topNumbersArray.map((number) => {
       players.map((player) => {
-        if (player[stat] === number && x < numberOfEntries) {
+        if (
+          player[stat] === number &&
+          x < numberOfEntries &&
+          !topPlayersArray.includes(player)
+        ) {
           topPlayersArray.push(player);
           x++;
         }
