@@ -42,6 +42,7 @@ class Home extends React.Component {
     playerPercentiles: [{}, {}],
     scatterStat1: ["All Run Metres"],
     scatterStat2: ["Fantasy Points Total"],
+    initialDisable: true,
     selectedStats: [
       "all_run_metres",
       "errors",
@@ -149,6 +150,7 @@ class Home extends React.Component {
     this.getSeasonPlayerStatsAverage();
     this.getSeasonPlayerStatsTotal();
     this.getCurrentMatches();
+    this.setDelay();
   }
 
   getCurrentMatches = async () => {
@@ -906,7 +908,6 @@ class Home extends React.Component {
 
     let x = -1;
     let player1Matches = this.state.player1MatchDates;
-    console.log(player1Matches);
     return (
       <Col lg={8} sm={12} className="graph-container">
         <div style={{ height: "100vh" }}>
@@ -917,16 +918,17 @@ class Home extends React.Component {
           <ResponsiveScatterPlot
             colors={{ scheme: "set1" }}
             data={this.state.scatterGraphData || null}
-            margin={{ top: 60, right: 30, bottom: 80, left: 90 }}
+            margin={{ top: 60, right: 150, bottom: 80, left: 90 }}
             xScale={{ type: "linear", min: "auto", max: "auto" }}
             xFormat={function (e) {
-              return ` ${e} ${stat1}`;
+              return `${e}`;
             }}
             yScale={{ type: "linear", min: "auto", max: "auto" }}
             yFormat={function (e) {
               if (x < player1Matches.length - 1) x++;
-              console.log(x);
-              return ` ${e}, ${stat2}`;
+              return ` ${e}, ${stat2}, ${player1Matches[x].round_name}, ${
+                player1Matches[x].match_date.split("T")[0]
+              }`;
             }}
             blendMode="multiply"
             axisTop={null}
@@ -1506,6 +1508,13 @@ class Home extends React.Component {
     return this.state.options[number].value.toLowerCase().split(" ").join("_");
   };
 
+  setDelay = () => {
+    setTimeout(() => {
+      console.log("here");
+      this.setState({ initialDisable: false });
+    }, 1000);
+  };
+
   renderStatCheckBox = () => {
     return (
       <Form>
@@ -1519,6 +1528,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(0)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
           <Col>
@@ -1530,6 +1540,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(1)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
         </Form.Row>
@@ -1544,6 +1555,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(2)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
           <Col>
@@ -1555,6 +1567,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(3)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
         </Form.Row>
@@ -1569,6 +1582,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(4)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
           <Col>
@@ -1580,6 +1594,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(5)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
         </Form.Row>
@@ -1594,6 +1609,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(6)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
           <Col>
@@ -1605,6 +1621,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(7)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
         </Form.Row>
@@ -1619,6 +1636,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(8)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
           <Col>
@@ -1630,6 +1648,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(9)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
         </Form.Row>
@@ -1644,6 +1663,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(10)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
           <Col>
@@ -1655,6 +1675,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(11)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
         </Form.Row>
@@ -1669,6 +1690,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(12)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
           <Col>
@@ -1680,6 +1702,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(13)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
         </Form.Row>
@@ -1694,6 +1717,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(14)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
           <Col>
@@ -1705,6 +1729,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(15)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
         </Form.Row>
@@ -1719,6 +1744,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(16)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
           <Col>
@@ -1730,6 +1756,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(17)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
         </Form.Row>
@@ -1743,6 +1770,7 @@ class Home extends React.Component {
               checked={this.state.selectedStats.includes(
                 this.renderSingleStat(18)
               )}
+              disabled={this.state.initialDisable}
             />
           </Col>
         </Form.Row>
@@ -1811,10 +1839,26 @@ class Home extends React.Component {
               if (this.state.graphType !== e) this.setState({ graphType: e });
             }}
           >
-            <Tab eventKey="radar" title="Radar"></Tab>
-            <Tab eventKey="scatter" title="Scatter"></Tab>
-            <Tab eventKey="bar" title="Bar"></Tab>
-            <Tab eventKey="rankings" title="Rankings"></Tab>
+            <Tab
+              eventKey="radar"
+              title="Radar"
+              disabled={this.state.initialDisable}
+            ></Tab>
+            <Tab
+              eventKey="scatter"
+              title="Scatter"
+              disabled={this.state.initialDisable}
+            ></Tab>
+            <Tab
+              eventKey="bar"
+              title="Bar"
+              disabled={this.state.initialDisable}
+            ></Tab>
+            <Tab
+              eventKey="rankings"
+              title="Rankings"
+              disabled={this.state.initialDisable}
+            ></Tab>
             {/* <Tab eventKey="information" title="i"></Tab> */}
           </Tabs>
         </Col>
@@ -1878,6 +1922,7 @@ class Home extends React.Component {
         <Col>
           <Form>
             <Form.Check
+              disabled={this.state.initialDisable}
               inline
               onChange={() => {
                 if (this.state.graphType === "bar") {
@@ -1896,6 +1941,7 @@ class Home extends React.Component {
               label="Average"
             ></Form.Check>
             <Form.Check
+              disabled={this.state.initialDisable}
               onChange={() => {
                 if (this.state.graphType === "bar") {
                   this.setState({ refreshBarChart: true });
