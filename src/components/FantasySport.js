@@ -65,12 +65,37 @@ class FantasySport extends React.Component {
 
   getDfsData = async () => {
     const response = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/dfs_summary`
+      "http://localhost:3001/dfs_summary"
+      //`${process.env.REACT_APP_BACKEND_URL}/dfs_summary`
     );
     const data = await response.json();
     this.setState({ dfs_summary: data.rows }, () => {
       this.setMatchData();
     });
+  };
+
+  styleDFSConditionalFormatting = (item) => {
+    if (item >= 300) {
+      return { backgroundColor: "#4EA24E" };
+    } else if (item >= 260 && item <= 300) {
+      return { backgroundColor: "gold" };
+    } else if (item >= 226 && item <= 260) {
+      return { backgroundColor: "orange" };
+    } else {
+      return { backgroundColor: "orangeRed" };
+    }
+  };
+
+  styleOSPrevConditionalFormatting = (item) => {
+    if (item >= 50) {
+      return { backgroundColor: "#4EA24E" };
+    } else if (item >= 30 && item <= 49) {
+      return { backgroundColor: "gold" };
+    } else if (item >= 10 && item <= 29) {
+      return { backgroundColor: "orange" };
+    } else {
+      return { backgroundColor: "orangeRed" };
+    }
   };
 
   filteredDfsTable = () => {
@@ -114,8 +139,12 @@ class FantasySport extends React.Component {
                   <td>{item.player}</td>
                   <td>{Math.round(item.ds_price)}</td>
                   <td>{Math.round(item.ds_pred)}</td>
-                  <td>{Math.round(item.price_pred)}</td>
-                  <td>{Math.round(item.os_prev)}</td>
+                  <td
+                  style={this.styleDFSConditionalFormatting(item.price_pred)}
+                  >{Math.round(item.price_pred)}</td>
+                  <td
+                  style={this.styleOSPrevConditionalFormatting(item.os_prev)}
+                  >{Math.round(item.os_prev)}</td>
                   <td>{item.match_name}</td>
                   <td>{item.team}</td>
                   <td>{item.pos}</td>
@@ -169,8 +198,12 @@ class FantasySport extends React.Component {
                   <td>{item.player}</td>
                   <td>{Math.round(item.ds_price)}</td>
                   <td>{Math.round(item.ds_pred)}</td>
-                  <td>{Math.round(item.price_pred)}</td>
-                  <td>{Math.round(item.os_prev)}</td>
+                  <td
+                  style={this.styleDFSConditionalFormatting(item.price_pred)}
+                  >{Math.round(item.price_pred)}</td>
+                  <td
+                  style={this.styleOSPrevConditionalFormatting(item.os_prev)}
+                  >{Math.round(item.os_prev)}</td>
                   <td>{item.match_name}</td>
                   <td>{item.team}</td>
                   <td>{item.pos}</td>
