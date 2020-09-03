@@ -638,12 +638,17 @@ class Home extends React.Component {
 
   statCheckBoxChangeHandler = (event) => {
     let key = event.target.id;
-    console.log(key);
+
     if (this.state.selectedStats.includes(key)) {
       let filteredArray = this.state.selectedStats.filter(
         (item) => item !== key
       );
-      this.setState({ selectedStats: filteredArray });
+      // This will prevent the user from selecting down to less than 3 stats
+      if (this.state.selectedStats.length <= 3) {
+        alert("you must have at least 3 stats selected");
+      } else {
+        this.setState({ selectedStats: filteredArray });
+      }
     } else {
       this.setState((prevState) => ({
         selectedStats: [...prevState.selectedStats, key],
@@ -739,6 +744,22 @@ class Home extends React.Component {
       });
     }
 
+    let player1MatchDates = [];
+    let player2MatchDates = [];
+    // This will pass the round number / match date of the players matches to be used in the scatter graph
+    this.state.currentMatches.map((match) => {
+      this.state.player1Matches.map((playerMatch) => {
+        if (match.match_id === playerMatch.match_id) {
+          player1MatchDates.push(match);
+        }
+      });
+      this.state.player2Matches.map((playerMatch) => {
+        if (match.match_id === playerMatch.match_id) {
+          player2MatchDates.push(match);
+        }
+      });
+    });
+
     this.setState({
       scatterGraphData: [
         {
@@ -750,6 +771,8 @@ class Home extends React.Component {
           data: player2Data,
         },
       ],
+      player1MatchDates,
+      player2MatchDates,
     });
   };
 
@@ -878,420 +901,12 @@ class Home extends React.Component {
 
   // Renders the scatter-plot graph
   renderScatterPlot = () => {
-    const data = [
-      {
-        id: "Player 1",
-        data: [
-          {
-            x: 1,
-            y: 1,
-          },
-          {
-            x: 47,
-            y: 84,
-          },
-          {
-            x: 32,
-            y: 61,
-          },
-          {
-            x: 66,
-            y: 96,
-          },
-          {
-            x: 94,
-            y: 75,
-          },
-          {
-            x: 2,
-            y: 112,
-          },
-          {
-            x: 8,
-            y: 91,
-          },
-          {
-            x: 75,
-            y: 4,
-          },
-          {
-            x: 41,
-            y: 23,
-          },
-          {
-            x: 97,
-            y: 34,
-          },
-          {
-            x: 5,
-            y: 64,
-          },
-          {
-            x: 21,
-            y: 53,
-          },
-          {
-            x: 46,
-            y: 96,
-          },
-          {
-            x: 58,
-            y: 91,
-          },
-          {
-            x: 10,
-            y: 73,
-          },
-          {
-            x: 50,
-            y: 65,
-          },
-          {
-            x: 65,
-            y: 30,
-          },
-          {
-            x: 0,
-            y: 80,
-          },
-          {
-            x: 17,
-            y: 12,
-          },
-          {
-            x: 24,
-            y: 62,
-          },
-          {
-            x: 74,
-            y: 48,
-          },
-          {
-            x: 62,
-            y: 85,
-          },
-          {
-            x: 37,
-            y: 98,
-          },
-          {
-            x: 72,
-            y: 103,
-          },
-          {
-            x: 57,
-            y: 57,
-          },
-          {
-            x: 7,
-            y: 48,
-          },
-          {
-            x: 66,
-            y: 51,
-          },
-          {
-            x: 51,
-            y: 76,
-          },
-          {
-            x: 23,
-            y: 96,
-          },
-          {
-            x: 70,
-            y: 21,
-          },
-          {
-            x: 15,
-            y: 59,
-          },
-          {
-            x: 50,
-            y: 90,
-          },
-          {
-            x: 30,
-            y: 9,
-          },
-          {
-            x: 34,
-            y: 113,
-          },
-          {
-            x: 48,
-            y: 66,
-          },
-          {
-            x: 56,
-            y: 71,
-          },
-          {
-            x: 66,
-            y: 58,
-          },
-          {
-            x: 18,
-            y: 67,
-          },
-          {
-            x: 28,
-            y: 12,
-          },
-          {
-            x: 65,
-            y: 60,
-          },
-          {
-            x: 1,
-            y: 69,
-          },
-          {
-            x: 72,
-            y: 84,
-          },
-          {
-            x: 81,
-            y: 44,
-          },
-          {
-            x: 47,
-            y: 88,
-          },
-          {
-            x: 49,
-            y: 34,
-          },
-          {
-            x: 38,
-            y: 59,
-          },
-          {
-            x: 31,
-            y: 88,
-          },
-          {
-            x: 52,
-            y: 71,
-          },
-          {
-            x: 21,
-            y: 34,
-          },
-          {
-            x: 9,
-            y: 107,
-          },
-        ],
-      },
-      {
-        id: "Player 2",
-        data: [
-          {
-            x: 86,
-            y: 39,
-          },
-          {
-            x: 0,
-            y: 33,
-          },
-          {
-            x: 99,
-            y: 56,
-          },
-          {
-            x: 30,
-            y: 87,
-          },
-          {
-            x: 0,
-            y: 56,
-          },
-          {
-            x: 97,
-            y: 96,
-          },
-          {
-            x: 10,
-            y: 106,
-          },
-          {
-            x: 54,
-            y: 111,
-          },
-          {
-            x: 26,
-            y: 69,
-          },
-          {
-            x: 63,
-            y: 105,
-          },
-          {
-            x: 2,
-            y: 87,
-          },
-          {
-            x: 84,
-            y: 59,
-          },
-          {
-            x: 81,
-            y: 66,
-          },
-          {
-            x: 98,
-            y: 87,
-          },
-          {
-            x: 28,
-            y: 45,
-          },
-          {
-            x: 98,
-            y: 117,
-          },
-          {
-            x: 45,
-            y: 86,
-          },
-          {
-            x: 5,
-            y: 59,
-          },
-          {
-            x: 75,
-            y: 99,
-          },
-          {
-            x: 42,
-            y: 49,
-          },
-          {
-            x: 93,
-            y: 14,
-          },
-          {
-            x: 38,
-            y: 100,
-          },
-          {
-            x: 8,
-            y: 40,
-          },
-          {
-            x: 43,
-            y: 46,
-          },
-          {
-            x: 8,
-            y: 77,
-          },
-          {
-            x: 48,
-            y: 6,
-          },
-          {
-            x: 66,
-            y: 25,
-          },
-          {
-            x: 64,
-            y: 3,
-          },
-          {
-            x: 60,
-            y: 83,
-          },
-          {
-            x: 14,
-            y: 60,
-          },
-          {
-            x: 44,
-            y: 64,
-          },
-          {
-            x: 28,
-            y: 90,
-          },
-          {
-            x: 62,
-            y: 47,
-          },
-          {
-            x: 70,
-            y: 80,
-          },
-          {
-            x: 3,
-            y: 15,
-          },
-          {
-            x: 23,
-            y: 58,
-          },
-          {
-            x: 37,
-            y: 116,
-          },
-          {
-            x: 95,
-            y: 35,
-          },
-          {
-            x: 39,
-            y: 12,
-          },
-          {
-            x: 53,
-            y: 70,
-          },
-          {
-            x: 97,
-            y: 21,
-          },
-          {
-            x: 82,
-            y: 10,
-          },
-          {
-            x: 25,
-            y: 74,
-          },
-          {
-            x: 5,
-            y: 80,
-          },
-          {
-            x: 75,
-            y: 85,
-          },
-          {
-            x: 60,
-            y: 90,
-          },
-          {
-            x: 16,
-            y: 23,
-          },
-          {
-            x: 69,
-            y: 91,
-          },
-          {
-            x: 74,
-            y: 36,
-          },
-          {
-            x: 54,
-            y: 93,
-          },
-        ],
-      },
-    ];
     let stat1 = this.state.scatterStat1;
     let stat2 = this.state.scatterStat2;
+
+    let x = -1;
+    let player1Matches = this.state.player1MatchDates;
+    console.log(player1Matches);
     return (
       <Col lg={8} sm={12} className="graph-container">
         <div style={{ height: "100vh" }}>
@@ -1301,15 +916,17 @@ class Home extends React.Component {
           </h1>
           <ResponsiveScatterPlot
             colors={{ scheme: "set1" }}
-            data={this.state.scatterGraphData || data}
+            data={this.state.scatterGraphData || null}
             margin={{ top: 60, right: 30, bottom: 80, left: 90 }}
             xScale={{ type: "linear", min: "auto", max: "auto" }}
             xFormat={function (e) {
-              return e + " " + stat1;
+              return ` ${e} ${stat1}`;
             }}
             yScale={{ type: "linear", min: "auto", max: "auto" }}
             yFormat={function (e) {
-              return e + " " + stat2;
+              if (x < player1Matches.length - 1) x++;
+              console.log(x);
+              return ` ${e}, ${stat2}`;
             }}
             blendMode="multiply"
             axisTop={null}
