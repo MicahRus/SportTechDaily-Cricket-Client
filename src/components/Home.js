@@ -42,7 +42,7 @@ class Home extends React.Component {
     playerPercentiles: [{}, {}],
     scatterStat1: ["All Run Metres"],
     scatterStat2: ["Fantasy Points Total"],
-    initialDisable: false,
+    initialDisable: true,
     selectedStats: [
       "all_run_metres",
       "errors",
