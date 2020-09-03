@@ -1512,7 +1512,7 @@ class Home extends React.Component {
     setTimeout(() => {
       console.log("here");
       this.setState({ initialDisable: false });
-    }, 1000);
+    }, 4000);
   };
 
   renderStatCheckBox = () => {
