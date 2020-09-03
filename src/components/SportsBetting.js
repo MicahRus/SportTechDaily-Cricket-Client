@@ -101,17 +101,17 @@ class SportsBetting extends React.Component {
         />
       </div>
     );
-  }
+  };
 
   styleHighestOdds = (item, highest) => {
-    if (item === highest) return { backgroundColor: "lightGreen" };
+    if (item === highest) return { backgroundColor: "yellow" };
   };
 
   stylePercentages = (item) => {
     if (item * 100 >= 125) {
       return { backgroundColor: "salmon" };
     } else if (item * 100 >= 100 && item * 100 <= 125) {
-      return { backgroundColor: "yellow" };
+      return { backgroundColor: "lightGreen" };
     } else {
     }
   };
