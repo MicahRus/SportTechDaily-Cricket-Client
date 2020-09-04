@@ -32,9 +32,11 @@ class FantasySport extends React.Component {
 
     cleanMatchArray.map((match) => {
       matchNames.push({ value: match, label: match });
+      return null;
     });
 
     this.setState({ matchNames });
+    return null;
   };
 
   renderTeamSelect = () => {
@@ -59,8 +61,10 @@ class FantasySport extends React.Component {
       if (item.match_name === this.state.selectedMatch) {
         filteredMatches.push(item);
       }
+      return null;
     });
     this.setState({ filteredMatches });
+    return null;
   };
 
   getDfsData = async () => {
