@@ -689,8 +689,15 @@ class Home extends React.Component {
           options={playerOptions}
           className="basic-multi-select"
           classNamePrefix="select"
+          value={this.state.selectedPlayers}
           onChange={(players) => {
-            this.setBarChartData(players);
+            console.log(players.length);
+            console.log(players);
+            if (players.length <= 5) {
+              this.setBarChartData(players);
+            } else {
+              alert("You have selected the max amount of players(5)");
+            }
           }}
         />
       </div>
