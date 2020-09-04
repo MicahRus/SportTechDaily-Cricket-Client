@@ -991,7 +991,7 @@ class Home extends React.Component {
     };
 
     const allSvg = document.querySelectorAll("svg");
-    const svg = allSvg[2];
+    const svg = allSvg[allSvg.length - 1];
 
     console.log(allSvg);
 
