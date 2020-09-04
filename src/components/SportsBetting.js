@@ -188,25 +188,25 @@ class SportsBetting extends React.Component {
                 return (
                   <tr>
                     <td  className="playerFix">{item.player}</td>
-                    <td>{item.highest}</td>
+                    <td>{item.highest || "N/A"}</td>
                     <td style={this.stylePercentages(item.high_emp)}>
-                      {Math.round(item.high_emp * 100)}
+                      {Math.round(item.high_emp * 100) || "N/A"}
                     </td>
                     <td style={this.stylePercentages(item.high_mod)}>
-                      {Math.round(item.high_mod * 100)}
+                      {Math.round(item.high_mod * 100) || "N/A"}
                     </td>
-                    <td>{item.ats_empirical}</td>
-                    <td>{item.ats_model}</td>
+                    <td>{item.ats_empirical || "N/A"}</td>
+                    <td>{item.ats_model || "N/A"}</td>
                     <td style={this.styleHighestOdds(item.sb, item.highest)}>
-                      {item.sb}
+                      {item.sb || "N/A"}
                     </td>
                     <td
                       style={this.styleHighestOdds(item.beteasy, item.highest)}
                     >
-                      {item.beteasy}
+                      {item.beteasy || "N/A"}
                     </td>
                     <td style={this.styleHighestOdds(item.neds, item.highest)}>
-                      {item.neds}
+                      {item.neds || "N/A"}
                     </td>
                     <td
                       style={this.styleHighestOdds(
@@ -214,12 +214,12 @@ class SportsBetting extends React.Component {
                         item.highest
                       )}
                     >
-                      {item.pointsbet}
+                      {item.pointsbet || "N/A"}
                     </td>
                     <td
                       style={this.styleHighestOdds(item.topsport, item.highest)}
                     >
-                      {item.topsport}
+                      {item.topsport || "N/A"}
                     </td>
                     <td>{item.team}</td>
                     <td>{item.match_name}</td>
@@ -292,26 +292,26 @@ class SportsBetting extends React.Component {
               {this.state.ats_summary.map((item) => {
                 return (
                   <tr>
-                    <td  className="playerFix">{item.player}</td>
-                    <td>{item.highest}</td>
+                    <td className="playerFix">{item.player}</td>
+                    <td>{item.highest || "N/A"}</td>
                     <td style={this.stylePercentages(item.high_emp)}>
-                      {Math.round(item.high_emp * 100)}
+                      {Math.round(item.high_emp * 100) || "N/A"}
                     </td>
                     <td style={this.stylePercentages(item.high_mod)}>
-                      {Math.round(item.high_mod * 100)}
+                      {Math.round(item.high_mod * 100) || "N/A"}
                     </td>
-                    <td>{item.ats_empirical}</td>
-                    <td>{item.ats_model}</td>
+                    <td>{item.ats_empirical || "N/A"}</td>
+                    <td>{item.ats_model || "N/A"}</td>
                     <td style={this.styleHighestOdds(item.sb, item.highest)}>
-                      {item.sb}
+                      {item.sb || "N/A"}
                     </td>
                     <td
                       style={this.styleHighestOdds(item.beteasy, item.highest)}
                     >
-                      {item.beteasy}
+                      {item.beteasy || "N/A"}
                     </td>
                     <td style={this.styleHighestOdds(item.neds, item.highest)}>
-                      {item.neds}
+                      {item.neds || "N/A"}
                     </td>
                     <td
                       style={this.styleHighestOdds(
@@ -319,12 +319,12 @@ class SportsBetting extends React.Component {
                         item.highest
                       )}
                     >
-                      {item.pointsbet}
+                      {item.pointsbet || "N/A"}
                     </td>
                     <td
                       style={this.styleHighestOdds(item.topsport, item.highest)}
                     >
-                      {item.topsport}
+                      {item.topsport || "N/A"}
                     </td>
                     <td>{item.team}</td>
                     <td>{item.match_name}</td>
@@ -414,25 +414,25 @@ class SportsBetting extends React.Component {
                 return (
                   <tr>
                     <td  className="playerFix">{item.player}</td>
-                    <td>{item.highest}</td>
+                    <td>{item.highest || "N/A"}</td>
                     <td style={this.stylePercentages(item.high_emp)}>
-                      {Math.round(item.high_emp * 100)}
+                      {Math.round(item.high_emp * 100) || "N/A"}
                     </td>
                     <td style={this.stylePercentages(item.high_mod)}>
-                      {Math.round(item.high_mod * 100)}
+                      {Math.round(item.high_mod * 100) || "N/A"}
                     </td>
-                    <td>{item.fts_empirical}</td>
-                    <td>{item.fts_model}</td>
+                    <td>{item.fts_empirical || "N/A"}</td>
+                    <td>{item.fts_model || "N/A"}</td>
                     <td style={this.styleHighestOdds(item.sb, item.highest)}>
-                      {item.sb}
+                      {item.sb || "N/A"}
                     </td>
                     <td
                       style={this.styleHighestOdds(item.beteasy, item.highest)}
                     >
-                      {item.beteasy}
+                      {item.beteasy || "N/A"}
                     </td>
                     <td style={this.styleHighestOdds(item.neds, item.highest)}>
-                      {item.neds}
+                      {item.neds || "N/A"}
                     </td>
                     <td
                       style={this.styleHighestOdds(
@@ -440,12 +440,12 @@ class SportsBetting extends React.Component {
                         item.highest
                       )}
                     >
-                      {item.pointsbet}
+                      {item.pointsbet || "N/A"}
                     </td>
                     <td
                       style={this.styleHighestOdds(item.topsport, item.highest)}
                     >
-                      {item.topsport}
+                      {item.topsport || "N/A"}
                     </td>
                     <td>{item.team}</td>
                     <td>{item.match_name}</td>
@@ -519,25 +519,25 @@ class SportsBetting extends React.Component {
                 return (
                   <tr>
                     <td  className="playerFix">{item.player}</td>
-                    <td>{item.highest}</td>
+                    <td>{item.highest || "N/A"}</td>
                     <td style={this.stylePercentages(item.high_emp)}>
-                      {Math.round(item.high_emp * 100)}
+                      {Math.round(item.high_emp * 100) || "N/A"}
                     </td>
                     <td style={this.stylePercentages(item.high_mod)}>
-                      {Math.round(item.high_mod * 100)}
+                      {Math.round(item.high_mod * 100) || "N/A"}
                     </td>
-                    <td>{item.fts_empirical}</td>
-                    <td>{item.fts_model}</td>
+                    <td>{item.fts_empirical || "N/A"}</td>
+                    <td>{item.fts_model || "N/A"}</td>
                     <td style={this.styleHighestOdds(item.sb, item.highest)}>
-                      {item.sb}
+                      {item.sb || "N/A"}
                     </td>
                     <td
                       style={this.styleHighestOdds(item.beteasy, item.highest)}
                     >
-                      {item.beteasy}
+                      {item.beteasy || "N/A"}
                     </td>
                     <td style={this.styleHighestOdds(item.neds, item.highest)}>
-                      {item.neds}
+                      {item.neds || "N/A"}
                     </td>
                     <td
                       style={this.styleHighestOdds(
@@ -545,12 +545,12 @@ class SportsBetting extends React.Component {
                         item.highest
                       )}
                     >
-                      {item.pointsbet}
+                      {item.pointsbet || "N/A"}
                     </td>
                     <td
                       style={this.styleHighestOdds(item.topsport, item.highest)}
                     >
-                      {item.topsport}
+                      {item.topsport || "N/A"}
                     </td>
                     <td>{item.team}</td>
                     <td>{item.match_name}</td>

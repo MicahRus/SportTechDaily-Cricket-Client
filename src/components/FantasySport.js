@@ -75,25 +75,25 @@ class FantasySport extends React.Component {
 
   styleDFSConditionalFormatting = (item) => {
     if (item >= 300) {
-      return { backgroundColor: "#4EA24E" };
+      return { backgroundColor: "#63BE7B" };
     } else if (item >= 260 && item <= 300) {
-      return { backgroundColor: "gold" };
+      return { backgroundColor: "#FFEB84" };
     } else if (item >= 226 && item <= 260) {
-      return { backgroundColor: "orange" };
+      return { backgroundColor: "#FFC966" };
     } else {
-      return { backgroundColor: "orangeRed" };
+      return { backgroundColor: "#F8696B" };
     }
   };
 
   styleOSPrevConditionalFormatting = (item) => {
     if (item >= 50) {
-      return { backgroundColor: "#4EA24E" };
+      return { backgroundColor: "#63BE7B" };
     } else if (item >= 30 && item <= 49) {
-      return { backgroundColor: "gold" };
+      return { backgroundColor: "#FFEB84" };
     } else if (item >= 10 && item <= 29) {
-      return { backgroundColor: "orange" };
+      return { backgroundColor: "#FFC966" };
     } else {
-      return { backgroundColor: "orangeRed" };
+      return { backgroundColor: "#F8696B" };
     }
   };
 
@@ -151,7 +151,7 @@ class FantasySport extends React.Component {
                   <td
                     style={this.styleOSPrevConditionalFormatting(item.os_prev)}
                   >
-                    {Math.round(item.os_prev)}
+                    {Math.round(item.os_prev) || "N/A"}
                   </td>
                   <td>{Math.round(item.ds_price)}</td>
                   <td>{item.team}</td>
@@ -205,18 +205,19 @@ class FantasySport extends React.Component {
               return (
                 <tr>
                   <td className="playerFix">{item.player}</td>
-
                   <td>{Math.round(item.ds_pred)}</td>
                   <td
                     style={this.styleDFSConditionalFormatting(item.price_pred)}
                   >
                     {Math.round(item.price_pred)}
                   </td>
+
                   <td
                     style={this.styleOSPrevConditionalFormatting(item.os_prev)}
                   >
-                    {Math.round(item.os_prev)}
+                    {Math.round(item.os_prev) || "N/A"}
                   </td>
+
                   <td>{Math.round(item.ds_price)}</td>
                   <td>{item.team}</td>
                   <td>{item.pos}</td>
