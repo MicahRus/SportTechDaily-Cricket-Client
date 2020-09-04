@@ -75,25 +75,25 @@ class FantasySport extends React.Component {
 
   styleDFSConditionalFormatting = (item) => {
     if (item >= 300) {
-      return { backgroundColor: "#4EA24E" };
+      return { backgroundColor: "#63BE7B" };
     } else if (item >= 260 && item <= 300) {
-      return { backgroundColor: "gold" };
+      return { backgroundColor: "#FFEB84" };
     } else if (item >= 226 && item <= 260) {
-      return { backgroundColor: "orange" };
+      return { backgroundColor: "#FFC966" };
     } else {
-      return { backgroundColor: "orangeRed" };
+      return { backgroundColor: "#F8696B" };
     }
   };
 
   styleOSPrevConditionalFormatting = (item) => {
     if (item >= 50) {
-      return { backgroundColor: "#4EA24E" };
+      return { backgroundColor: "#63BE7B" };
     } else if (item >= 30 && item <= 49) {
-      return { backgroundColor: "gold" };
+      return { backgroundColor: "#FFEB84" };
     } else if (item >= 10 && item <= 29) {
-      return { backgroundColor: "orange" };
+      return { backgroundColor: "#FFC966" };
     } else {
-      return { backgroundColor: "orangeRed" };
+      return { backgroundColor: "#F8696B" };
     }
   };
 
@@ -104,39 +104,45 @@ class FantasySport extends React.Component {
           <thead>
             <tr>
               <th>Player</th>
-              <th>Draftstars Price</th>
               <OverlayTrigger
                 placement="top"
                 trigger={["focus", "hover"]}
                 overlay={PredictedScorePopover}
               >
-                <th>Predicted Score</th>
+                <th>
+                  Predicted<br></br>Score
+                </th>
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
                 trigger={["focus", "hover"]}
                 overlay={PricePredPopover}
               >
-                <th>Price/Pred (%)</th>
+                <th>
+                  Price/<br></br>Pred (%)
+                </th>
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
                 trigger={["focus", "hover"]}
                 overlay={OwnershipPopover}
               >
-                <th>Ownership (%) Previous Round</th>
+                <th>
+                  Ownership<br></br>Previous Round (%)
+                </th>
               </OverlayTrigger>
-              <th>Match</th>
+              <th>Draftstars Price</th>
               <th>Team</th>
               <th>Position</th>
+              <th>Match</th>
             </tr>
           </thead>
           <tbody>
             {this.state.filteredMatches?.map((item) => {
               return (
                 <tr>
-                  <td>{item.player}</td>
-                  <td>{Math.round(item.ds_price)}</td>
+                  <td className="playerFix">{item.player}</td>
+
                   <td>{Math.round(item.ds_pred)}</td>
                   <td
                     style={this.styleDFSConditionalFormatting(item.price_pred)}
@@ -146,11 +152,12 @@ class FantasySport extends React.Component {
                   <td
                     style={this.styleOSPrevConditionalFormatting(item.os_prev)}
                   >
-                    {Math.round(item.os_prev)}
+                    {Math.round(item.os_prev) || "N/A"}
                   </td>
-                  <td>{item.match_name}</td>
+                  <td>{Math.round(item.ds_price)}</td>
                   <td>{item.team}</td>
                   <td>{item.pos}</td>
+                  <td>{item.match_name}</td>
                 </tr>
               );
             })}
@@ -162,58 +169,68 @@ class FantasySport extends React.Component {
 
   dfsTable() {
     return (
-      <div className="tableFixHead">
-        <Table bordered striped hover>
+      <div className="tableFixHeadSmall">
+        <Table size="sm" bordered striped hover>
           <thead>
             <tr>
               <th>Player</th>
-              <th>Draftstars Price</th>
               <OverlayTrigger
                 placement="top"
                 trigger={["focus", "hover"]}
                 overlay={PredictedScorePopover}
               >
-                <th>Predicted Score</th>
+                <th>
+                  Predicted<br></br>Score
+                </th>
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
                 trigger={["focus", "hover"]}
                 overlay={PricePredPopover}
               >
-                <th>Price/Pred (%)</th>
+                <th>
+                  Price/<br></br>Pred (%)
+                </th>
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
                 trigger={["focus", "hover"]}
                 overlay={OwnershipPopover}
               >
-                <th>Ownership (%) Previous Round</th>
+                <th>
+                  Ownership<br></br>Previous Round(%)
+                </th>
               </OverlayTrigger>
-              <th>Match</th>
+              <th>
+                Draftstars<br></br>Price
+              </th>
               <th>Team</th>
               <th>Position</th>
+              <th>Match</th>
             </tr>
           </thead>
           <tbody>
             {this.state.dfs_summary.map((item) => {
               return (
                 <tr>
-                  <td>{item.player}</td>
-                  <td>{Math.round(item.ds_price)}</td>
+                  <td className="playerFix">{item.player}</td>
                   <td>{Math.round(item.ds_pred)}</td>
                   <td
                     style={this.styleDFSConditionalFormatting(item.price_pred)}
                   >
                     {Math.round(item.price_pred)}
                   </td>
+
                   <td
                     style={this.styleOSPrevConditionalFormatting(item.os_prev)}
                   >
-                    {Math.round(item.os_prev)}
+                    {Math.round(item.os_prev) || "N/A"}
                   </td>
-                  <td>{item.match_name}</td>
+
+                  <td>{Math.round(item.ds_price)}</td>
                   <td>{item.team}</td>
                   <td>{item.pos}</td>
+                  <td>{item.match_name}</td>
                 </tr>
               );
             })}
@@ -238,7 +255,7 @@ class FantasySport extends React.Component {
       <div>
         <div>{this.renderTeamSelect()}</div>
         <div>
-          <h1>Daily Fantasy Sports</h1>
+          <h2>Daily Fantasy Sports</h2>
         </div>
         <div>{this.renderTable()}</div>
       </div>
