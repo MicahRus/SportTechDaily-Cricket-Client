@@ -33,9 +33,24 @@
   font-size: 1.5vh;
 }
 
+.playerFix {
+  left: 0;
+  position: sticky;
+  top: auto;
+  width: 120px;
+  overflow-x: auto;
+  background: #eee; 
+}
+
 .tableFixHead {
   overflow-y: auto;
   height: 1000px;
+}
+
+.tableFixHeadSmall {
+  overflow-y: auto;
+  height: 1000px;
+  font-size: 10px;
 }
 
 th {
@@ -47,10 +62,14 @@ table {
   border-collapse: collapse;
   width: 100%;
 }
+
 th,
 td {
   padding: 8px 24px;
+  white-space: nowrap;
 }
+
 th {
   background: #eee;
 }
+

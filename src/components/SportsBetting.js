@@ -132,18 +132,13 @@ class SportsBetting extends React.Component {
     return (
       <div>
         <div>
-          <h2>Anytime Try Scorer Odds</h2>
+          <h3>Anytime Try Scorer Odds</h3>
         </div>
-        <div className="tableFixHead">
+        <div className="tableFixHeadSmall">
           <Table size="sm" bordered striped hover>
             <thead>
               <tr>
                 <th>Player</th>
-                <th>SportsBet</th>
-                <th>BetEasy</th>
-                <th>Neds</th>
-                <th>PointsBet</th>
-                <th>TopSport</th>
                 <OverlayTrigger
                   placement="top"
                   trigger={["focus", "hover"]}
@@ -154,40 +149,54 @@ class SportsBetting extends React.Component {
                 <OverlayTrigger
                   placement="top"
                   trigger={["focus", "hover"]}
-                  overlay={HistoricalPopover}
-                >
-                  <th>ATS Historical</th>
-                </OverlayTrigger>
-                <OverlayTrigger
-                  placement="top"
-                  trigger={["focus", "hover"]}
-                  overlay={ModelPopover}
-                >
-                  <th>ATS Model</th>
-                </OverlayTrigger>
-                <OverlayTrigger
-                  placement="top"
-                  trigger={["focus", "hover"]}
                   overlay={AtsBestHistoricalPopover}
                 >
-                  <th>Highest/Historical (%)</th>
+                  <th>Highest/<br></br>Historical (%)</th>
                 </OverlayTrigger>
                 <OverlayTrigger
                   placement="top"
                   trigger={["focus", "hover"]}
                   overlay={AtsBestModelPopover}
                 >
-                  <th>Highest/Model (%)</th>
+                  <th>Highest/<br></br>Model (%)</th>
                 </OverlayTrigger>
-                <th>Match</th>
+                <OverlayTrigger
+                  placement="top"
+                  trigger={["focus", "hover"]}
+                  overlay={HistoricalPopover}
+                >
+                  <th>ATS<br></br>Historical</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="top"
+                  trigger={["focus", "hover"]}
+                  overlay={ModelPopover}
+                >
+                  <th>ATS<br></br>Model</th>
+                </OverlayTrigger>
+                <th>SportsBet</th>
+                <th>BetEasy</th>
+                <th>Neds</th>
+                <th>PointsBet</th>
+                <th>TopSport</th>
                 <th>Team</th>
+                <th>Match</th>
               </tr>
             </thead>
             <tbody>
               {this.state.filteredMatches?.map((item) => {
                 return (
                   <tr>
-                    <td>{item.player}</td>
+                    <td  className="playerFix">{item.player}</td>
+                    <td>{item.highest}</td>
+                    <td style={this.stylePercentages(item.high_emp)}>
+                      {Math.round(item.high_emp * 100)}
+                    </td>
+                    <td style={this.stylePercentages(item.high_mod)}>
+                      {Math.round(item.high_mod * 100)}
+                    </td>
+                    <td>{item.ats_empirical}</td>
+                    <td>{item.ats_model}</td>
                     <td style={this.styleHighestOdds(item.sb, item.highest)}>
                       {item.sb}
                     </td>
@@ -212,17 +221,8 @@ class SportsBetting extends React.Component {
                     >
                       {item.topsport}
                     </td>
-                    <td>{item.highest}</td>
-                    <td>{item.ats_empirical}</td>
-                    <td>{item.ats_model}</td>
-                    <td style={this.stylePercentages(item.high_emp)}>
-                      {Math.round(item.high_emp * 100)}
-                    </td>
-                    <td style={this.stylePercentages(item.high_mod)}>
-                      {Math.round(item.high_mod * 100)}
-                    </td>
-                    <td>{item.match_name}</td>
                     <td>{item.team}</td>
+                    <td>{item.match_name}</td>
                   </tr>
                 );
               })}
@@ -237,18 +237,13 @@ class SportsBetting extends React.Component {
     return (
       <div>
         <div>
-          <h2>Anytime Try Scorer Odds</h2>
+          <h3>Anytime Try Scorer Odds</h3>
         </div>
-        <div className="tableFixHead">
+        <div className="tableFixHeadSmall">
           <Table size="sm" bordered striped hover>
-            <thead>
+          <thead>
               <tr>
                 <th>Player</th>
-                <th>SportsBet</th>
-                <th>BetEasy</th>
-                <th>Neds</th>
-                <th>PointsBet</th>
-                <th>TopSport</th>
                 <OverlayTrigger
                   placement="top"
                   trigger={["focus", "hover"]}
@@ -259,40 +254,54 @@ class SportsBetting extends React.Component {
                 <OverlayTrigger
                   placement="top"
                   trigger={["focus", "hover"]}
-                  overlay={HistoricalPopover}
-                >
-                  <th>ATS Historical</th>
-                </OverlayTrigger>
-                <OverlayTrigger
-                  placement="top"
-                  trigger={["focus", "hover"]}
-                  overlay={ModelPopover}
-                >
-                  <th>ATS Model</th>
-                </OverlayTrigger>
-                <OverlayTrigger
-                  placement="top"
-                  trigger={["focus", "hover"]}
                   overlay={AtsBestHistoricalPopover}
                 >
-                  <th>Highest/Historical (%)</th>
+                  <th>Highest/<br></br>Historical (%)</th>
                 </OverlayTrigger>
                 <OverlayTrigger
                   placement="top"
                   trigger={["focus", "hover"]}
                   overlay={AtsBestModelPopover}
                 >
-                  <th>Highest/Model (%)</th>
+                  <th>Highest/<br></br>Model (%)</th>
                 </OverlayTrigger>
-                <th>Match</th>
+                <OverlayTrigger
+                  placement="top"
+                  trigger={["focus", "hover"]}
+                  overlay={HistoricalPopover}
+                >
+                  <th>ATS<br></br>Historical</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="top"
+                  trigger={["focus", "hover"]}
+                  overlay={ModelPopover}
+                >
+                  <th>ATS<br></br>Model</th>
+                </OverlayTrigger>
+                <th>SportsBet</th>
+                <th>BetEasy</th>
+                <th>Neds</th>
+                <th>PointsBet</th>
+                <th>TopSport</th>
                 <th>Team</th>
+                <th>Match</th>
               </tr>
             </thead>
             <tbody>
               {this.state.ats_summary.map((item) => {
                 return (
                   <tr>
-                    <td>{item.player}</td>
+                    <td  className="playerFix">{item.player}</td>
+                    <td>{item.highest}</td>
+                    <td style={this.stylePercentages(item.high_emp)}>
+                      {Math.round(item.high_emp * 100)}
+                    </td>
+                    <td style={this.stylePercentages(item.high_mod)}>
+                      {Math.round(item.high_mod * 100)}
+                    </td>
+                    <td>{item.ats_empirical}</td>
+                    <td>{item.ats_model}</td>
                     <td style={this.styleHighestOdds(item.sb, item.highest)}>
                       {item.sb}
                     </td>
@@ -317,17 +326,8 @@ class SportsBetting extends React.Component {
                     >
                       {item.topsport}
                     </td>
-                    <td>{item.highest}</td>
-                    <td>{item.ats_empirical}</td>
-                    <td>{item.ats_model}</td>
-                    <td style={this.stylePercentages(item.high_emp)}>
-                      {Math.round(item.high_emp * 100)}
-                    </td>
-                    <td style={this.stylePercentages(item.high_mod)}>
-                      {Math.round(item.high_mod * 100)}
-                    </td>
-                    <td>{item.match_name}</td>
                     <td>{item.team}</td>
+                    <td>{item.match_name}</td>
                   </tr>
                 );
               })}
@@ -358,18 +358,13 @@ class SportsBetting extends React.Component {
     return (
       <div>
         <div>
-          <h2>First Try Scorer Odds</h2>
+          <h3>First Try Scorer Odds</h3>
         </div>
-        <div className="tableFixHead">
+        <div className="tableFixHeadSmall">
           <Table size="sm" bordered striped hover>
-            <thead>
+          <thead>
               <tr>
                 <th>Player</th>
-                <th>SportsBet</th>
-                <th>BetEasy</th>
-                <th>Neds</th>
-                <th>PointsBet</th>
-                <th>TopSport</th>
                 <OverlayTrigger
                   placement="top"
                   trigger={["focus", "hover"]}
@@ -380,40 +375,54 @@ class SportsBetting extends React.Component {
                 <OverlayTrigger
                   placement="top"
                   trigger={["focus", "hover"]}
+                  overlay={AtsBestHistoricalPopover}
+                >
+                  <th>Highest/<br></br>Historical (%)</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="top"
+                  trigger={["focus", "hover"]}
+                  overlay={AtsBestModelPopover}
+                >
+                  <th>Highest/<br></br>Model (%)</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="top"
+                  trigger={["focus", "hover"]}
                   overlay={HistoricalPopover}
                 >
-                  <th>ATS Historical</th>
+                  <th>FTS<br></br>Historical</th>
                 </OverlayTrigger>
                 <OverlayTrigger
                   placement="top"
                   trigger={["focus", "hover"]}
                   overlay={ModelPopover}
                 >
-                  <th>ATS Model</th>
+                  <th>FTS<br></br>Model</th>
                 </OverlayTrigger>
-                <OverlayTrigger
-                  placement="top"
-                  trigger={["focus", "hover"]}
-                  overlay={FtsBestHistoricalPopover}
-                >
-                  <th>Highest/Historical (%)</th>
-                </OverlayTrigger>
-                <OverlayTrigger
-                  placement="top"
-                  trigger={["focus", "hover"]}
-                  overlay={FtsBestModelPopover}
-                >
-                  <th>Highest/Model (%)</th>
-                </OverlayTrigger>
-                <th>Match</th>
+                <th>SportsBet</th>
+                <th>BetEasy</th>
+                <th>Neds</th>
+                <th>PointsBet</th>
+                <th>TopSport</th>
                 <th>Team</th>
+                <th>Match</th>
               </tr>
             </thead>
             <tbody>
               {this.state.fts_summary.map((item) => {
                 return (
                   <tr>
-                    <td>{item.player}</td>
+                    <td  className="playerFix">{item.player}</td>
+                    <td>{item.highest}</td>
+                    <td style={this.stylePercentages(item.high_emp)}>
+                      {Math.round(item.high_emp * 100)}
+                    </td>
+                    <td style={this.stylePercentages(item.high_mod)}>
+                      {Math.round(item.high_mod * 100)}
+                    </td>
+                    <td>{item.fts_empirical}</td>
+                    <td>{item.fts_model}</td>
                     <td style={this.styleHighestOdds(item.sb, item.highest)}>
                       {item.sb}
                     </td>
@@ -438,17 +447,8 @@ class SportsBetting extends React.Component {
                     >
                       {item.topsport}
                     </td>
-                    <td>{item.highest}</td>
-                    <td>{item.fts_empirical}</td>
-                    <td>{item.fts_model}</td>
-                    <td style={this.stylePercentages(item.high_emp)}>
-                      {Math.round(item.high_emp * 100)}
-                    </td>
-                    <td style={this.stylePercentages(item.high_mod)}>
-                      {Math.round(item.high_mod * 100)}
-                    </td>
-                    <td>{item.match_name}</td>
                     <td>{item.team}</td>
+                    <td>{item.match_name}</td>
                   </tr>
                 );
               })}
@@ -463,18 +463,13 @@ class SportsBetting extends React.Component {
     return (
       <div>
         <div>
-          <h2>First Try Scorer Odds</h2>
+          <h3>First Try Scorer Odds</h3>
         </div>
-        <div className="tableFixHead">
+        <div className="tableFixHeadSmall">
           <Table size="sm" bordered striped hover>
-            <thead>
+          <thead>
               <tr>
                 <th>Player</th>
-                <th>SportsBet</th>
-                <th>BetEasy</th>
-                <th>Neds</th>
-                <th>PointsBet</th>
-                <th>TopSport</th>
                 <OverlayTrigger
                   placement="top"
                   trigger={["focus", "hover"]}
@@ -485,40 +480,54 @@ class SportsBetting extends React.Component {
                 <OverlayTrigger
                   placement="top"
                   trigger={["focus", "hover"]}
+                  overlay={AtsBestHistoricalPopover}
+                >
+                  <th>Highest/<br></br>Historical (%)</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="top"
+                  trigger={["focus", "hover"]}
+                  overlay={AtsBestModelPopover}
+                >
+                  <th>Highest/<br></br>Model (%)</th>
+                </OverlayTrigger>
+                <OverlayTrigger
+                  placement="top"
+                  trigger={["focus", "hover"]}
                   overlay={HistoricalPopover}
                 >
-                  <th>ATS Historical</th>
+                  <th>FTS<br></br>Historical</th>
                 </OverlayTrigger>
                 <OverlayTrigger
                   placement="top"
                   trigger={["focus", "hover"]}
                   overlay={ModelPopover}
                 >
-                  <th>ATS Model</th>
+                  <th>FTS<br></br>Model</th>
                 </OverlayTrigger>
-                <OverlayTrigger
-                  placement="top"
-                  trigger={["focus", "hover"]}
-                  overlay={FtsBestHistoricalPopover}
-                >
-                  <th>Highest/Historical (%)</th>
-                </OverlayTrigger>
-                <OverlayTrigger
-                  placement="top"
-                  trigger={["focus", "hover"]}
-                  overlay={FtsBestModelPopover}
-                >
-                  <th>Highest/Model (%)</th>
-                </OverlayTrigger>
-                <th>Match</th>
+                <th>SportsBet</th>
+                <th>BetEasy</th>
+                <th>Neds</th>
+                <th>PointsBet</th>
+                <th>TopSport</th>
                 <th>Team</th>
+                <th>Match</th>
               </tr>
             </thead>
             <tbody>
               {this.state.filteredMatches?.map((item) => {
                 return (
                   <tr>
-                    <td>{item.player}</td>
+                    <td  className="playerFix">{item.player}</td>
+                    <td>{item.highest}</td>
+                    <td style={this.stylePercentages(item.high_emp)}>
+                      {Math.round(item.high_emp * 100)}
+                    </td>
+                    <td style={this.stylePercentages(item.high_mod)}>
+                      {Math.round(item.high_mod * 100)}
+                    </td>
+                    <td>{item.fts_empirical}</td>
+                    <td>{item.fts_model}</td>
                     <td style={this.styleHighestOdds(item.sb, item.highest)}>
                       {item.sb}
                     </td>
@@ -543,17 +552,8 @@ class SportsBetting extends React.Component {
                     >
                       {item.topsport}
                     </td>
-                    <td>{item.highest}</td>
-                    <td>{item.fts_empirical}</td>
-                    <td>{item.fts_model}</td>
-                    <td style={this.stylePercentages(item.high_emp)}>
-                      {Math.round(item.high_emp * 100)}
-                    </td>
-                    <td style={this.stylePercentages(item.high_mod)}>
-                      {Math.round(item.high_mod * 100)}
-                    </td>
-                    <td>{item.match_name}</td>
                     <td>{item.team}</td>
+                    <td>{item.match_name}</td>
                   </tr>
                 );
               })}

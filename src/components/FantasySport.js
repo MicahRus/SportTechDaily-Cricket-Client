@@ -99,44 +99,49 @@ class FantasySport extends React.Component {
 
   filteredDfsTable = () => {
     return (
-      <div className="tableFixHead">
-        <Table bordered striped hover>
+      <div className="tableFixHeadSmall">
+        <Table 
+          size="sm"
+          bordered 
+          striped 
+          hover
+          >
           <thead>
             <tr>
               <th>Player</th>
-              <th>Draftstars Price</th>
               <OverlayTrigger
                 placement="top"
                 trigger={["focus", "hover"]}
                 overlay={PredictedScorePopover}
               >
-                <th>Predicted Score</th>
+              <th>Predicted<br></br>Score</th>
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
                 trigger={["focus", "hover"]}
                 overlay={PricePredPopover}
               >
-                <th>Price/Pred (%)</th>
+                <th>Price/<br></br>Pred (%)</th>
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
                 trigger={["focus", "hover"]}
                 overlay={OwnershipPopover}
               >
-                <th>Ownership (%) Previous Round</th>
+              <th>Ownership<br></br>Previous Round (%)</th>
               </OverlayTrigger>
-              <th>Match</th>
+              <th>Draftstars Price</th>
               <th>Team</th>
               <th>Position</th>
+              <th>Match</th>
             </tr>
           </thead>
           <tbody>
             {this.state.filteredMatches?.map((item) => {
               return (
                 <tr>
-                  <td>{item.player}</td>
-                  <td>{Math.round(item.ds_price)}</td>
+                  <td className="playerFix">{item.player}</td>
+
                   <td>{Math.round(item.ds_pred)}</td>
                   <td
                     style={this.styleDFSConditionalFormatting(item.price_pred)}
@@ -148,9 +153,10 @@ class FantasySport extends React.Component {
                   >
                     {Math.round(item.os_prev)}
                   </td>
-                  <td>{item.match_name}</td>
+                  <td>{Math.round(item.ds_price)}</td>
                   <td>{item.team}</td>
                   <td>{item.pos}</td>
+                  <td>{item.match_name}</td>
                 </tr>
               );
             })}
@@ -162,44 +168,44 @@ class FantasySport extends React.Component {
 
   dfsTable() {
     return (
-      <div className="tableFixHead">
-        <Table bordered striped hover>
+      <div className="tableFixHeadSmall">
+        <Table size ="sm" bordered striped hover>
           <thead>
             <tr>
               <th>Player</th>
-              <th>Draftstars Price</th>
               <OverlayTrigger
                 placement="top"
                 trigger={["focus", "hover"]}
                 overlay={PredictedScorePopover}
               >
-                <th>Predicted Score</th>
+                <th>Predicted<br></br>Score</th>
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
                 trigger={["focus", "hover"]}
                 overlay={PricePredPopover}
               >
-                <th>Price/Pred (%)</th>
+                <th>Price/<br></br>Pred (%)</th>
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
                 trigger={["focus", "hover"]}
                 overlay={OwnershipPopover}
               >
-                <th>Ownership (%) Previous Round</th>
+                <th>Ownership<br></br>Previous Round(%)</th>
               </OverlayTrigger>
-              <th>Match</th>
+              <th>Draftstars<br></br>Price</th>
               <th>Team</th>
               <th>Position</th>
+              <th>Match</th>
             </tr>
           </thead>
           <tbody>
             {this.state.dfs_summary.map((item) => {
               return (
                 <tr>
-                  <td>{item.player}</td>
-                  <td>{Math.round(item.ds_price)}</td>
+                  <td className="playerFix">{item.player}</td>
+
                   <td>{Math.round(item.ds_pred)}</td>
                   <td
                     style={this.styleDFSConditionalFormatting(item.price_pred)}
@@ -211,9 +217,10 @@ class FantasySport extends React.Component {
                   >
                     {Math.round(item.os_prev)}
                   </td>
-                  <td>{item.match_name}</td>
+                  <td>{Math.round(item.ds_price)}</td>
                   <td>{item.team}</td>
                   <td>{item.pos}</td>
+                  <td>{item.match_name}</td>
                 </tr>
               );
             })}
@@ -238,7 +245,7 @@ class FantasySport extends React.Component {
       <div>
         <div>{this.renderTeamSelect()}</div>
         <div>
-          <h1>Daily Fantasy Sports</h1>
+          <h2>Daily Fantasy Sports</h2>
         </div>
         <div>{this.renderTable()}</div>
       </div>
