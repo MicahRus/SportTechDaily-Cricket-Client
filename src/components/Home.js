@@ -41,7 +41,7 @@ class Home extends React.Component {
     averageOrTotal: "average",
     playerPercentiles: [{}, {}],
     scatterStat1: ["All Run Metres"],
-    scatterStat2: ["Post Contact Metres"],
+    scatterStat2: ["Fantasy Points Total"],
     initialDisable: true,
     selectedStats: [
       "all_run_metres",
@@ -807,7 +807,7 @@ class Home extends React.Component {
     let lowerStat = stat[0].toLowerCase().split(" ").join("_");
     return (
       <Col lg={8} sm={12}>
-        <div className="graph-container" style={{ height: "100vh" }}>
+        <div className="graph-container" style={{ height: "80%" }}>
           <ResponsiveBar
             data={this.state.barGraphData}
             layout="horizontal"
@@ -902,7 +902,7 @@ class Home extends React.Component {
     let player1Matches = this.state.player1MatchDates;
     return (
       <Col lg={8} sm={12} className="graph-container">
-        <div style={{ height: "100vh" }}>
+        <div style={{ height: "80%" }}>
           <h1 style={{ textAlign: "center" }}>
             {" "}
             {stat1} v {stat2}
@@ -930,7 +930,7 @@ class Home extends React.Component {
               tickSize: 5,
               tickPadding: 5,
               tickRotation: 90,
-              legend: stat1,
+              legend: `${stat1} (x)`,
               legendPosition: "middle",
               legendOffset: 46,
             }}
@@ -939,7 +939,7 @@ class Home extends React.Component {
               tickSize: 5,
               tickPadding: 5,
               tickRotation: 0,
-              legend: stat2,
+              legend: `${stat2} (y)`,
               legendPosition: "middle",
               legendOffset: -60,
             }}
@@ -1412,7 +1412,8 @@ class Home extends React.Component {
           placeholder={this.state.scatterStat1[0]}
           isOptionDisabled={(option) =>
             option.label === this.state.scatterStat1[0] ||
-            option.label === this.state.scatterStat2[0]
+            option.label === this.state.scatterStat2[0] ||
+            option.label + " " + "Total" === this.state.scatterStat2[0]
           }
         />
         <span>Stat 2</span>
@@ -2181,7 +2182,7 @@ class Home extends React.Component {
     return (
       <>
         {/* {this.renderMotionDiv()} */}
-        <Row style={{ height: "100vh" }}>
+        <Row style={{ height: "100%" }}>
           {this.renderGraphControl()}
           {this.renderGraph()}
         </Row>

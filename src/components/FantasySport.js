@@ -99,13 +99,8 @@ class FantasySport extends React.Component {
 
   filteredDfsTable = () => {
     return (
-      <div className="tableFixHeadSmall">
-        <Table 
-          size="sm"
-          bordered 
-          striped 
-          hover
-          >
+      <div className="tableFixHead">
+        <Table bordered striped hover size="sm">
           <thead>
             <tr>
               <th>Player</th>
@@ -114,21 +109,27 @@ class FantasySport extends React.Component {
                 trigger={["focus", "hover"]}
                 overlay={PredictedScorePopover}
               >
-              <th>Predicted<br></br>Score</th>
+                <th>
+                  Predicted<br></br>Score
+                </th>
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
                 trigger={["focus", "hover"]}
                 overlay={PricePredPopover}
               >
-                <th>Price/<br></br>Pred (%)</th>
+                <th>
+                  Price/<br></br>Pred (%)
+                </th>
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
                 trigger={["focus", "hover"]}
                 overlay={OwnershipPopover}
               >
-              <th>Ownership<br></br>Previous Round (%)</th>
+                <th>
+                  Ownership<br></br>Previous Round (%)
+                </th>
               </OverlayTrigger>
               <th>Draftstars Price</th>
               <th>Team</th>
@@ -169,7 +170,7 @@ class FantasySport extends React.Component {
   dfsTable() {
     return (
       <div className="tableFixHeadSmall">
-        <Table size ="sm" bordered striped hover>
+        <Table size="sm" bordered striped hover>
           <thead>
             <tr>
               <th>Player</th>
@@ -178,23 +179,31 @@ class FantasySport extends React.Component {
                 trigger={["focus", "hover"]}
                 overlay={PredictedScorePopover}
               >
-                <th>Predicted<br></br>Score</th>
+                <th>
+                  Predicted<br></br>Score
+                </th>
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
                 trigger={["focus", "hover"]}
                 overlay={PricePredPopover}
               >
-                <th>Price/<br></br>Pred (%)</th>
+                <th>
+                  Price/<br></br>Pred (%)
+                </th>
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
                 trigger={["focus", "hover"]}
                 overlay={OwnershipPopover}
               >
-                <th>Ownership<br></br>Previous Round(%)</th>
+                <th>
+                  Ownership<br></br>Previous Round(%)
+                </th>
               </OverlayTrigger>
-              <th>Draftstars<br></br>Price</th>
+              <th>
+                Draftstars<br></br>Price
+              </th>
               <th>Team</th>
               <th>Position</th>
               <th>Match</th>
