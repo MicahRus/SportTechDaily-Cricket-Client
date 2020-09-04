@@ -993,11 +993,11 @@ class Home extends React.Component {
         "http://www.w3.org/2000/svg",
         "image"
       );
-      svgImg.setAttributeNS(null, "height", "15%");
-      svgImg.setAttributeNS(null, "width", "15%");
+      svgImg.setAttributeNS(null, "height", "18%");
+      svgImg.setAttributeNS(null, "width", "18%");
       svgImg.setAttributeNS("http://www.w3.org/1999/xlink", "href", logo);
-      svgImg.setAttributeNS(null, "x", "0%");
-      svgImg.setAttributeNS(null, "y", "40%");
+      svgImg.setAttributeNS(null, "x", "75%");
+      svgImg.setAttributeNS(null, "y", "0%");
       svgImg.setAttributeNS(null, "visibility", "visible");
       svgImg.setAttributeNS(null, "id", "logo");
       svg.append(svgImg);
