@@ -11,7 +11,6 @@ import {
   Tabs,
   Button,
   Table,
-  Container,
   Popover,
   OverlayTrigger,
 } from "react-bootstrap";
@@ -149,7 +148,7 @@ class Home extends React.Component {
     this.getAllTeamsData();
     this.getCurrentPlayers();
     this.getPlayerPercentiles();
-    this.getCurrentStats();
+    // this.getCurrentStats();
     this.setDelay();
   }
 
@@ -209,12 +208,13 @@ class Home extends React.Component {
     this.setState({ playerPercentiles: data.rows });
   };
 
-  getCurrentStats = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/currentstats`
-    );
-    const data = await response.json();
-  };
+  // getCurrentStats = async () => {
+  //   const response = await fetch(
+  //     `${process.env.REACT_APP_BACKEND_URL}/currentstats`
+  //   );
+  //   const data = await response.json();
+
+  // };
 
   getMatches = async (playerId, playerName, playerNumber) => {
     let playerId1 = playerId;
@@ -248,7 +248,9 @@ class Home extends React.Component {
             player2Matches.push(match);
           }
         }
+        return null;
       });
+      return null;
     });
 
     this.setState({ player1Matches, player2Matches, selectedPlayers });
@@ -382,7 +384,9 @@ class Home extends React.Component {
             try_assists.push(player[stat]);
             break;
         }
+        return null;
       });
+      return null;
     });
     const allStats = [
       { all_run_metres },
@@ -479,21 +483,10 @@ class Home extends React.Component {
     }
   };
 
-  // This function handles setting up the data that the graph will display
+  // This function handles setting up the data that the  radar graph will display
   setGraphData = (playerName, playerNumber) => {
-    const player = this.state.currentPlayersData?.[playerNumber];
     let playerStat = 1;
     let seasonStats = null;
-
-    // A function used to find the percentile of our players data
-    const percentileFinder = (arr, val) =>
-      (100 *
-        arr.reduce(
-          (acc, v) => acc + (v < val ? 1 : 0) + (v === val ? 0.5 : 0),
-          0
-        )) /
-      arr.length;
-
     let newData = [];
     let x = null;
 
@@ -565,6 +558,7 @@ class Home extends React.Component {
           break;
       }
 
+      // Checks the see if the function should work with the total or average stats
       if (this.state.averageOrTotal === "total") {
         seasonStats = this.state.seasonPlayerPercentilesTotal;
       } else {
@@ -581,6 +575,7 @@ class Home extends React.Component {
               this.state.options[x].value.toLowerCase().split(" ").join("_")
             ];
         }
+        return null;
       });
       if (playerNumber === "player1") {
         newData.push({
@@ -595,6 +590,7 @@ class Home extends React.Component {
           [playerName]: playerStat,
         });
       }
+      return null;
     });
     this.setState({ graphData: newData, redirect: "/" });
   };
@@ -668,6 +664,7 @@ class Home extends React.Component {
           });
         }
       }
+      return null;
     });
     this.setState({
       graphData: clonedArray,
@@ -683,6 +680,7 @@ class Home extends React.Component {
         value: player.player_id,
         label: player.player_name,
       });
+      return null;
     });
 
     return (
@@ -717,6 +715,7 @@ class Home extends React.Component {
       if (player.player_id === this.state.player2Matches[0].player_id) {
         player2Name = player.first_name + " " + player.last_name;
       }
+      return null;
     });
     let stat1 = this.state.scatterStat1[0].toLowerCase().split(" ").join("_");
     let stat2 = this.state.scatterStat2[0].toLowerCase().split(" ").join("_");
@@ -746,12 +745,15 @@ class Home extends React.Component {
         if (match.match_id === playerMatch.match_id) {
           player1MatchDates.push(match);
         }
+        return null;
       });
       this.state.player2Matches.map((playerMatch) => {
         if (match.match_id === playerMatch.match_id) {
           player2MatchDates.push(match);
         }
+        return null;
       });
+      return null;
     });
 
     this.setState({
@@ -768,6 +770,7 @@ class Home extends React.Component {
       player1MatchDates,
       player2MatchDates,
     });
+    return null;
   };
 
   setBarChartData = (players) => {
@@ -783,6 +786,7 @@ class Home extends React.Component {
               [lowerStat]: percentile[lowerStat],
             });
           }
+          return null;
         });
       } else {
         this.state.seasonPlayerPercentilesAverage.map((percentile) => {
@@ -792,14 +796,17 @@ class Home extends React.Component {
               [lowerStat]: percentile[lowerStat],
             });
           }
+          return null;
         });
       }
+      return null;
     });
     this.setState({
       barGraphData: graphData,
       selectedPlayers: players,
       refreshBarChart: false,
     });
+    return null;
   };
 
   renderBarChart = () => {
@@ -889,6 +896,7 @@ class Home extends React.Component {
             motionDamping={15}
           />
         </div>
+        {this.downloadButton()}
       </Col>
     );
   };
@@ -956,7 +964,6 @@ class Home extends React.Component {
                 itemDirection: "top-to-bottom",
                 symbolSize: 12,
                 symbolShape: "circle",
-                anchor: "bottom-left",
                 effects: [
                   {
                     on: "hover",
@@ -983,30 +990,18 @@ class Home extends React.Component {
     const allSvg = document.querySelectorAll("svg");
     const svg = allSvg[2];
 
-    this.setState({ enableDotLabel: false }, () => {
-      // const svgButton = document.createElementNS(
-      //   "http://www.w3.org/2000/svg",
-      //   "button"
-      // );
-      // const button = document.getElementById('button')
-      // button.innerHTML("PRESS ME LA");
-      // svgButton.setAttributeNS(null, "height", "200");
-      // svgButton.setAttributeNS(null, "width", "200");
-      // svgButton.setAttributeNS(null, "x", "800");
-      // svgButton.setAttributeNS(null, "y", "0");
-      // svgButton.setAttributeNS(null, "visibility", "visible");
-      // svgButton.setAttributeNS(null, "id", "button");
-      // svg.append(svgButton);
+    console.log(allSvg);
 
+    (() => {
       const svgImg = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "image"
       );
-      svgImg.setAttributeNS(null, "height", "200");
-      svgImg.setAttributeNS(null, "width", "200");
+      svgImg.setAttributeNS(null, "height", "15%");
+      svgImg.setAttributeNS(null, "width", "15%");
       svgImg.setAttributeNS("http://www.w3.org/1999/xlink", "href", logo);
-      svgImg.setAttributeNS(null, "x", "10%");
-      svgImg.setAttributeNS(null, "y", "0");
+      svgImg.setAttributeNS(null, "x", "0%");
+      svgImg.setAttributeNS(null, "y", "40%");
       svgImg.setAttributeNS(null, "visibility", "visible");
       svgImg.setAttributeNS(null, "id", "logo");
       svg.append(svgImg);
@@ -1019,7 +1014,20 @@ class Home extends React.Component {
         getLogo.remove();
         this.setState({ enableDotLabel: false });
       }, 1000);
-    });
+    })();
+  };
+
+  downloadButton = () => {
+    return (
+      <Button
+        onClick={this.downloadHandler}
+        variant="secondary"
+        size="sm"
+        active
+      >
+        Download
+      </Button>
+    );
   };
 
   // Renders the radar graph
@@ -1073,14 +1081,7 @@ class Home extends React.Component {
             ]}
           />
         </div>
-        <Button
-          onClick={this.downloadHandler}
-          variant="secondary"
-          size="sm"
-          active
-        >
-          Download
-        </Button>
+        {this.downloadButton()}
       </Col>
     );
   };
@@ -1413,7 +1414,7 @@ class Home extends React.Component {
           isOptionDisabled={(option) =>
             option.label === this.state.scatterStat1[0] ||
             option.label === this.state.scatterStat2[0] ||
-            option.label + " " + "Total" === this.state.scatterStat2[0]
+            `${option.label} Total` === this.state.scatterStat2[0]
           }
         />
         <span>Stat 2</span>
@@ -1441,6 +1442,7 @@ class Home extends React.Component {
     const options = [];
     this.state.teams.map((team) => {
       options.push({ label: team.team_name, value: team.team_name });
+      return null;
     });
     return (
       <div>
@@ -1467,6 +1469,7 @@ class Home extends React.Component {
         value: player.player_id,
         label: player.player_name,
       });
+      return null;
     });
     if (this.state.graphType === "radar") {
       return (
@@ -2012,11 +2015,13 @@ class Home extends React.Component {
     if (this.state.averageOrTotal === "average") {
       this.state.seasonPlayerStatsAverage.map((player) => {
         statsArray.push(player[stat]);
+        return null;
       });
       players = this.state.seasonPlayerStatsAverage;
     } else {
       this.state.seasonPlayerStatsTotal.map((player) => {
         statsArray.push(player[stat]);
+        return null;
       });
       players = this.state.seasonPlayerStatsTotal;
     }
@@ -2036,7 +2041,9 @@ class Home extends React.Component {
           topPlayersArray.push(player);
           x++;
         }
+        return null;
       });
+      return null;
     });
 
     return (

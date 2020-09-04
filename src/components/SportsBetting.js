@@ -57,9 +57,11 @@ class SportsBetting extends React.Component {
 
     cleanMatchArray.map((match) => {
       matchNames.push({ value: match, label: match });
+      return null;
     });
 
     this.setState({ matchNames });
+    return null;
   };
 
   renderTeamSelect = () => {
@@ -101,7 +103,7 @@ class SportsBetting extends React.Component {
         />
       </div>
     );
-  };
+  }
 
   styleHighestOdds = (item, highest) => {
     if (item === highest) return { backgroundColor: "yellow" };
@@ -124,8 +126,10 @@ class SportsBetting extends React.Component {
       if (item.match_name === this.state.selectedMatch) {
         filteredMatches.push(item);
       }
+      return null;
     });
     this.setState({ filteredMatches });
+    return null;
   };
 
   filteredAtsTable = () => {

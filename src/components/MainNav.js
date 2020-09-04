@@ -9,13 +9,12 @@ import { Redirect } from "react-router-dom";
 import logo from "./images/logo.svg";
 import home from "./images/home_5.png";
 
-let x = window.location.href;
-let y = x.split("/");
-let eventKey = `/${y[y.length - 1]}`;
-
 class MainNav extends React.Component {
   state = { redirect: null, eventKey: null };
   navBar = () => {
+    let x = window.location.href;
+    let y = x.split("/");
+    let key = `/${y[y.length - 1]}`;
     if (!this.state.eventKey) {
       this.setState({ eventKey: "/" });
     }
@@ -46,14 +45,8 @@ class MainNav extends React.Component {
               variant="tabs"
               className="main-nav"
               justify
-              variant="tabs"
               activeKey={this.state.activeKey}
-              defaultActiveKey={() => {
-                let x = window.location.href;
-                let y = x.split("/");
-                let eventKey = `/${y[y.length - 1]}`;
-                return eventKey;
-              }}
+              defaultActiveKey={key}
             >
               <Nav.Item>
                 <Nav.Link
