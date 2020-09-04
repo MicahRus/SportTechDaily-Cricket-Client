@@ -36,12 +36,12 @@
   height: 1000px;
 }
 
-.tableFixHeadSmall {
+/* .tableFixHeadSmall {
   overflow-y: auto;
   height: 1000px;
   font-size: 12px;
   white-space: nowrap;
-}
+} */
 
 th {
   position: sticky;

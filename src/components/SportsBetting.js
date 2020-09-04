@@ -39,6 +39,7 @@ class SportsBetting extends React.Component {
     this.setState({ ats_summary: data.rows }, () => this.setMatchData());
   };
 
+  // Retrieves data from fts_summary table
   getFtsData = async () => {
     const response = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}/fts_summary`
@@ -47,6 +48,7 @@ class SportsBetting extends React.Component {
     this.setState({ fts_summary: data.rows });
   };
 
+  // defines array for use in Match Select, data coming from ats_summary.match_name
   setMatchData = () => {
     const atsMatchArray = [];
     let matchNames = [{ value: "All Teams", label: "All Teams" }];
@@ -64,6 +66,7 @@ class SportsBetting extends React.Component {
     return null;
   };
 
+  // sets options for Match Select component, taken from matchNames array, defined above
   renderTeamSelect = () => {
     return (
       <div>
@@ -80,6 +83,8 @@ class SportsBetting extends React.Component {
     );
   };
 
+  // sets options for Market Select component, hard coded into array. 
+  // sets state for filtered tables (ATS and FTS)
   renderMarketSelect() {
     const marketOptions = [
       { value: "ATS", label: "Anytime Try Scorer" },
@@ -105,10 +110,12 @@ class SportsBetting extends React.Component {
     );
   }
 
+  // styling for Odds columns in ATS and FTS tables, compares against Highest Odds column
   styleHighestOdds = (item, highest) => {
     if (item === highest) return { backgroundColor: "yellow" };
   };
 
+  // 
   stylePercentages = (item) => {
     if (item * 100 >= 125) {
       return { backgroundColor: "salmon" };
@@ -138,7 +145,7 @@ class SportsBetting extends React.Component {
         <div>
           <h3>Anytime Try Scorer Odds</h3>
         </div>
-        <div className="tableFixHeadSmall">
+        <div className="tableFixHead">
           <Table size="sm" bordered striped hover>
             <thead>
               <tr>
@@ -243,7 +250,7 @@ class SportsBetting extends React.Component {
         <div>
           <h3>Anytime Try Scorer Odds</h3>
         </div>
-        <div className="tableFixHeadSmall">
+        <div className="tableFixHead">
           <Table size="sm" bordered striped hover>
           <thead>
               <tr>
@@ -364,7 +371,7 @@ class SportsBetting extends React.Component {
         <div>
           <h3>First Try Scorer Odds</h3>
         </div>
-        <div className="tableFixHeadSmall">
+        <div className="tableFixHead">
           <Table size="sm" bordered striped hover>
           <thead>
               <tr>
@@ -469,7 +476,7 @@ class SportsBetting extends React.Component {
         <div>
           <h3>First Try Scorer Odds</h3>
         </div>
-        <div className="tableFixHeadSmall">
+        <div className="tableFixHead">
           <Table size="sm" bordered striped hover>
           <thead>
               <tr>
