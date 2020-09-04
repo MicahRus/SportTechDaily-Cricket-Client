@@ -71,8 +71,8 @@ class Home extends React.Component {
     toggleAdvancedOptions: false,
     enableDotLabel: false,
     barGraphData: [
-      { playerName: "James Tedesco", all_run_metres: 98 },
-      { playerName: "Kalyn Ponga", all_run_metres: 95 },
+      { playerName: "James Tedesco", ["All Run Metres"]: 98 },
+      { playerName: "Kalyn Ponga", ["All Run Metres"]: 95 },
     ],
     currentPlayersData: {
       player1: { data: null, playerName: "player1" },
@@ -771,15 +771,15 @@ class Home extends React.Component {
 
   setBarChartData = (players) => {
     const graphData = [];
-    let stat = this.state.barStat1;
-    let lowerStat = stat[0].toLowerCase().split(" ").join("_");
+    let stat = this.state.barStat1[0];
+    let lowerStat = stat.split(" ").join("_").toLowerCase();
     players.map((player) => {
       if (this.state.averageOrTotal === "total") {
         this.state.seasonPlayerPercentilesTotal.map((percentile) => {
           if (player.value === percentile.player_id) {
             graphData.push({
               playerName: player.label,
-              [lowerStat]: percentile[lowerStat],
+              [stat]: percentile[lowerStat],
             });
           }
           return null;
@@ -789,7 +789,7 @@ class Home extends React.Component {
           if (player.value === percentile.player_id) {
             graphData.push({
               playerName: player.label,
-              [lowerStat]: percentile[lowerStat],
+              [stat]: percentile[lowerStat],
             });
           }
           return null;
@@ -806,7 +806,7 @@ class Home extends React.Component {
   };
 
   renderBarChart = () => {
-    let stat = this.state.barStat1;
+    let stat = this.state.barStat1[0];
     let lowerStat = stat[0].toLowerCase().split(" ").join("_");
     return (
       <Col lg={8} sm={12}>
@@ -814,7 +814,7 @@ class Home extends React.Component {
           <ResponsiveBar
             data={this.state.barGraphData}
             layout="horizontal"
-            keys={[lowerStat]}
+            keys={[stat]}
             indexBy="playerName"
             margin={{ top: 50, right: 120, bottom: 50, left: 120 }}
             padding={0.8}
