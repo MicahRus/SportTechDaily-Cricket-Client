@@ -37,32 +37,38 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+### 'yarn build'
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+This can be used to build the site, and deploy it to netlify.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Libraries
 
-### Code Splitting
+- Node
+  Used to run the server
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+- Express
+  Used to build the server
 
-### Analyzing the Bundle Size
+- React
+  The primary library used in construction of the site
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+- Yarn
+  Used to deploy / install libraries
 
-### Making a Progressive Web App
+- NPM
+  Used to install libraries
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+- React-Select
+  Used to create dropdown select boxes
 
-### Advanced Configuration
+- React-Bootstrap
+  Used as the framework on which to style the site, most of the css is from this library
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+- Nivo
+  Used to render graph to the page
 
-### Deployment
+-saveSvgAsPng
+Used to download the nivo graphs from the page
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+- React-Datepicker
+  Used to render a date-picker element to the page
