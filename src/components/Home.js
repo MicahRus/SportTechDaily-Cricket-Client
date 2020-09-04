@@ -15,6 +15,8 @@ import {
   OverlayTrigger,
 } from "react-bootstrap";
 
+import RangeSlider from "react-bootstrap-range-slider";
+
 import Select from "react-select";
 
 import DatePicker from "react-datepicker";
@@ -24,13 +26,8 @@ import { ResponsiveRadar } from "@nivo/radar";
 import { ResponsiveScatterPlot } from "@nivo/scatterplot";
 import { ResponsiveBar } from "@nivo/bar";
 
-import Popup from "reactjs-popup";
-
-import { motion } from "framer-motion";
-
 import "bootstrap/dist/css/bootstrap.css";
 import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
-import RangeSlider from "react-bootstrap-range-slider";
 
 const saveSvgAsPng = require("save-svg-as-png");
 
@@ -65,7 +62,6 @@ class Home extends React.Component {
     graphType: "radar",
     redirect: null,
     showPositionButtons: false,
-    hide: true,
     startDate: { date: Date.now() },
     endDate: { date: new Date() },
     disabled: false,
@@ -1138,58 +1134,6 @@ class Home extends React.Component {
     }
   };
 
-  renderModal() {
-    return (
-      <Popup
-        onClose={() => {
-          this.setState({ hide: false });
-        }}
-        defaultOpen={true}
-        modal={true}
-        disabled={this.state.disabled}
-        closeOnDocumentClick
-        position="center center"
-      >
-        <div>
-          What kind of fan are you?
-          <Popup
-            disabled={this.state.disabled}
-            closeOnDocumentClick
-            position="bottom center"
-            trigger={
-              <div>
-                <button onClick={this.fanTypeClickHandler} value="general">
-                  {" "}
-                  General
-                </button>
-                <button onClick={this.fanTypeClickHandler} value="fantasy">
-                  {" "}
-                  Fantasy
-                </button>
-                <button onClick={this.fanTypeClickHandler} value="betting">
-                  {" "}
-                  Betting
-                </button>
-              </div>
-            }
-          >
-            <div>
-              <p> What type of stats are you interested in? </p>
-              <button onClick={this.teamPlayerClickHandler} value="team">
-                {" "}
-                Team
-              </button>
-              <button onClick={this.teamPlayerClickHandler} value="player">
-                {" "}
-                Player
-              </button>
-            </div>
-          </Popup>
-        </div>
-      </Popup>
-    );
-  }
-
   checkStatTemplate = (type) => {
     let arr = [];
     if (type === "forward") {
@@ -1988,21 +1932,6 @@ class Home extends React.Component {
     );
   };
 
-  renderMotionDiv = () => {
-    return (
-      <motion.div
-        style={{
-          height: "250px",
-          width: "250px",
-          backgroundColor: "grey",
-          opacity: 0.5,
-        }}
-        animate={{ scale: 0, x: -115, y: -155 }}
-        transition={{ duration: 0.5 }}
-      ></motion.div>
-    );
-  };
-
   renderRankings = () => {
     let statsArray = [];
     let topNumbersArray = [];
@@ -2178,21 +2107,12 @@ class Home extends React.Component {
   };
 
   render() {
-    // if (this.state.hide) {
-    //   return (
-    //     <>
-    //       {this.renderControlBar()}
-    //       {this.renderModal()}
-    //     </>
-    //   )
-    // }
     if (this.state.redirect) {
       this.handleRefresh();
       return <Redirect to={this.state.redirect} />;
     }
     return (
       <>
-        {/* {this.renderMotionDiv()} */}
         <Row style={{ height: "100%" }}>
           {this.renderGraphControl()}
           {this.renderGraph()}
