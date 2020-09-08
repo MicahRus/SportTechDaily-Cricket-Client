@@ -14,6 +14,10 @@
   background-color: silver !important;
 }
 
+.btn-toolbar {
+  margin-top: 5px;
+}
+
 #graphTypeSelector-tab-information {
   color: whitesmoke !important;
   font-style: italic;
