@@ -8,7 +8,7 @@ import {
 } from "react-bootstrap/";
 
 class PlayerSelect extends React.Component {
-  state = { playerOptions: [{ value: "test", label: "spagheet" }] };
+  state = { playerOptions: [{ value: "test", label: "test" }] };
 
   componentDidMount() {
     this.setPlayerOptions();
