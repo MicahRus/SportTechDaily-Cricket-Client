@@ -52,6 +52,7 @@ class PlayerSelect extends React.Component {
     return (
       <div>
         <ToggleButtonGroup
+          value={this.props.options.playerType}
           name="radio"
           onChange={(value) => {
             this.props.clickHandler(value);
