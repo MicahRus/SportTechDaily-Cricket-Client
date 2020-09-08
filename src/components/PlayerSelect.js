@@ -1,11 +1,7 @@
 import React from "react";
 import Select from "react-select";
 
-import {
-  ToggleButton,
-  ToggleButtonGroup,
-  ButtonToolbar,
-} from "react-bootstrap/";
+import { ToggleButton, ToggleButtonGroup } from "react-bootstrap/";
 
 class PlayerSelect extends React.Component {
   state = { playerOptions: [{ value: "test", label: "test" }] };
