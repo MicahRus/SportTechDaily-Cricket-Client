@@ -71,7 +71,7 @@ class MainNav extends React.Component {
                   Fantasy
                 </Nav.Link>
               </Nav.Item>
-              <Nav.Item>
+              {/* <Nav.Item>
                 <Nav.Link
                   onClick={() => {
                     this.setState({
@@ -83,7 +83,7 @@ class MainNav extends React.Component {
                 >
                   Betting
                 </Nav.Link>
-              </Nav.Item>
+              </Nav.Item> */}
             </Nav>
           </Navbar.Collapse>
         </Navbar>

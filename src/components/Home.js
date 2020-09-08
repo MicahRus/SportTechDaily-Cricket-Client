@@ -3,6 +3,8 @@ import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
 
 import SelectTabs from "./SelectTabs";
+import PlayerSelect from "./PlayerSelect";
+
 import RenderRadar from "./RenderRadar";
 
 class Home extends React.Component {
@@ -10,18 +12,35 @@ class Home extends React.Component {
     loaded: false,
     graphType: "radar",
   };
-  componentDidMount() {
-    this.getData();
 
-    this.setLoaded();
+  componentDidMount() {
+    this.getPlayerStats();
+    this.getAllData();
   }
 
   componentDidUpdate() {
     console.log(this.state);
   }
 
+  getAllData = async () => {
+    const data = await Promise.all([this.getPlayers(), this.getPlayerStats()]);
+    console.log(data);
+    this.setState({ allPlayersData: data[0], allPlayersStats: data[1] }, () => {
+      this.setLoaded();
+    });
+  };
+
+  // This function sets the state of loaded to true, which will then allow the page to load with populated data. This will be ran last after all the fetch requests have been made
   setLoaded = () => {
     this.setState({ loaded: true });
+  };
+
+  getPlayerStats = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/players/stats`
+    );
+    const data = await response.json();
+    return data.rows;
   };
 
   getPlayers = async () => {
@@ -29,8 +48,7 @@ class Home extends React.Component {
       `${process.env.REACT_APP_BACKEND_URL}/players`
     );
     const data = await response.json();
-    this.setState({ data: data.rows });
-    console.log(data);
+    return data.rows;
   };
 
   renderControls = () => {
@@ -42,6 +60,7 @@ class Home extends React.Component {
             if (this.state.graphType !== e) this.setState({ graphType: e });
           }}
         />
+        <PlayerSelect options={this.state.allPlayersData} />
       </Col>
     );
   };
@@ -57,7 +76,7 @@ class Home extends React.Component {
     } else {
       return (
         <Container>
-          <h1> ZZZZZZZZZZ</h1>;
+          <h1> Page Loading</h1>
         </Container>
       );
     }
