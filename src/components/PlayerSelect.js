@@ -16,7 +16,6 @@ class PlayerSelect extends React.Component {
 
   componentDidUpdate() {
     console.log(this.props);
-    console.log("hi");
   }
 
   setPlayerOptions = () => {
