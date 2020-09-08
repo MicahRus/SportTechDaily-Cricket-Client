@@ -20,7 +20,6 @@ class Home extends React.Component {
 
   componentDidUpdate() {
     console.log(this.state);
-    console.log("hi");
   }
 
   // This function will get all the promises from the different fetch requests and push them into state
