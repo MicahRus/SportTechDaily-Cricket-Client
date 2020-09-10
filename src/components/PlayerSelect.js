@@ -1,6 +1,9 @@
 import React from "react";
 import Select from "react-select";
 
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+
 import { ToggleButton, ToggleButtonGroup } from "react-bootstrap/";
 
 class PlayerSelect extends React.Component {
@@ -42,12 +45,13 @@ class PlayerSelect extends React.Component {
       container: (provided, state) => ({
         ...provided,
 
-        marginTop: "5px",
+        margin: "5px",
+        // width: "40%",
       }),
     };
     return (
       <div>
-        <ToggleButtonGroup
+        {/* <ToggleButtonGroup
           value={this.props.options.playerType}
           name="radio"
           onChange={(value) => {
@@ -69,11 +73,21 @@ class PlayerSelect extends React.Component {
           <ToggleButton variant="outline-secondary" value="wicketKeeper">
             WicketKeeper
           </ToggleButton>
-        </ToggleButtonGroup>
-        <Select
-          styles={customStyles}
-          options={this.state.playerOptions}
-        ></Select>
+        </ToggleButtonGroup> */}
+        <Row>
+          <Col>
+            <Select
+              styles={customStyles}
+              options={this.state.playerOptions}
+            ></Select>
+          </Col>
+          <Col>
+            <Select
+              styles={customStyles}
+              options={this.state.playerOptions}
+            ></Select>
+          </Col>
+        </Row>
       </div>
     );
   };
