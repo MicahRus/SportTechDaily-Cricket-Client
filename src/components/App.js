@@ -6,6 +6,7 @@ import MainNav from "./MainNav";
 import SportsBetting from "./SportsBetting";
 import FantasySport from "./FantasySport";
 import PageNotFound from "./404.js";
+import Footer from "./Footer";
 
 import "./app.css";
 
@@ -24,6 +25,7 @@ function App() {
           <Route exact path="/fantasysport" component={FantasySport} />
           <Route component={PageNotFound} />
         </Switch>
+        <Footer />
       </BrowserRouter>
     </Container>
   );
