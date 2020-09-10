@@ -50,51 +50,93 @@ class Home extends React.Component {
   };
 
   getAllPlayerStats = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/players/stats`
-    );
-    const data = await response.json();
-    return data.rows;
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/players/stats`
+      );
+      const data = await response.json();
+      return data.rows;
+    } catch (err) {
+      this.setState({ failedFetch: true });
+      alert(
+        "Sorry, something went wrong when trying to communicate with the database"
+      );
+    }
   };
 
   getAllPlayers = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/players`
-    );
-    const data = await response.json();
-    return data.rows;
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/players`
+      );
+      const data = await response.json();
+      return data.rows;
+    } catch (err) {
+      this.setState({ failedFetch: true });
+      alert(
+        "Sorry, something went wrong when trying to communicate with the database"
+      );
+    }
   };
 
   getAllBatsmen = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/players/batsmen`
-    );
-    const data = await response.json();
-    return data.rows;
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/players/batsmen`
+      );
+      const data = await response.json();
+      return data.rows;
+    } catch (err) {
+      this.setState({ failedFetch: true });
+      alert(
+        "Sorry, something went wrong when trying to communicate with the database"
+      );
+    }
   };
 
   getAllBowlers = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/players/bowlers`
-    );
-    const data = await response.json();
-    return data.rows;
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/players/bowlers`
+      );
+      const data = await response.json();
+      return data.rows;
+    } catch (err) {
+      this.setState({ failedFetch: true });
+      alert(
+        "Sorry, something went wrong when trying to communicate with the database"
+      );
+    }
   };
 
   getAllAllRounders = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/players/all_rounders`
-    );
-    const data = await response.json();
-    return data.rows;
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/players/all_rounders`
+      );
+      const data = await response.json();
+      return data.rows;
+    } catch (err) {
+      this.setState({ failedFetch: true });
+      alert(
+        "Sorry, something went wrong when trying to communicate with the database"
+      );
+    }
   };
 
   getAllWicketKeepers = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/players/wicket_keepers`
-    );
-    const data = await response.json();
-    return data.rows;
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/players/wicket_keepers`
+      );
+      const data = await response.json();
+      return data.rows;
+    } catch (err) {
+      this.setState({ failedFetch: true });
+      alert(
+        "Sorry, something went wrong when trying to communicate with the database"
+      );
+    }
   };
 
   // This function sets the state of loaded to true, which will then allow the page to load with populated data. This will be ran last after all the fetch requests have been made
@@ -126,6 +168,21 @@ class Home extends React.Component {
   };
 
   render() {
+    // Error catching logic to ensure data is loaded
+    if (this.state.failedFetch) {
+      return (
+        <div>
+          {" "}
+          <h1> Oh no....</h1>
+          <p>
+            {" "}
+            Sorry that something went wrong when trying to use our page, please
+            report the bug to us and we'll get straight on fixing it.
+          </p>
+        </div>
+      );
+    }
+
     if (this.state.loaded) {
       return (
         <Row>
