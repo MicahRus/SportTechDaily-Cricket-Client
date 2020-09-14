@@ -3,7 +3,7 @@ import { Form, Col, Button, ButtonGroup, Row } from "react-bootstrap";
 
 import Select from "react-select";
 
-class StatsCheckbox extends React.Component {
+class Filters extends React.Component {
   renderCheckboxes = () => {
     const stats = [
       ["Runs", "Batting average"],
@@ -59,18 +59,15 @@ class StatsCheckbox extends React.Component {
   };
 
   renderVenueSelect = () => {
-    const options = [
-      { label: "Venue1", value: "Venue1" },
-      { label: "Venue2", value: "Venue2" },
-      { label: "Venue3", value: "Venue3" },
-      { label: "Venue4", value: "Venue4" },
-      { label: "Venue5", value: "Venue5" },
-      { label: "Venue6", value: "Venue6" },
-    ];
+    let options = [];
+    this.props.venues.map((venue) => {
+      options.push({ label: venue.venue, value: venue.venueid });
+    });
+
     return (
       <div className="graph-control-item-group">
         <Select
-          defaultValue={options}
+          placeholder="Venues"
           isMulti
           closeMenuOnSelect={false}
           name="venues"
@@ -91,10 +88,19 @@ class StatsCheckbox extends React.Component {
   };
 
   renderLeagueSelect = () => {
+    let options = [];
+
+    this.props.leagues.map((league) => {
+      console.log(league);
+      options.push({ label: league.League, value: league.League });
+    });
+
     return (
       <div className="control-item">
         <Select
           name="leagues"
+          placeholder="Leagues"
+          options={options}
           className="basic-select"
           classNamePrefix="select"
         />
@@ -115,4 +121,4 @@ class StatsCheckbox extends React.Component {
   }
 }
 
-export default StatsCheckbox;
+export default Filters;

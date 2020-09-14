@@ -1,8 +1,6 @@
 import React from "react";
 import Select from "react-select";
 
-import StatsCheckbox from "./Filters";
-
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
@@ -50,46 +48,20 @@ class PlayerSelect extends React.Component {
       }),
     };
     return (
-      <div>
-        {/* <ToggleButtonGroup
-          value={this.props.options.playerType}
-          name="radio"
-          onChange={(value) => {
-            this.props.clickHandler(value);
-            this.setState({ getNewProps: true }, () => {
-              this.setPlayerOptions();
-            });
-          }}
-        >
-          <ToggleButton variant="outline-secondary" value="batsman">
-            Batsman
-          </ToggleButton>
-          <ToggleButton variant="outline-secondary" value="bowler">
-            Bowler
-          </ToggleButton>
-          <ToggleButton variant="outline-secondary" value="allrounder">
-            AllRounder
-          </ToggleButton>
-          <ToggleButton variant="outline-secondary" value="wicketKeeper">
-            WicketKeeper
-          </ToggleButton>
-        </ToggleButtonGroup> */}
-        <Row>
-          <Col>
-            <Select
-              styles={customStyles}
-              options={this.state.playerOptions}
-            ></Select>
-          </Col>
-          <Col>
-            <Select
-              styles={customStyles}
-              options={this.state.playerOptions}
-            ></Select>
-          </Col>
-        </Row>
-        <StatsCheckbox />
-      </div>
+      <Row>
+        <Col>
+          <Select
+            styles={customStyles}
+            options={this.state.playerOptions}
+          ></Select>
+        </Col>
+        <Col>
+          <Select
+            styles={customStyles}
+            options={this.state.playerOptions}
+          ></Select>
+        </Col>
+      </Row>
     );
   };
 

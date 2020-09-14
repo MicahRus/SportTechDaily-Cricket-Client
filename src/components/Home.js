@@ -4,6 +4,7 @@ import { Col, Container, Row } from "react-bootstrap";
 
 import SelectTabs from "./SelectTabs";
 import PlayerSelect from "./PlayerSelect";
+import Filters from "./Filters";
 
 import RenderRadar from "./RenderRadar";
 
@@ -39,6 +40,8 @@ class Home extends React.Component {
       this.getAllBowlers(),
       this.getAllAllRounders(),
       this.getAllWicketKeepers(),
+      this.getAllVenues(),
+      this.getAllLeagues(),
     ]);
 
     localStorage.setItem("data", JSON.stringify(data));
@@ -56,6 +59,8 @@ class Home extends React.Component {
         allBowlers: data[3],
         allAllRounders: data[4],
         getAllWicketKeepers: data[5],
+        allVenues: data[6],
+        allLeagues: data[7],
       },
       () => {
         // This function will load the actual page instead of the skeleton
@@ -137,6 +142,30 @@ class Home extends React.Component {
     }
   };
 
+  getAllVenues = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/venues`
+      );
+      const data = await response.json();
+      return data.rows;
+    } catch (err) {
+      this.setState({ failedFetch: true });
+    }
+  };
+
+  getAllLeagues = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/leagues`
+      );
+      const data = await response.json();
+      return data.rows;
+    } catch (err) {
+      this.setState({ failedFetch: true });
+    }
+  };
+
   // A click handler for the 'player type' buttons
   playerTypeClickHandler = (value) => {
     this.setState({ playerType: value });
@@ -156,6 +185,10 @@ class Home extends React.Component {
           clickHandler={this.playerTypeClickHandler}
           options={this.state}
         />
+        <Filters
+          leagues={this.state.allLeagues}
+          venues={this.state.allVenues}
+        />
       </Col>
     );
   };
@@ -163,7 +196,6 @@ class Home extends React.Component {
   render() {
     // Error catching logic to ensure data is loaded
     if (this.state.failedFetch) {
-      alert("Something went wrong when fetching from the database, sorry.");
       return (
         <div>
           {" "}
