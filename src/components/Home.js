@@ -13,6 +13,7 @@ class Home extends React.Component {
     loaded: false,
     graphType: "radar",
     playerType: "batsman",
+    competition: ["domestic", "international"],
   };
 
   componentDidMount() {
@@ -171,6 +172,24 @@ class Home extends React.Component {
     this.setState({ playerType: value });
   };
 
+  competitionClickHandler = (e) => {
+    let key = e.target.value;
+
+    if (this.state.competition.includes(key)) {
+      if (this.state.competition.length >= 2) {
+        this.setState((prevState) => ({
+          competition: prevState.competition.filter((x) => x !== key),
+        }));
+      } else {
+        alert("You must have at least 1 selected competition selected");
+      }
+    } else {
+      this.setState((prevState) => ({
+        competition: [...prevState.competition, key],
+      }));
+    }
+  };
+
   // This function renders all the controls for the graph
   renderControls = () => {
     return (
@@ -188,6 +207,8 @@ class Home extends React.Component {
         <Filters
           leagues={this.state.allLeagues}
           venues={this.state.allVenues}
+          competitionClickHandler={this.competitionClickHandler}
+          competition={this.state.competition}
         />
       </Col>
     );

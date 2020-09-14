@@ -11,10 +11,6 @@ class PlayerSelect extends React.Component {
     this.setPlayerOptions();
   }
 
-  componentDidUpdate() {
-    console.log(this.props);
-  }
-
   setPlayerOptions = () => {
     let playerOptions = [];
     let key = null;

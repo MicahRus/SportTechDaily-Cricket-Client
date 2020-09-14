@@ -79,10 +79,32 @@ class Filters extends React.Component {
     );
   };
 
-  renderSwitch = () => {
+  renderDomesticCheckboxes = () => {
+    console.log(this.props.competition);
     return (
       <div className="graph-control-item-group">
-        <Form.Check type="switch" id="custom-switch" label="Domestic Matches" />
+        <Col>
+          <Form.Check
+            onChange={this.props.competitionClickHandler}
+            defaultChecked={true}
+            checked={this.props.competition.includes("domestic")}
+            inline
+            type="switch"
+            id="domestic-switch"
+            label="Domestic Matches"
+            value="domestic"
+          />
+          <Form.Check
+            onChange={this.props.competitionClickHandler}
+            defaultChecked={true}
+            checked={this.props.competition.includes("international")}
+            inline
+            type="switch"
+            id="international-switch"
+            label="International Matches"
+            value="international"
+          />
+        </Col>
       </div>
     );
   };
@@ -91,7 +113,6 @@ class Filters extends React.Component {
     let options = [];
 
     this.props.leagues.map((league) => {
-      console.log(league);
       options.push({ label: league.League, value: league.League });
     });
 
@@ -111,11 +132,11 @@ class Filters extends React.Component {
   render() {
     return (
       <Form>
-        {this.renderCheckboxes()}
-        {this.renderTemplateButtons()}
-        {this.renderVenueSelect()}
+        {this.renderDomesticCheckboxes()}
         {this.renderLeagueSelect()}
-        {this.renderSwitch()}
+        {this.renderTemplateButtons()}
+        {this.renderCheckboxes()}
+        {/* {this.renderVenueSelect()} */}
       </Form>
     );
   }
