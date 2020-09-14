@@ -15,12 +15,20 @@ class Home extends React.Component {
   };
 
   componentDidMount() {
+    if (localStorage.getItem("data")) {
+      this.useStoredData();
+    }
     this.getAllData();
   }
 
   componentDidUpdate() {
     console.log(this.state);
   }
+
+  useStoredData = () => {
+    const data = JSON.parse(localStorage.getItem("data"));
+    this.setDataToState(data);
+  };
 
   // This function will get all the promises from the different fetch requests and push them into state
   getAllData = async () => {
@@ -33,6 +41,13 @@ class Home extends React.Component {
       this.getAllWicketKeepers(),
     ]);
 
+    localStorage.setItem("data", JSON.stringify(data));
+
+    // This function handles setting the fetched data into state
+    this.setDataToState(data);
+  };
+
+  setDataToState = (data) => {
     this.setState(
       {
         allPlayersData: data[0],
@@ -44,7 +59,7 @@ class Home extends React.Component {
       },
       () => {
         // This function will load the actual page instead of the skeleton
-        this.setLoaded();
+        this.setState({ loaded: true });
       }
     );
   };
@@ -55,12 +70,10 @@ class Home extends React.Component {
         `${process.env.REACT_APP_BACKEND_URL}/players/stats`
       );
       const data = await response.json();
+
       return data.rows;
     } catch (err) {
       this.setState({ failedFetch: true });
-      alert(
-        "Sorry, something went wrong when trying to communicate with the database"
-      );
     }
   };
 
@@ -73,9 +86,6 @@ class Home extends React.Component {
       return data.rows;
     } catch (err) {
       this.setState({ failedFetch: true });
-      alert(
-        "Sorry, something went wrong when trying to communicate with the database"
-      );
     }
   };
 
@@ -88,9 +98,6 @@ class Home extends React.Component {
       return data.rows;
     } catch (err) {
       this.setState({ failedFetch: true });
-      alert(
-        "Sorry, something went wrong when trying to communicate with the database"
-      );
     }
   };
 
@@ -103,9 +110,6 @@ class Home extends React.Component {
       return data.rows;
     } catch (err) {
       this.setState({ failedFetch: true });
-      alert(
-        "Sorry, something went wrong when trying to communicate with the database"
-      );
     }
   };
 
@@ -118,9 +122,6 @@ class Home extends React.Component {
       return data.rows;
     } catch (err) {
       this.setState({ failedFetch: true });
-      alert(
-        "Sorry, something went wrong when trying to communicate with the database"
-      );
     }
   };
 
@@ -133,15 +134,7 @@ class Home extends React.Component {
       return data.rows;
     } catch (err) {
       this.setState({ failedFetch: true });
-      alert(
-        "Sorry, something went wrong when trying to communicate with the database"
-      );
     }
-  };
-
-  // This function sets the state of loaded to true, which will then allow the page to load with populated data. This will be ran last after all the fetch requests have been made
-  setLoaded = () => {
-    this.setState({ loaded: true });
   };
 
   // A click handler for the 'player type' buttons
@@ -170,6 +163,7 @@ class Home extends React.Component {
   render() {
     // Error catching logic to ensure data is loaded
     if (this.state.failedFetch) {
+      alert("Something went wrong when fetching from the database, sorry.");
       return (
         <div>
           {" "}
