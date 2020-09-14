@@ -1,10 +1,10 @@
 import React from "react";
 import Select from "react-select";
 
+import StatsCheckbox from "./Filters";
+
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-
-import { ToggleButton, ToggleButtonGroup } from "react-bootstrap/";
 
 class PlayerSelect extends React.Component {
   state = { playerOptions: [{ value: "test", label: "test" }] };
@@ -45,7 +45,7 @@ class PlayerSelect extends React.Component {
       container: (provided, state) => ({
         ...provided,
 
-        margin: "5px",
+        margin: "10px 0px",
         // width: "40%",
       }),
     };
@@ -88,6 +88,7 @@ class PlayerSelect extends React.Component {
             ></Select>
           </Col>
         </Row>
+        <StatsCheckbox />
       </div>
     );
   };
