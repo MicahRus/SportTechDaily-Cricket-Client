@@ -39,6 +39,7 @@ class Home extends React.Component {
       this.getAllBowlers(),
       this.getAllAllRounders(),
       this.getAllWicketKeepers(),
+      this.getPost2017Players(),
     ]);
 
     localStorage.setItem("data", JSON.stringify(data));
@@ -55,7 +56,8 @@ class Home extends React.Component {
         allBatsmen: data[2],
         allBowlers: data[3],
         allAllRounders: data[4],
-        getAllWicketKeepers: data[5],
+        AllWicketKeepers: data[5],
+        post2017Players: data[6],
       },
       () => {
         // This function will load the actual page instead of the skeleton
@@ -129,6 +131,18 @@ class Home extends React.Component {
     try {
       const response = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}/players/wicket_keepers`
+      );
+      const data = await response.json();
+      return data.rows;
+    } catch (err) {
+      this.setState({ failedFetch: true });
+    }
+  };
+
+  getPost2017Players = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/players/post2017`
       );
       const data = await response.json();
       return data.rows;

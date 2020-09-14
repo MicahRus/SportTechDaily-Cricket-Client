@@ -4,8 +4,6 @@ import Select from "react-select";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import { ToggleButton, ToggleButtonGroup } from "react-bootstrap/";
-
 class PlayerSelect extends React.Component {
   state = { playerOptions: [{ value: "test", label: "test" }] };
 
