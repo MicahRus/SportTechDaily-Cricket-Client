@@ -4,6 +4,7 @@ import { Col, Container, Row } from "react-bootstrap";
 
 import SelectTabs from "./SelectTabs";
 import PlayerSelect from "./PlayerSelect";
+import Filters from "./Filters";
 
 import RenderRadar from "./RenderRadar";
 
@@ -12,6 +13,7 @@ class Home extends React.Component {
     loaded: false,
     graphType: "radar",
     playerType: "batsman",
+    competition: ["domestic", "international"],
   };
 
   componentDidMount() {
@@ -39,6 +41,8 @@ class Home extends React.Component {
       this.getAllBowlers(),
       this.getAllAllRounders(),
       this.getAllWicketKeepers(),
+      this.getAllVenues(),
+      this.getAllLeagues(),
       this.getPost2017Players(),
     ]);
 
@@ -57,7 +61,10 @@ class Home extends React.Component {
         allBowlers: data[3],
         allAllRounders: data[4],
         AllWicketKeepers: data[5],
-        post2017Players: data[6],
+        getAllWicketKeepers: data[5],
+        allVenues: data[6],
+        allLeagues: data[7],
+        post2017Players: data[8],
       },
       () => {
         // This function will load the actual page instead of the skeleton
@@ -151,9 +158,51 @@ class Home extends React.Component {
     }
   };
 
+  getAllVenues = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/venues`
+      );
+      const data = await response.json();
+      return data.rows;
+    } catch (err) {
+      this.setState({ failedFetch: true });
+    }
+  };
+
+  getAllLeagues = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/leagues`
+      );
+      const data = await response.json();
+      return data.rows;
+    } catch (err) {
+      this.setState({ failedFetch: true });
+    }
+  };
+
   // A click handler for the 'player type' buttons
   playerTypeClickHandler = (value) => {
     this.setState({ playerType: value });
+  };
+
+  competitionClickHandler = (e) => {
+    let key = e.target.value;
+
+    if (this.state.competition.includes(key)) {
+      if (this.state.competition.length >= 2) {
+        this.setState((prevState) => ({
+          competition: prevState.competition.filter((x) => x !== key),
+        }));
+      } else {
+        alert("You must have at least 1 selected competition selected");
+      }
+    } else {
+      this.setState((prevState) => ({
+        competition: [...prevState.competition, key],
+      }));
+    }
   };
 
   // This function renders all the controls for the graph
@@ -170,6 +219,12 @@ class Home extends React.Component {
           clickHandler={this.playerTypeClickHandler}
           options={this.state}
         />
+        <Filters
+          leagues={this.state.allLeagues}
+          venues={this.state.allVenues}
+          competitionClickHandler={this.competitionClickHandler}
+          competition={this.state.competition}
+        />
       </Col>
     );
   };
@@ -177,7 +232,6 @@ class Home extends React.Component {
   render() {
     // Error catching logic to ensure data is loaded
     if (this.state.failedFetch) {
-      alert("Something went wrong when fetching from the database, sorry.");
       return (
         <div>
           {" "}

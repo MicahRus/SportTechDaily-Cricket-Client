@@ -11,10 +11,6 @@ class PlayerSelect extends React.Component {
     this.setPlayerOptions();
   }
 
-  componentDidUpdate() {
-    console.log(this.props);
-  }
-
   setPlayerOptions = () => {
     let playerOptions = [];
     let key = null;
@@ -43,50 +39,25 @@ class PlayerSelect extends React.Component {
       container: (provided, state) => ({
         ...provided,
 
-        margin: "5px",
+        margin: "10px 0px",
         // width: "40%",
       }),
     };
     return (
-      <div>
-        {/* <ToggleButtonGroup
-          value={this.props.options.playerType}
-          name="radio"
-          onChange={(value) => {
-            this.props.clickHandler(value);
-            this.setState({ getNewProps: true }, () => {
-              this.setPlayerOptions();
-            });
-          }}
-        >
-          <ToggleButton variant="outline-secondary" value="batsman">
-            Batsman
-          </ToggleButton>
-          <ToggleButton variant="outline-secondary" value="bowler">
-            Bowler
-          </ToggleButton>
-          <ToggleButton variant="outline-secondary" value="allrounder">
-            AllRounder
-          </ToggleButton>
-          <ToggleButton variant="outline-secondary" value="wicketKeeper">
-            WicketKeeper
-          </ToggleButton>
-        </ToggleButtonGroup> */}
-        <Row>
-          <Col>
-            <Select
-              styles={customStyles}
-              options={this.state.playerOptions}
-            ></Select>
-          </Col>
-          <Col>
-            <Select
-              styles={customStyles}
-              options={this.state.playerOptions}
-            ></Select>
-          </Col>
-        </Row>
-      </div>
+      <Row>
+        <Col>
+          <Select
+            styles={customStyles}
+            options={this.state.playerOptions}
+          ></Select>
+        </Col>
+        <Col>
+          <Select
+            styles={customStyles}
+            options={this.state.playerOptions}
+          ></Select>
+        </Col>
+      </Row>
     );
   };
 
