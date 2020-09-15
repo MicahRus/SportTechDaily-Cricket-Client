@@ -1,7 +1,8 @@
 import React from "react";
 import { Form, Col, Button, ButtonGroup, Row } from "react-bootstrap";
 
-import Select from "react-select";
+import Select, { createFilter } from "react-select";
+import MenuList from "./MenuList";
 
 class Filters extends React.Component {
   renderCheckboxes = () => {
@@ -22,10 +23,22 @@ class Filters extends React.Component {
         <div>
           <Form.Row>
             <Col>
-              <Form.Check inline label={stat[0]} id={stat[0]} type="checkbox" />
+              <Form.Check
+                onChange={this.props.statCheckboxClickHandler}
+                inline
+                label={stat[0]}
+                id={stat[0]}
+                type="checkbox"
+              />
             </Col>
             <Col>
-              <Form.Check inline label={stat[1]} id={stat[1]} type="checkbox" />
+              <Form.Check
+                onChange={this.props.statCheckboxClickHandler}
+                inline
+                label={stat[1]}
+                id={stat[1]}
+                type="checkbox"
+              />
             </Col>
           </Form.Row>
         </div>
@@ -67,9 +80,11 @@ class Filters extends React.Component {
     return (
       <div className="graph-control-item-group">
         <Select
-          placeholder="Venues"
+          filterOption={createFilter({ ignoreAccents: false })}
+          components={{ MenuList }}
           isMulti
           closeMenuOnSelect={false}
+          placeholder="Venues"
           name="venues"
           options={options}
           className="basic-multi-select"
@@ -80,7 +95,6 @@ class Filters extends React.Component {
   };
 
   renderDomesticCheckboxes = () => {
-    console.log(this.props.competition);
     return (
       <div className="graph-control-item-group">
         <Col>
@@ -119,6 +133,10 @@ class Filters extends React.Component {
     return (
       <div className="control-item">
         <Select
+          filterOption={createFilter({ ignoreAccents: false })}
+          components={{ MenuList }}
+          isMulti
+          closeMenuOnSelect={false}
           name="leagues"
           placeholder="Leagues"
           options={options}

@@ -37,6 +37,7 @@ class PlayerSelect extends React.Component {
   };
 
   renderButtons = () => {
+    console.log(this.props);
     const customStyles = {
       container: (provided, state) => ({
         ...provided,
@@ -50,9 +51,10 @@ class PlayerSelect extends React.Component {
         <Col>
           <Select
             filterOption={createFilter({ ignoreAccents: false })}
+            components={{ MenuList }}
             styles={customStyles}
             options={this.state.playerOptions}
-            components={{ MenuList }}
+            onChange={(e) => this.props.playerSelectClickHandler("player1", e)}
           ></Select>
         </Col>
         <Col>
@@ -61,6 +63,7 @@ class PlayerSelect extends React.Component {
             styles={customStyles}
             options={this.state.playerOptions}
             components={{ MenuList }}
+            onChange={(e) => this.props.playerSelectClickHandler("player2", e)}
           ></Select>
         </Col>
       </Row>

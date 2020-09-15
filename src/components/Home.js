@@ -14,6 +14,7 @@ class Home extends React.Component {
     graphType: "radar",
     playerType: "batsman",
     competition: ["domestic", "international"],
+    selectedStats: [],
   };
 
   componentDidMount() {
@@ -205,6 +206,28 @@ class Home extends React.Component {
     }
   };
 
+  playerSelectClickHandler = (selectedPlayer, e) => {
+    this.setState({ [selectedPlayer]: e });
+  };
+
+  statCheckboxClickHandler = (e) => {
+    const key = e.target.id;
+
+    if (this.state.selectedStats.includes(key)) {
+      if (this.state.selectedStats.length >= 3) {
+        this.setState((prevState) => ({
+          selectedStats: prevState.selectedStats.filter((x) => x !== key),
+        }));
+      } else {
+        alert("You must have at least 3 stats selected");
+      }
+    } else {
+      this.setState((prevState) => ({
+        selectedStats: [...prevState.selectedStats, key],
+      }));
+    }
+  };
+
   // This function renders all the controls for the graph
   renderControls = () => {
     return (
@@ -218,12 +241,14 @@ class Home extends React.Component {
         <PlayerSelect
           clickHandler={this.playerTypeClickHandler}
           options={this.state}
+          playerSelectClickHandler={this.playerSelectClickHandler}
         />
         <Filters
           leagues={this.state.allLeagues}
           venues={this.state.allVenues}
-          competitionClickHandler={this.competitionClickHandler}
           competition={this.state.competition}
+          competitionClickHandler={this.competitionClickHandler}
+          statCheckboxClickHandler={this.statCheckboxClickHandler}
         />
       </Col>
     );
