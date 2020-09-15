@@ -7,14 +7,14 @@ import MenuList from "./MenuList";
 class Filters extends React.Component {
   renderCheckboxes = () => {
     const stats = [
-      ["Runs", "Batting average"],
-      ["Batting Strike Rate", "Ball Per Boundary"],
+      ["Runs", "Batting Average"],
+      ["Batting Strike Rate", "Balls Per Boundary"],
       ["Power Play Strike Rate", "Death Strike Rate"],
       ["Dot Ball Percentage", "Wickets"],
       ["Bowling Average", "Bowling Economy Rate"],
       ["Catches", "Run Outs"],
-      ["Death Overs Economy", "6s"],
-      ["Power Play Economy", "4s"],
+      ["Death Overs Economy Rate", "4s"],
+      ["Power Play Economy Rate", "6s"],
       ["Catchers", "Stumpings"],
     ];
 
@@ -25,6 +25,7 @@ class Filters extends React.Component {
             <Col>
               <Form.Check
                 onChange={this.props.statCheckboxClickHandler}
+                checked={this.props.selectedStats.includes(stat[0])}
                 inline
                 label={stat[0]}
                 id={stat[0]}
@@ -34,6 +35,7 @@ class Filters extends React.Component {
             <Col>
               <Form.Check
                 onChange={this.props.statCheckboxClickHandler}
+                checked={this.props.selectedStats.includes(stat[1])}
                 inline
                 label={stat[1]}
                 id={stat[1]}
@@ -49,21 +51,21 @@ class Filters extends React.Component {
   renderTemplateButtons = () => {
     return (
       <div className="graph-control-item-group">
-        <ButtonGroup size="sm" type="radio">
+        <ButtonGroup
+          onClick={this.props.playerTemplateClickHandler}
+          size="sm"
+          type="radio"
+        >
           <Button className="template-button" variant="outline-secondary">
-            {" "}
-            Bowler
-          </Button>
-          <Button className="template-button" variant="outline-secondary">
-            {" "}
             Batsman
           </Button>
           <Button className="template-button" variant="outline-secondary">
-            {" "}
+            Bowler
+          </Button>
+          <Button className="template-button" variant="outline-secondary">
             Wicket Keeper
           </Button>
           <Button className="template-button" variant="outline-secondary">
-            {" "}
             All Rounder
           </Button>
         </ButtonGroup>
@@ -127,7 +129,7 @@ class Filters extends React.Component {
     let options = [];
 
     this.props.leagues.map((league) => {
-      options.push({ label: league.League, value: league.League });
+      options.push({ label: league.League, value: league.LeagueID });
     });
 
     return (
@@ -142,6 +144,8 @@ class Filters extends React.Component {
           options={options}
           className="basic-select"
           classNamePrefix="select"
+          hideSelectedOptions={true}
+          onChange={this.props.leagueClickHandler}
         />
       </div>
     );

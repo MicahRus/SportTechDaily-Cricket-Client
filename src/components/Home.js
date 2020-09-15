@@ -14,7 +14,7 @@ class Home extends React.Component {
     graphType: "radar",
     playerType: "batsman",
     competition: ["domestic", "international"],
-    selectedStats: [],
+    selectedStats: ["Runs", "4s", "6s"],
   };
 
   componentDidMount() {
@@ -214,7 +214,7 @@ class Home extends React.Component {
     const key = e.target.id;
 
     if (this.state.selectedStats.includes(key)) {
-      if (this.state.selectedStats.length >= 3) {
+      if (this.state.selectedStats.length >= 4) {
         this.setState((prevState) => ({
           selectedStats: prevState.selectedStats.filter((x) => x !== key),
         }));
@@ -226,6 +226,91 @@ class Home extends React.Component {
         selectedStats: [...prevState.selectedStats, key],
       }));
     }
+  };
+
+  playerTemplateClickHandler = (e) => {
+    let key = e.target.innerHTML;
+    console.log(key);
+
+    switch (key) {
+      default:
+        console.log("defaulted");
+        break;
+
+      case "Batsman":
+        this.setState({
+          selectedStats: [
+            "Runs",
+            "Batting Average",
+            "Batting Strike Rate",
+            "4s",
+            "6s",
+            "Balls Per Boundary",
+            "Power Play Strike Rate",
+            "Death Strike Rate",
+            "Dot Ball Percentage",
+          ],
+        });
+        break;
+
+      case "Bowler":
+        this.setState({
+          selectedStats: [
+            "Wickets",
+            "Bowling Average",
+            "Bowling Economy Rate",
+            "Catches",
+            "Dot Ball Percentage",
+            "Power Play Economy Rate",
+            "Death Overs Economy Rate",
+          ],
+        });
+        break;
+
+      case "Wicket Keeper":
+        this.setState({
+          selectedStats: [
+            "Catches",
+            "Stumpings",
+            "Run Outs",
+            "Runs",
+            "Batting Average",
+            "Batting Strike Rate",
+            "4s",
+            "6s",
+            "Balls Per Boundary",
+            "Power Play Strike Rate",
+            "Death Strike Rate",
+            "Dot Ball Percentage",
+          ],
+        });
+        break;
+
+      case "All Rounder":
+        this.setState({
+          selectedStats: [
+            "Runs",
+            "Batting Average",
+            "Batting Strike Rate",
+            "Wickets",
+            "Bowling Average",
+            "Bowling Economy Rate",
+            "Catches",
+            "4s",
+            "6s",
+            "Balls Per Boundary",
+            "Power Play Strike Rate",
+            "Death Strike Rate",
+            "Dot Ball Percentage",
+          ],
+        });
+        break;
+    }
+  };
+
+  leagueClickHandler = (leagues) => {
+    console.log(leagues);
+    this.setState({ selectedLeagues: leagues });
   };
 
   // This function renders all the controls for the graph
@@ -247,8 +332,11 @@ class Home extends React.Component {
           leagues={this.state.allLeagues}
           venues={this.state.allVenues}
           competition={this.state.competition}
+          selectedStats={this.state.selectedStats}
           competitionClickHandler={this.competitionClickHandler}
           statCheckboxClickHandler={this.statCheckboxClickHandler}
+          playerTemplateClickHandler={this.playerTemplateClickHandler}
+          leagueClickHandler={this.leagueClickHandler}
         />
       </Col>
     );

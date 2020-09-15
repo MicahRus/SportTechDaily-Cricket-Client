@@ -37,7 +37,6 @@ class PlayerSelect extends React.Component {
   };
 
   renderButtons = () => {
-    console.log(this.props);
     const customStyles = {
       container: (provided, state) => ({
         ...provided,
@@ -50,6 +49,10 @@ class PlayerSelect extends React.Component {
       <Row>
         <Col>
           <Select
+            isOptionDisabled={(option) =>
+              option.value === this.props.options.player1?.value ||
+              option.value === this.props.options.player2?.value
+            }
             filterOption={createFilter({ ignoreAccents: false })}
             components={{ MenuList }}
             styles={customStyles}
@@ -59,6 +62,10 @@ class PlayerSelect extends React.Component {
         </Col>
         <Col>
           <Select
+            isOptionDisabled={(option) =>
+              option.value === this.props.options.player1?.value ||
+              option.value === this.props.options.player2?.value
+            }
             filterOption={createFilter({ ignoreAccents: false })}
             styles={customStyles}
             options={this.state.playerOptions}
