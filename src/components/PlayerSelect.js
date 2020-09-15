@@ -1,5 +1,7 @@
 import React from "react";
-import Select from "react-select";
+import Select, { createFilter } from "react-select";
+
+import MenuList from "./MenuList";
 
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -28,7 +30,7 @@ class PlayerSelect extends React.Component {
         key = "allWicketKeepers";
         break;
     }
-    this.props.options[key].map((player) => {
+    this.props.options.post2017Players.map((player) => {
       playerOptions.push({ value: player.playerid, label: player.player });
     });
     this.setState({ playerOptions });
@@ -47,12 +49,14 @@ class PlayerSelect extends React.Component {
       <Row>
         <Col>
           <Select
+            filterOption={createFilter({ ignoreAccents: false })}
             styles={customStyles}
             options={this.state.playerOptions}
           ></Select>
         </Col>
         <Col>
           <Select
+            filterOption={createFilter({ ignoreAccents: false })}
             styles={customStyles}
             options={this.state.playerOptions}
           ></Select>
