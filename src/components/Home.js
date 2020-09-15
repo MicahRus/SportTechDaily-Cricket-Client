@@ -18,6 +18,8 @@ class Home extends React.Component {
   };
 
   componentDidMount() {
+    this.getAllStats();
+    // this.getRuns();
     if (localStorage.getItem("data")) {
       this.useStoredData();
     }
@@ -183,6 +185,34 @@ class Home extends React.Component {
     }
   };
 
+  getAllStats = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/stats/post2017`
+      );
+      const data = await response.json();
+      this.setState({ post2017Stats: data.rows }, () => {
+        this.findPercentile();
+      });
+    } catch (err) {
+      this.setState({ failedFetch: true });
+    }
+  };
+
+  // getRuns = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `${process.env.REACT_APP_BACKEND_URL}/stats/runs`
+  //     );
+  //     const data = await response.json();
+  //     this.setState({ post2017Runs: data.rows }, () => {
+  //       this.findPercentile();
+  //     });
+  //   } catch (err) {
+  //     this.setState({ failedFetch: true });
+  //   }
+  // };
+
   // A click handler for the 'player type' buttons
   playerTypeClickHandler = (value) => {
     this.setState({ playerType: value });
@@ -340,6 +370,31 @@ class Home extends React.Component {
         />
       </Col>
     );
+  };
+
+  findPercentile = () => {
+    let array = [];
+    const percentile = (arr, val) =>
+      (100 *
+        arr.reduce(
+          (acc, v) => acc + (v < val ? 1 : 0) + (v === val ? 0.5 : 0),
+          0
+        )) /
+      arr.length;
+
+    this.state.post2017Stats.map((item) => {
+      array.push(item.innings1runs);
+    });
+
+    console.log(array);
+    console.log(performance.now());
+    const sortArray = array.sort();
+    console.log(performance.now());
+
+    console.log(sortArray);
+    const result = percentile(sortArray, 5);
+
+    console.log(result);
   };
 
   render() {
