@@ -52,6 +52,7 @@ class PlayerSelect extends React.Component {
             filterOption={createFilter({ ignoreAccents: false })}
             styles={customStyles}
             options={this.state.playerOptions}
+            components={{ MenuList }}
           ></Select>
         </Col>
         <Col>
@@ -59,6 +60,7 @@ class PlayerSelect extends React.Component {
             filterOption={createFilter({ ignoreAccents: false })}
             styles={customStyles}
             options={this.state.playerOptions}
+            components={{ MenuList }}
           ></Select>
         </Col>
       </Row>
