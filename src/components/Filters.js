@@ -5,19 +5,44 @@ import Select, { createFilter } from "react-select";
 import MenuList from "./MenuList";
 
 class Filters extends React.Component {
-  renderCheckboxes = () => {
-    const stats = [
-      ["Runs", "Batting Average"],
-      ["Batting Strike Rate", "Balls Per Boundary"],
-      ["Power Play Strike Rate", "Death Strike Rate"],
-      ["Dot Ball Percentage", "Wickets"],
-      ["Bowling Average", "Bowling Economy Rate"],
-      ["Catches", "Run Outs"],
-      ["Death Overs Economy Rate", "4s"],
-      ["Power Play Economy Rate", "6s"],
-      ["Catchers", "Stumpings"],
-    ];
+  state = {
+    stats: [
+      "Fours",
+      "Sixes",
+      "Balls Per Boundary",
+      "Batting Average",
+      "Batting Strike Rate",
+      "Bowling Average",
+      "Bowling Economy Rate",
+      "Catches",
+      "Death Overs Economy Rate",
+      "Death Strike Rate",
+      "Dot Ball Percentage",
+      "Power Play Strike Rate",
+      "Power Play Economy Rate",
+      "Run Outs",
+      "Runs",
+      "Stumpings",
+      "Wickets",
+      "1morestat",
+    ],
+  };
 
+  componentDidMount() {
+    this.props.passStatsToState(this.state.stats);
+  }
+  renderCheckboxes = () => {
+    let stats = [
+      ["Fours", "Sixes"],
+      ["Balls Per Boundary", "Batting Average"],
+      ["Batting Strike Rate", "Bowling Average"],
+      ["Bowling Economy Rate", "Catches"],
+      ["Death Overs Economy Rate", "Death Strike Rate"],
+      ["Dot Ball Percentage", "Power Play Strike Rate"],
+      ["Power Play Economy Rate", "Run Outs"],
+      ["Runs", "Stumpings"],
+      ["Wickets", "1morestat"],
+    ];
     return stats.map((stat) => {
       return (
         <div>

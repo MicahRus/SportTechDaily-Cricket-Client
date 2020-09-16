@@ -12,14 +12,12 @@ class Home extends React.Component {
   state = {
     loaded: false,
     graphType: "radar",
-    playerType: "batsman",
     competition: ["domestic", "international"],
-    selectedStats: ["Runs", "4s", "6s"],
+    selectedStats: ["Runs", "Fours", "Sixes", "Wickets"],
   };
 
   componentDidMount() {
     this.getAllStats();
-    // this.getRuns();
     if (localStorage.getItem("data")) {
       this.useStoredData();
     }
@@ -29,6 +27,42 @@ class Home extends React.Component {
   componentDidUpdate() {
     console.log(this.state);
   }
+
+  renderPage = () => {
+    // Error catching logic to ensure data is loaded
+    if (this.state.failedFetch) {
+      return (
+        <div>
+          {" "}
+          <h1> Oh no....</h1>
+          <p>
+            {" "}
+            Sorry that something went wrong when trying to use our page, please
+            report the bug to us and we'll get straight on fixing it.
+          </p>
+        </div>
+      );
+    }
+
+    if (this.state.loaded) {
+      return (
+        <Row>
+          {this.renderControls()}
+          <RenderRadar
+            player1={this.state.player1}
+            player2={this.state.player2}
+            radarChartData={this.state.radarChartData}
+          />
+        </Row>
+      );
+    } else {
+      return (
+        <Container>
+          <h1> Page Loading</h1>
+        </Container>
+      );
+    }
+  };
 
   useStoredData = () => {
     const data = JSON.parse(localStorage.getItem("data"));
@@ -40,10 +74,6 @@ class Home extends React.Component {
     const data = await Promise.all([
       this.getAllPlayers(),
       this.getAllPlayerStats(),
-      this.getAllBatsmen(),
-      this.getAllBowlers(),
-      this.getAllAllRounders(),
-      this.getAllWicketKeepers(),
       this.getAllVenues(),
       this.getAllLeagues(),
       this.getPost2017Players(),
@@ -51,8 +81,18 @@ class Home extends React.Component {
 
     localStorage.setItem("data", JSON.stringify(data));
 
+    this.initialDataSetup();
     // This function handles setting the fetched data into state
     this.setDataToState(data);
+  };
+
+  initialDataSetup = () => {
+    this.setState({
+      player1: { value: "253802", label: "Virat Kohli" },
+      player2: { value: "34102", label: "Rohit Sharma" },
+    });
+    this.getSelectedPlayerStats("253802", "player1Stats", true);
+    this.getSelectedPlayerStats("34102", "player2Stats", true);
   };
 
   setDataToState = (data) => {
@@ -60,14 +100,9 @@ class Home extends React.Component {
       {
         allPlayersData: data[0],
         allPlayersStats: data[1],
-        allBatsmen: data[2],
-        allBowlers: data[3],
-        allAllRounders: data[4],
-        AllWicketKeepers: data[5],
-        getAllWicketKeepers: data[5],
-        allVenues: data[6],
-        allLeagues: data[7],
-        post2017Players: data[8],
+        allVenues: data[2],
+        allLeagues: data[3],
+        post2017Players: data[4],
       },
       () => {
         // This function will load the actual page instead of the skeleton
@@ -93,54 +128,6 @@ class Home extends React.Component {
     try {
       const response = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}/players`
-      );
-      const data = await response.json();
-      return data.rows;
-    } catch (err) {
-      this.setState({ failedFetch: true });
-    }
-  };
-
-  getAllBatsmen = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/players/batsmen`
-      );
-      const data = await response.json();
-      return data.rows;
-    } catch (err) {
-      this.setState({ failedFetch: true });
-    }
-  };
-
-  getAllBowlers = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/players/bowlers`
-      );
-      const data = await response.json();
-      return data.rows;
-    } catch (err) {
-      this.setState({ failedFetch: true });
-    }
-  };
-
-  getAllAllRounders = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/players/all_rounders`
-      );
-      const data = await response.json();
-      return data.rows;
-    } catch (err) {
-      this.setState({ failedFetch: true });
-    }
-  };
-
-  getAllWicketKeepers = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/players/wicket_keepers`
       );
       const data = await response.json();
       return data.rows;
@@ -192,26 +179,30 @@ class Home extends React.Component {
       );
       const data = await response.json();
       this.setState({ post2017Stats: data.rows }, () => {
-        this.findPercentile();
+        this.setStatArrays();
       });
     } catch (err) {
       this.setState({ failedFetch: true });
     }
   };
 
-  // getRuns = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       `${process.env.REACT_APP_BACKEND_URL}/stats/runs`
-  //     );
-  //     const data = await response.json();
-  //     this.setState({ post2017Runs: data.rows }, () => {
-  //       this.findPercentile();
-  //     });
-  //   } catch (err) {
-  //     this.setState({ failedFetch: true });
-  //   }
-  // };
+  getSelectedPlayerStats = async (playerId, playerNumStats, initialSetup) => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/players/id?playerId=${playerId}`
+      );
+      const data = await response.json();
+      this.setState({ [playerNumStats]: data.rows[0] }, () => {
+        if (initialSetup) {
+          console.log("hi");
+        } else {
+          this.findPercentile();
+        }
+      });
+    } catch (err) {
+      this.setState({ failedFetch: true });
+    }
+  };
 
   // A click handler for the 'player type' buttons
   playerTypeClickHandler = (value) => {
@@ -237,7 +228,11 @@ class Home extends React.Component {
   };
 
   playerSelectClickHandler = (selectedPlayer, e) => {
-    this.setState({ [selectedPlayer]: e });
+    let playerNumStats = `${selectedPlayer}Stats`;
+
+    this.setState({ [selectedPlayer]: e }, () => {
+      this.getSelectedPlayerStats(e.value, playerNumStats);
+    });
   };
 
   statCheckboxClickHandler = (e) => {
@@ -245,22 +240,31 @@ class Home extends React.Component {
 
     if (this.state.selectedStats.includes(key)) {
       if (this.state.selectedStats.length >= 4) {
-        this.setState((prevState) => ({
-          selectedStats: prevState.selectedStats.filter((x) => x !== key),
-        }));
+        this.setState(
+          (prevState) => ({
+            selectedStats: prevState.selectedStats.filter((x) => x !== key),
+          }),
+          () => {
+            this.findPercentile();
+          }
+        );
       } else {
         alert("You must have at least 3 stats selected");
       }
     } else {
-      this.setState((prevState) => ({
-        selectedStats: [...prevState.selectedStats, key],
-      }));
+      this.setState(
+        (prevState) => ({
+          selectedStats: [...prevState.selectedStats, key],
+        }),
+        () => {
+          this.findPercentile();
+        }
+      );
     }
   };
 
   playerTemplateClickHandler = (e) => {
     let key = e.target.innerHTML;
-    console.log(key);
 
     switch (key) {
       default:
@@ -268,78 +272,97 @@ class Home extends React.Component {
         break;
 
       case "Batsman":
-        this.setState({
-          selectedStats: [
-            "Runs",
-            "Batting Average",
-            "Batting Strike Rate",
-            "4s",
-            "6s",
-            "Balls Per Boundary",
-            "Power Play Strike Rate",
-            "Death Strike Rate",
-            "Dot Ball Percentage",
-          ],
-        });
+        this.setState(
+          {
+            selectedStats: [
+              "Runs",
+              "Batting Average",
+              "Batting Strike Rate",
+              "Fours",
+              "Sixes",
+              "Balls Per Boundary",
+              "Power Play Strike Rate",
+              "Death Strike Rate",
+              "Dot Ball Percentage",
+            ],
+          },
+          () => {
+            this.findPercentile();
+          }
+        );
         break;
 
       case "Bowler":
-        this.setState({
-          selectedStats: [
-            "Wickets",
-            "Bowling Average",
-            "Bowling Economy Rate",
-            "Catches",
-            "Dot Ball Percentage",
-            "Power Play Economy Rate",
-            "Death Overs Economy Rate",
-          ],
-        });
+        this.setState(
+          {
+            selectedStats: [
+              "Wickets",
+              "Bowling Average",
+              "Bowling Economy Rate",
+              "Catches",
+              "Dot Ball Percentage",
+              "Power Play Economy Rate",
+              "Death Overs Economy Rate",
+            ],
+          },
+          () => {
+            this.findPercentile();
+          }
+        );
         break;
 
       case "Wicket Keeper":
-        this.setState({
-          selectedStats: [
-            "Catches",
-            "Stumpings",
-            "Run Outs",
-            "Runs",
-            "Batting Average",
-            "Batting Strike Rate",
-            "4s",
-            "6s",
-            "Balls Per Boundary",
-            "Power Play Strike Rate",
-            "Death Strike Rate",
-            "Dot Ball Percentage",
-          ],
-        });
+        this.setState(
+          {
+            selectedStats: [
+              "Catches",
+              "Stumpings",
+              "Run Outs",
+              "Runs",
+              "Batting Average",
+              "Batting Strike Rate",
+              "Fours",
+              "Sixes",
+              "Balls Per Boundary",
+              "Power Play Strike Rate",
+              "Death Strike Rate",
+              "Dot Ball Percentage",
+            ],
+          },
+          () => {
+            this.findPercentile();
+          }
+        );
         break;
 
       case "All Rounder":
-        this.setState({
-          selectedStats: [
-            "Runs",
-            "Batting Average",
-            "Batting Strike Rate",
-            "Wickets",
-            "Bowling Average",
-            "Bowling Economy Rate",
-            "Catches",
-            "4s",
-            "6s",
-            "Balls Per Boundary",
-            "Power Play Strike Rate",
-            "Death Strike Rate",
-            "Dot Ball Percentage",
-          ],
-        });
+        this.setState(
+          {
+            selectedStats: [
+              "Runs",
+              "Batting Average",
+              "Batting Strike Rate",
+              "Wickets",
+              "Bowling Average",
+              "Bowling Economy Rate",
+              "Catches",
+              "Fours",
+              "Sixes",
+              "Balls Per Boundary",
+              "Power Play Strike Rate",
+              "Death Strike Rate",
+              "Dot Ball Percentage",
+            ],
+          },
+          () => {
+            this.findPercentile();
+          }
+        );
         break;
     }
   };
 
   leagueClickHandler = (leagues) => {
-    console.log(leagues);
     this.setState({ selectedLeagues: leagues });
   };
 
@@ -367,13 +390,142 @@ class Home extends React.Component {
           statCheckboxClickHandler={this.statCheckboxClickHandler}
           playerTemplateClickHandler={this.playerTemplateClickHandler}
           leagueClickHandler={this.leagueClickHandler}
+          passStatsToState={this.passStatsToState}
         />
       </Col>
     );
   };
 
-  findPercentile = () => {
+  setStatArrays = () => {
     let array = [];
+    let runs = [];
+    let batting_average = [];
+    let batting_strike_rate = [];
+    let balls_per_boundary = [];
+    let power_play_strike_rate = [];
+    let death_strike_rate = [];
+    let dot_ball_percentage = [];
+    let wickets = [];
+    let bowling_average = [];
+    let bowling_economy_rate = [];
+    let catches = [];
+    let run_outs = [];
+    let death_overs_economy_rate = [];
+    let sixes = [];
+    let power_play_economy_rate = [];
+    let fours = [];
+    let stumpings = [];
+
+    this.state.stats.map((stat) => {
+      this.state.post2017Stats.map((item) => {
+        switch (stat) {
+          case "Runs":
+            runs.push(item.runs);
+            break;
+
+          case "Batting Average":
+            batting_average.push(item.batting_average);
+            break;
+
+          case "Batting Strike Rate":
+            batting_strike_rate.push(item.batting_strike_rate);
+            break;
+
+          case "Balls Per Boundary":
+            balls_per_boundary.push(item.balls_per_boundary);
+            break;
+
+          case "Power Play Strike Rate":
+            power_play_strike_rate.push(item.power_play_strike_rate);
+            break;
+
+          case "Death Strike Rate":
+            death_strike_rate.push(item.death_strike_rate);
+            break;
+
+          case "Dot Ball Percentage":
+            dot_ball_percentage.push(item.dot_ball_percentage);
+            break;
+
+          case "Wickets":
+            wickets.push(item.wickets);
+            break;
+
+          case "Bowling Average":
+            bowling_average.push(item.bowling_average);
+            break;
+
+          case "Bowling Economy Rate":
+            bowling_economy_rate.push(item.bowling_economy_rate);
+            break;
+
+          case "Catches":
+            catches.push(item.catches);
+            break;
+
+          case "Run Outs":
+            run_outs.push(item.run_outs);
+            break;
+
+          case "Death Overs Economy Rate":
+            death_overs_economy_rate.push(item.death_overs_economy_rate);
+            break;
+
+          case "Sixes":
+            sixes.push(item.sixes);
+            break;
+
+          case "Power Play Economy Rate":
+            power_play_economy_rate.push(item.power_play_economy_rate);
+            break;
+
+          case "Fours":
+            fours.push(item.fours);
+            break;
+
+          case "Catches":
+            catches.push(item.catches);
+            break;
+
+          case "Stumpings":
+            stumpings.push(item.stumpings);
+            break;
+          default:
+            array.push(item);
+            break;
+        }
+      });
+    });
+    this.setState({
+      totalStats: {
+        fours: fours.sort(),
+        sixes: sixes.sort(),
+        balls_per_boundary: balls_per_boundary.sort(),
+        batting_average: batting_average.sort(),
+        batting_strike_rate: batting_strike_rate.sort(),
+        bowling_average: bowling_average.sort(),
+        bowling_economy_rate: bowling_economy_rate.sort(),
+        catches: catches.sort(),
+        death_strike_rate: death_strike_rate.sort(),
+        death_overs_economy_rate: death_overs_economy_rate.sort(),
+        dot_ball_percentage: dot_ball_percentage.sort(),
+        power_play_economy_rate: power_play_economy_rate.sort(),
+        power_play_strike_rate: power_play_strike_rate.sort(),
+        run_outs: run_outs.sort(),
+        runs: runs.sort(),
+        stumpings: stumpings.sort(),
+        wickets: wickets.sort(),
+      },
+    });
+  };
+
+  passStatsToState = (stats) => {
+    this.setState({ stats });
+  };
+
+  findPercentile = () => {
+    let player1Percentiles = [];
+    let player2Percentiles = [];
     const percentile = (arr, val) =>
       (100 *
         arr.reduce(
@@ -382,51 +534,55 @@ class Home extends React.Component {
         )) /
       arr.length;
 
-    this.state.post2017Stats.map((item) => {
-      array.push(item.innings1runs);
+    this.state.selectedStats.map((stat) => {
+      let newStat = stat.split(" ").join("_").toLowerCase();
+
+      if (this.state.player1Stats[newStat] > 0) {
+        player1Percentiles.push(
+          Math.round(
+            percentile(
+              this.state.totalStats[newStat],
+              this.state.player1Stats[newStat]
+            )
+          )
+        );
+      } else {
+        player1Percentiles.push(0);
+      }
+      if (this.state.player2Stats[newStat] > 0) {
+        player2Percentiles.push(
+          Math.round(
+            percentile(
+              this.state.totalStats[newStat],
+              this.state.player2Stats[newStat]
+            )
+          )
+        );
+      } else {
+        player2Percentiles.push(0);
+      }
     });
 
-    console.log(array);
-    console.log(performance.now());
-    const sortArray = array.sort();
-    console.log(performance.now());
+    this.setState({ player1Percentiles, player2Percentiles }, () => {
+      this.setRadarData();
+    });
+  };
 
-    console.log(sortArray);
-    const result = percentile(sortArray, 5);
+  setRadarData = () => {
+    let data = [];
+    this.state.selectedStats.map((stat, index) => {
+      data.push({
+        stat: stat,
+        [this.state.player1.label]: this.state.player1Percentiles[index],
+        [this.state.player2.label]: this.state.player2Percentiles[index],
+      });
 
-    console.log(result);
+      this.setState({ radarChartData: data });
+    });
   };
 
   render() {
-    // Error catching logic to ensure data is loaded
-    if (this.state.failedFetch) {
-      return (
-        <div>
-          {" "}
-          <h1> Oh no....</h1>
-          <p>
-            {" "}
-            Sorry that something went wrong when trying to use our page, please
-            report the bug to us and we'll get straight on fixing it.
-          </p>
-        </div>
-      );
-    }
-
-    if (this.state.loaded) {
-      return (
-        <Row>
-          {this.renderControls()}
-          <RenderRadar />
-        </Row>
-      );
-    } else {
-      return (
-        <Container>
-          <h1> Page Loading</h1>
-        </Container>
-      );
-    }
+    return this.renderPage();
   }
 }
 

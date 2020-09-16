@@ -49,6 +49,7 @@ class PlayerSelect extends React.Component {
       <Row>
         <Col>
           <Select
+            placeholder="Virat Kohli"
             isOptionDisabled={(option) =>
               option.value === this.props.options.player1?.value ||
               option.value === this.props.options.player2?.value
@@ -62,6 +63,7 @@ class PlayerSelect extends React.Component {
         </Col>
         <Col>
           <Select
+            placeholder="Rohit Sharma"
             isOptionDisabled={(option) =>
               option.value === this.props.options.player1?.value ||
               option.value === this.props.options.player2?.value
