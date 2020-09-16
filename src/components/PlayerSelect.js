@@ -1,20 +1,16 @@
 import React from "react";
-import Select from "react-select";
+import Select, { createFilter } from "react-select";
+
+import MenuList from "./MenuList";
 
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-
-import { ToggleButton, ToggleButtonGroup } from "react-bootstrap/";
 
 class PlayerSelect extends React.Component {
   state = { playerOptions: [{ value: "test", label: "test" }] };
 
   componentDidMount() {
     this.setPlayerOptions();
-  }
-
-  componentDidUpdate() {
-    console.log(this.props);
   }
 
   setPlayerOptions = () => {
@@ -34,7 +30,7 @@ class PlayerSelect extends React.Component {
         key = "allWicketKeepers";
         break;
     }
-    this.props.options[key].map((player) => {
+    this.props.options.post2017Players.map((player) => {
       playerOptions.push({ value: player.playerid, label: player.player });
     });
     this.setState({ playerOptions });
@@ -45,50 +41,41 @@ class PlayerSelect extends React.Component {
       container: (provided, state) => ({
         ...provided,
 
-        margin: "5px",
+        margin: "10px 0px",
         // width: "40%",
       }),
     };
     return (
-      <div>
-        {/* <ToggleButtonGroup
-          value={this.props.options.playerType}
-          name="radio"
-          onChange={(value) => {
-            this.props.clickHandler(value);
-            this.setState({ getNewProps: true }, () => {
-              this.setPlayerOptions();
-            });
-          }}
-        >
-          <ToggleButton variant="outline-secondary" value="batsman">
-            Batsman
-          </ToggleButton>
-          <ToggleButton variant="outline-secondary" value="bowler">
-            Bowler
-          </ToggleButton>
-          <ToggleButton variant="outline-secondary" value="allrounder">
-            AllRounder
-          </ToggleButton>
-          <ToggleButton variant="outline-secondary" value="wicketKeeper">
-            WicketKeeper
-          </ToggleButton>
-        </ToggleButtonGroup> */}
-        <Row>
-          <Col>
-            <Select
-              styles={customStyles}
-              options={this.state.playerOptions}
-            ></Select>
-          </Col>
-          <Col>
-            <Select
-              styles={customStyles}
-              options={this.state.playerOptions}
-            ></Select>
-          </Col>
-        </Row>
-      </div>
+      <Row>
+        <Col>
+          <Select
+            placeholder="Virat Kohli"
+            isOptionDisabled={(option) =>
+              option.value === this.props.options.player1?.value ||
+              option.value === this.props.options.player2?.value
+            }
+            filterOption={createFilter({ ignoreAccents: false })}
+            components={{ MenuList }}
+            styles={customStyles}
+            options={this.state.playerOptions}
+            onChange={(e) => this.props.playerSelectClickHandler("player1", e)}
+          ></Select>
+        </Col>
+        <Col>
+          <Select
+            placeholder="Rohit Sharma"
+            isOptionDisabled={(option) =>
+              option.value === this.props.options.player1?.value ||
+              option.value === this.props.options.player2?.value
+            }
+            filterOption={createFilter({ ignoreAccents: false })}
+            styles={customStyles}
+            options={this.state.playerOptions}
+            components={{ MenuList }}
+            onChange={(e) => this.props.playerSelectClickHandler("player2", e)}
+          ></Select>
+        </Col>
+      </Row>
     );
   };
 

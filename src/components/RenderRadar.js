@@ -7,43 +7,34 @@ class RenderRadar extends React.Component {
   render() {
     const data = [
       {
-        stat: "all_run_metres",
-        player1: 51,
-        player2: 80,
+        stat: "Runs",
+        "Virat Kohli": 51,
+        "Rohit Sharma": 80,
       },
       {
-        stat: "errors",
-        player1: 99,
-        player2: 75,
+        stat: "Fours",
+        "Virat Kohli": 99,
+        "Rohit Sharma": 75,
       },
       {
-        stat: "line_breaks",
-        player1: 99,
-        player2: 75,
+        stat: "Sixes",
+        "Virat Kohli": 99,
+        "Rohit Sharma": 75,
       },
       {
-        stat: "tries",
-        player1: 99,
-        player2: 75,
-      },
-      {
-        stat: "tackle_breaks",
-        player1: 99,
-        player2: 75,
-      },
-      {
-        stat: "try_assists",
-        player1: 99,
-        player2: 75,
+        stat: "Wickets",
+        "Virat Kohli": 99,
+        "Rohit Sharma": 75,
       },
     ];
+
     return (
       <Col sm={12} lg={8} md={8} xl={8}>
         <div className="graph-container">
           <ResponsiveRadar
             id="radarGraph"
-            data={data}
-            keys={["player1", "player2"]}
+            data={this.props.radarChartData || data}
+            keys={[this.props.player1?.label, this.props.player2?.label]}
             indexBy="stat"
             maxValue="99"
             margin={{ top: 70, right: 80, bottom: 40, left: 80 }}

@@ -30,6 +30,16 @@
   font-size: 1.5vh;
 }
 
+.template-button {
+  margin-right: 5px;
+}
+
+/* This controls the size of the checkboxes */
+/* .custom-control-label::before {
+  width: 13px !important;
+  height: 13px !important;
+} */
+
 .playerFix {
   left: 0;
   position: sticky;
@@ -42,33 +52,6 @@
 .tableFixHead {
   overflow-y: auto;
   height: 1000px;
-}
-
-/* .tableFixHeadSmall {
-  overflow-y: auto;
-  height: 1000px;
-  font-size: 12px;
-  white-space: nowrap;
-} */
-
-th {
-  position: sticky;
-  top: 0;
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-th,
-td {
-  padding: 8px 24px;
-  white-space: nowrap;
-}
-
-th {
-  background: #eee;
 }
 
 .footer {
@@ -91,4 +74,12 @@ th {
 #copyright {
   font-size: small;
   opacity: 35%;
+}
+
+.css-26l3qy-menu {
+  z-index: 9999 !important;
+}
+
+.graph-control-item-group {
+  margin: 10px 0px;
 }
