@@ -14,6 +14,7 @@ class Home extends React.Component {
     graphType: "radar",
     competition: ["domestic", "international"],
     selectedStats: ["Runs", "Fours", "Sixes", "Wickets"],
+    selectedLeagues: [],
   };
 
   componentDidMount() {
@@ -202,6 +203,26 @@ class Home extends React.Component {
         if (!initialSetup) {
           this.findPercentile();
         }
+      });
+    } catch (err) {
+      this.setState({ failedFetch: true });
+    }
+  };
+
+  getLeagueStats = async () => {
+    let leagueArray = [];
+    this.state.selectedLeagues.map((league) => {
+      leagueArray.push(league.value);
+    });
+    leagueArray = leagueArray.join(", ");
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/stats/post2017/leagues?leagues=${leagueArray}`
+      );
+      const data = await response.json();
+      this.setState({ post2017LeagueStats: data.rows }, () => {
+        this.setStatArrays();
+        this.findPercentile();
       });
     } catch (err) {
       this.setState({ failedFetch: true });
@@ -422,12 +443,20 @@ class Home extends React.Component {
           playerTemplateClickHandler={this.playerTemplateClickHandler}
           leagueClickHandler={this.leagueClickHandler}
           passStatsToState={this.passStatsToState}
+          getLeagueStats={this.getLeagueStats}
         />
       </Col>
     );
   };
 
   setStatArrays = () => {
+    let key = null;
+    this.state.selectedLeagues.length > 0
+      ? (key = this.state.post2017LeagueStats)
+      : (key = this.state.post2017Stats);
+
+    console.log(key);
+
     let array = [];
     let runs = [];
     let batting_average = [];
@@ -448,7 +477,7 @@ class Home extends React.Component {
     let stumpings = [];
 
     this.state.stats.map((stat) => {
-      this.state.post2017Stats.map((item) => {
+      key.map((item) => {
         let num = 0;
         switch (stat) {
           case "Runs":

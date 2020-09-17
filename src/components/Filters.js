@@ -159,7 +159,7 @@ class Filters extends React.Component {
     let options = [];
 
     this.props.leagues.map((league) => {
-      options.push({ label: league.League, value: league.LeagueID });
+      options.push({ label: league.league, value: league.league_id });
     });
 
     return (
@@ -177,7 +177,7 @@ class Filters extends React.Component {
           hideSelectedOptions={true}
           onChange={this.props.leagueClickHandler}
           onMenuClose={() => {
-            this.props.getNewStats();
+            this.props.getLeagueStats();
           }}
         />
       </div>
