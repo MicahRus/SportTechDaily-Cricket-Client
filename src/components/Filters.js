@@ -24,7 +24,8 @@ class Filters extends React.Component {
       "Runs",
       "Stumpings",
       "Wickets",
-      "1morestat",
+      "Dismissed",
+      "Runs Conceded",
     ],
   };
 
@@ -111,11 +112,15 @@ class Filters extends React.Component {
           components={{ MenuList }}
           isMulti
           closeMenuOnSelect={false}
+          openMenuOnFocus={true}
           placeholder="Venues"
           name="venues"
           options={options}
           className="basic-multi-select"
           classNamePrefix="select"
+          onMenuClose={() => {
+            console.log("hit");
+          }}
         />
       </div>
     );
@@ -171,6 +176,9 @@ class Filters extends React.Component {
           classNamePrefix="select"
           hideSelectedOptions={true}
           onChange={this.props.leagueClickHandler}
+          onMenuClose={() => {
+            this.props.getNewStats();
+          }}
         />
       </div>
     );

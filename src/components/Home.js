@@ -192,16 +192,47 @@ class Home extends React.Component {
         `${process.env.REACT_APP_BACKEND_URL}/players/id?playerId=${playerId}`
       );
       const data = await response.json();
-      this.setState({ [playerNumStats]: data.rows[0] }, () => {
-        if (initialSetup) {
-          console.log("hi");
-        } else {
+      this.setAdditionalStats(data.rows);
+
+      const joinedData = {
+        ...data.rows[0],
+        ...this.setAdditionalStats(data.rows[0]),
+      };
+      this.setState({ [playerNumStats]: joinedData }, () => {
+        if (!initialSetup) {
           this.findPercentile();
         }
       });
     } catch (err) {
       this.setState({ failedFetch: true });
     }
+  };
+
+  setAdditionalStats = (data) => {
+    let additionalStats = {};
+    let num = 0;
+
+    num = data.runs / data.dismissed;
+    num = +num.toFixed(2);
+    additionalStats.batting_average = num || 0;
+
+    num = (data.runs / data.balls_faced) * 100;
+    num = +num.toFixed(2);
+    additionalStats.batting_strike_rate = num || 0;
+
+    num = (data.runs / data.balls_faced) * 100;
+    num = +num.toFixed(2);
+    additionalStats.dot_ball_percentage = num || 0;
+
+    num = data.runs_conceded / data.wickets;
+    num = +num.toFixed(2);
+    additionalStats.bowling_average = num || 0;
+
+    num = (data.runs_conceded / data.balls_boweled_legal) * 6;
+    num = +num.toFixed(2);
+    additionalStats.bowling_economy_rate = num || 0;
+
+    return additionalStats;
   };
 
   // A click handler for the 'player type' buttons
@@ -418,17 +449,22 @@ class Home extends React.Component {
 
     this.state.stats.map((stat) => {
       this.state.post2017Stats.map((item) => {
+        let num = 0;
         switch (stat) {
           case "Runs":
             runs.push(item.runs);
             break;
 
           case "Batting Average":
-            batting_average.push(item.batting_average);
+            num = item.runs / item.dismissed;
+            num = +num.toFixed(2);
+            batting_average.push(num || 0);
             break;
 
           case "Batting Strike Rate":
-            batting_strike_rate.push(item.batting_strike_rate);
+            num = (item.runs / item.balls_faced) * 100;
+            num = +num.toFixed(2);
+            batting_strike_rate.push(num || 0);
             break;
 
           case "Balls Per Boundary":
@@ -444,7 +480,9 @@ class Home extends React.Component {
             break;
 
           case "Dot Ball Percentage":
-            dot_ball_percentage.push(item.dot_ball_percentage);
+            num = (item.runs / item.balls_faced) * 100;
+            num = +num.toFixed(2);
+            dot_ball_percentage.push(num || 0);
             break;
 
           case "Wickets":
@@ -452,11 +490,15 @@ class Home extends React.Component {
             break;
 
           case "Bowling Average":
-            bowling_average.push(item.bowling_average);
+            num = item.runs_conceded / item.wickets;
+            num = +num.toFixed(2);
+            bowling_average.push(num || 0);
             break;
 
           case "Bowling Economy Rate":
-            bowling_economy_rate.push(item.bowling_economy_rate);
+            num = (item.runs_conceded / item.balls_boweled_legal) * 6;
+            num = +num.toFixed(2);
+            bowling_economy_rate.push(num || 0);
             break;
 
           case "Catches":
