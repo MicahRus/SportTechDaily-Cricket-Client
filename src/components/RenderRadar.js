@@ -8,23 +8,23 @@ class RenderRadar extends React.Component {
     const data = [
       {
         stat: "Runs",
-        "Virat Kohli": 51,
-        "Rohit Sharma": 80,
+        "Virat Kohli": 36,
+        "Rohit Sharma": 36,
       },
       {
         stat: "Fours",
-        "Virat Kohli": 99,
-        "Rohit Sharma": 75,
+        "Virat Kohli": 53,
+        "Rohit Sharma": 55,
       },
       {
         stat: "Sixes",
         "Virat Kohli": 99,
-        "Rohit Sharma": 75,
+        "Rohit Sharma": 96,
       },
       {
         stat: "Wickets",
-        "Virat Kohli": 99,
-        "Rohit Sharma": 75,
+        "Virat Kohli": 0,
+        "Rohit Sharma": 0,
       },
     ];
 
@@ -37,13 +37,13 @@ class RenderRadar extends React.Component {
             keys={[this.props.player1?.label, this.props.player2?.label]}
             indexBy="stat"
             maxValue="99"
-            margin={{ top: 70, right: 80, bottom: 40, left: 80 }}
+            margin={{ top: 70, right: 80, bottom: 40, left: 110 }}
             curve="linearClosed"
             borderWidth={2}
             borderColor={{ from: "color" }}
             gridLevels={5}
             gridShape="linear"
-            gridLabelOffset={16}
+            gridLabelOffset={5}
             enableDots={true}
             dotSize={6}
             dotColor={{ theme: "background" }}
