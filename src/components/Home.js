@@ -5,8 +5,8 @@ import { Col, Container, Row } from "react-bootstrap";
 import SelectTabs from "./SelectTabs";
 import PlayerSelect from "./PlayerSelect";
 import Filters from "./Filters";
-
 import RenderRadar from "./RenderRadar";
+import SideBar from "./SideBar";
 
 class Home extends React.Component {
   state = {
@@ -54,6 +54,9 @@ class Home extends React.Component {
             player2={this.state.player2}
             radarChartData={this.state.radarChartData}
           />
+          <Col xl={3}>
+            <SideBar />
+          </Col>
         </Row>
       );
     } else {
@@ -421,7 +424,7 @@ class Home extends React.Component {
   // This function renders all the controls for the graph
   renderControls = () => {
     return (
-      <Col sm={12} lg={4} md={4} xl={4} id="control-tabs">
+      <Col sm={12} lg={3} md={3} xl={3} id="control-tabs">
         <SelectTabs
           graphType={this.state.graphType}
           action={(e) => {

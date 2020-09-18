@@ -179,6 +179,7 @@ class Filters extends React.Component {
           onMenuClose={() => {
             this.props.getLeagueStats();
           }}
+          openMenuOnFocus={true}
         />
       </div>
     );

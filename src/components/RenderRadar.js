@@ -29,7 +29,7 @@ class RenderRadar extends React.Component {
     ];
 
     return (
-      <Col sm={12} lg={8} md={8} xl={8}>
+      <Col sm={12} lg={6} md={6} xl={6}>
         <div className="graph-container">
           <ResponsiveRadar
             id="radarGraph"

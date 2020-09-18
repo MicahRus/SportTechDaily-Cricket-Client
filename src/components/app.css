@@ -83,3 +83,34 @@
 .graph-control-item-group {
   margin: 10px 0px;
 }
+
+text {
+  font-size: 15px !important;
+}
+
+.card {
+  margin: 10px 0px;
+  width: 15rem;
+  margin: auto;
+  height: 500px;
+}
+
+.carousel-control-next,
+.carousel-control-prev {
+  filter: invert(100%);
+}
+
+.carousel-indicators .active {
+  background-color: black !important;
+}
+
+.carousel-indicators li {
+  background-color: silver !important;
+}
+
+.card-title,
+h5,
+a {
+  color: black !important;
+  font-size: 2vh;
+}
