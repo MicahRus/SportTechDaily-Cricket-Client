@@ -19,7 +19,7 @@ class SideBar extends React.Component {
             style={{
               marginLeft: "auto",
               marginRight: "auto",
-              marginTop: "15px",
+              // marginTop: "15px",
             }}
           />
         </BSRow>

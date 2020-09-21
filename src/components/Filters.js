@@ -26,6 +26,7 @@ class Filters extends React.Component {
       "Wickets",
       "Dismissed",
       "Runs Conceded",
+      "Games Played",
     ],
   };
 

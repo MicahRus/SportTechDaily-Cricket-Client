@@ -233,18 +233,22 @@ class Home extends React.Component {
   };
 
   setAdditionalStats = (data) => {
+    console.log(data);
     let additionalStats = {};
     let num = 0;
 
     num = data.runs / data.dismissed;
+    if (!isFinite(num)) {
+      num = data.runs / data.games_played;
+    }
     num = +num.toFixed(2);
     additionalStats.batting_average = num || 0;
 
-    num = (data.runs / data.balls_faced) * 100;
+    num = (data.runs / data.ballsfaced) * 100;
     num = +num.toFixed(2);
     additionalStats.batting_strike_rate = num || 0;
 
-    num = (data.runs / data.balls_faced) * 100;
+    num = (data.runs / data.ballsfaced) * 100;
     num = +num.toFixed(2);
     additionalStats.dot_ball_percentage = num || 0;
 
@@ -256,6 +260,7 @@ class Home extends React.Component {
     num = +num.toFixed(2);
     additionalStats.bowling_economy_rate = num || 0;
 
+    console.log(additionalStats);
     return additionalStats;
   };
 
@@ -424,7 +429,7 @@ class Home extends React.Component {
   // This function renders all the controls for the graph
   renderControls = () => {
     return (
-      <Col sm={12} lg={3} md={3} xl={3} id="control-tabs">
+      <Col sm={12} md={12} lg={3} xl={3} id="control-tabs">
         <SelectTabs
           graphType={this.state.graphType}
           action={(e) => {
@@ -458,8 +463,6 @@ class Home extends React.Component {
       ? (key = this.state.post2017LeagueStats)
       : (key = this.state.post2017Stats);
 
-    console.log(key);
-
     let array = [];
     let runs = [];
     let batting_average = [];
@@ -489,12 +492,15 @@ class Home extends React.Component {
 
           case "Batting Average":
             num = item.runs / item.dismissed;
+            if (!isFinite(num)) {
+              num = item.runs / item.games_played;
+            }
             num = +num.toFixed(2);
             batting_average.push(num || 0);
             break;
 
           case "Batting Strike Rate":
-            num = (item.runs / item.balls_faced) * 100;
+            num = (item.runs / item.ballsfaced) * 100;
             num = +num.toFixed(2);
             batting_strike_rate.push(num || 0);
             break;
@@ -512,7 +518,7 @@ class Home extends React.Component {
             break;
 
           case "Dot Ball Percentage":
-            num = (item.runs / item.balls_faced) * 100;
+            num = (item.runs / item.ballsfaced) * 100;
             num = +num.toFixed(2);
             dot_ball_percentage.push(num || 0);
             break;
@@ -557,10 +563,6 @@ class Home extends React.Component {
             fours.push(item.fours);
             break;
 
-          case "Catches":
-            catches.push(item.catches);
-            break;
-
           case "Stumpings":
             stumpings.push(item.stumpings);
             break;
@@ -572,23 +574,57 @@ class Home extends React.Component {
     });
     this.setState({
       totalStats: {
-        fours: fours.sort(),
-        sixes: sixes.sort(),
-        balls_per_boundary: balls_per_boundary.sort(),
-        batting_average: batting_average.sort(),
-        batting_strike_rate: batting_strike_rate.sort(),
-        bowling_average: bowling_average.sort(),
-        bowling_economy_rate: bowling_economy_rate.sort(),
-        catches: catches.sort(),
-        death_strike_rate: death_strike_rate.sort(),
-        death_overs_economy_rate: death_overs_economy_rate.sort(),
-        dot_ball_percentage: dot_ball_percentage.sort(),
-        power_play_economy_rate: power_play_economy_rate.sort(),
-        power_play_strike_rate: power_play_strike_rate.sort(),
-        run_outs: run_outs.sort(),
-        runs: runs.sort(),
-        stumpings: stumpings.sort(),
-        wickets: wickets.sort(),
+        fours: fours.sort((a, b) => {
+          return a - b;
+        }),
+        sixes: sixes.sort((a, b) => {
+          return a - b;
+        }),
+        balls_per_boundary: balls_per_boundary.sort((a, b) => {
+          return a - b;
+        }),
+        batting_average: batting_average.sort((a, b) => {
+          return a - b;
+        }),
+        batting_strike_rate: batting_strike_rate.sort((a, b) => {
+          return a - b;
+        }),
+        bowling_average: bowling_average.sort((a, b) => {
+          return a - b;
+        }),
+        bowling_economy_rate: bowling_economy_rate.sort((a, b) => {
+          return a - b;
+        }),
+        catches: catches.sort((a, b) => {
+          return a - b;
+        }),
+        death_strike_rate: death_strike_rate.sort((a, b) => {
+          return a - b;
+        }),
+        death_overs_economy_rate: death_overs_economy_rate.sort((a, b) => {
+          return a - b;
+        }),
+        dot_ball_percentage: dot_ball_percentage.sort((a, b) => {
+          return a - b;
+        }),
+        power_play_economy_rate: power_play_economy_rate.sort((a, b) => {
+          return a - b;
+        }),
+        power_play_strike_rate: power_play_strike_rate.sort((a, b) => {
+          return a - b;
+        }),
+        run_outs: run_outs.sort((a, b) => {
+          return a - b;
+        }),
+        runs: runs.sort((a, b) => {
+          return a - b;
+        }),
+        stumpings: stumpings.sort((a, b) => {
+          return a - b;
+        }),
+        wickets: wickets.sort((a, b) => {
+          return a - b;
+        }),
       },
     });
   };
@@ -610,6 +646,7 @@ class Home extends React.Component {
 
     this.state.selectedStats.map((stat) => {
       let newStat = stat.split(" ").join("_").toLowerCase();
+      console.log(newStat);
 
       if (this.state.player1Stats[newStat] > 0) {
         player1Percentiles.push(
