@@ -29,7 +29,7 @@ class RenderRadar extends React.Component {
     ];
 
     return (
-      <Col sm={12} lg={6} md={6} xl={6}>
+      <Col sm={12} md={12} lg={6} xl={6}>
         <div className="graph-container">
           <ResponsiveRadar
             id="radarGraph"
@@ -37,7 +37,7 @@ class RenderRadar extends React.Component {
             keys={[this.props.player1?.label, this.props.player2?.label]}
             indexBy="stat"
             maxValue="99"
-            margin={{ top: 70, right: 80, bottom: 40, left: 110 }}
+            margin={{ top: 70, right: 110, bottom: 40, left: 110 }}
             curve="linearClosed"
             borderWidth={2}
             borderColor={{ from: "color" }}
