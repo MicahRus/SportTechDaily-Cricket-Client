@@ -96,8 +96,8 @@ class Home extends React.Component {
       player1: { value: "253802", label: "Virat Kohli" },
       player2: { value: "34102", label: "Rohit Sharma" },
     });
-    this.getSelectedPlayerStats("253802", "player1Stats", true);
-    this.getSelectedPlayerStats("34102", "player2Stats", true);
+    this.getSelectedPlayerStats("253802", "player1Stats");
+    this.getSelectedPlayerStats("34102", "player2Stats");
   };
 
   setDataToState = (data) => {
@@ -209,11 +209,7 @@ class Home extends React.Component {
     }
   };
 
-  getSelectedPlayerStatsDomestic = async (
-    playerId,
-    playerNumStats,
-    initialSetup
-  ) => {
+  getSelectedPlayerStatsDomestic = async (playerId, playerNumStats) => {
     try {
       const response = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}/players/domestic/id?playerId=${playerId}`
@@ -225,13 +221,9 @@ class Home extends React.Component {
         ...data.rows[0],
         ...this.setAdditionalStats(data.rows[0]),
       };
-      this.setState({ [playerNumStats]: joinedData }, () => {
-        // if (!initialSetup) {
-        //   this.findPercentile();
-        // }
-      });
+      this.setState({ [playerNumStats]: joinedData });
     } catch (err) {
-      alert("please select a domestic player");
+      this.setState({ failedFetch: true });
     }
   };
 
@@ -248,7 +240,6 @@ class Home extends React.Component {
       const data = await response.json();
       this.setState({ post2017LeagueStats: data.rows }, () => {
         this.setStatArrays();
-        // this.findPercentile();
       });
     } catch (err) {
       this.setState({ failedFetch: true });
