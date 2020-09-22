@@ -81,6 +81,7 @@ class Home extends React.Component {
       this.getAllVenues(),
       this.getAllLeagues(),
       this.getPost2017Players(),
+      this.getDomesticLeagues(),
     ]);
 
     localStorage.setItem("data", JSON.stringify(data));
@@ -190,7 +191,7 @@ class Home extends React.Component {
     }
   };
 
-  getSelectedPlayerStats = async (playerId, playerNumStats, initialSetup) => {
+  getSelectedPlayerStats = async (playerId, playerNumStats) => {
     try {
       const response = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}/players/id?playerId=${playerId}`
@@ -202,13 +203,35 @@ class Home extends React.Component {
         ...data.rows[0],
         ...this.setAdditionalStats(data.rows[0]),
       };
-      this.setState({ [playerNumStats]: joinedData }, () => {
-        if (!initialSetup) {
-          this.findPercentile();
-        }
-      });
+      this.setState({ [playerNumStats]: joinedData }, () => {});
     } catch (err) {
       this.setState({ failedFetch: true });
+    }
+  };
+
+  getSelectedPlayerStatsDomestic = async (
+    playerId,
+    playerNumStats,
+    initialSetup
+  ) => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/players/domestic/id?playerId=${playerId}`
+      );
+      const data = await response.json();
+      this.setAdditionalStats(data.rows);
+
+      const joinedData = {
+        ...data.rows[0],
+        ...this.setAdditionalStats(data.rows[0]),
+      };
+      this.setState({ [playerNumStats]: joinedData }, () => {
+        // if (!initialSetup) {
+        //   this.findPercentile();
+        // }
+      });
+    } catch (err) {
+      alert("please select a domestic player");
     }
   };
 
@@ -225,8 +248,20 @@ class Home extends React.Component {
       const data = await response.json();
       this.setState({ post2017LeagueStats: data.rows }, () => {
         this.setStatArrays();
-        this.findPercentile();
+        // this.findPercentile();
       });
+    } catch (err) {
+      this.setState({ failedFetch: true });
+    }
+  };
+
+  getDomesticLeagues = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/stats/post2017/domestic_leagues`
+      );
+      const data = await response.json();
+      this.setState({ domesticLeagues: data.rows });
     } catch (err) {
       this.setState({ failedFetch: true });
     }
@@ -274,6 +309,10 @@ class Home extends React.Component {
 
     if (this.state.competition.includes(key)) {
       if (this.state.competition.length >= 2) {
+        if (key === "domestic") {
+          this.setState({ selectedLeagues: this.state.domesticLeagues });
+        }
+
         this.setState((prevState) => ({
           competition: prevState.competition.filter((x) => x !== key),
         }));
@@ -300,26 +339,16 @@ class Home extends React.Component {
 
     if (this.state.selectedStats.includes(key)) {
       if (this.state.selectedStats.length >= 4) {
-        this.setState(
-          (prevState) => ({
-            selectedStats: prevState.selectedStats.filter((x) => x !== key),
-          }),
-          () => {
-            this.findPercentile();
-          }
-        );
+        this.setState((prevState) => ({
+          selectedStats: prevState.selectedStats.filter((x) => x !== key),
+        }));
       } else {
         alert("You must have at least 3 stats selected");
       }
     } else {
-      this.setState(
-        (prevState) => ({
-          selectedStats: [...prevState.selectedStats, key],
-        }),
-        () => {
-          this.findPercentile();
-        }
-      );
+      this.setState((prevState) => ({
+        selectedStats: [...prevState.selectedStats, key],
+      }));
     }
   };
 
@@ -332,92 +361,72 @@ class Home extends React.Component {
         break;
 
       case "Batsman":
-        this.setState(
-          {
-            selectedStats: [
-              "Runs",
-              "Batting Average",
-              "Batting Strike Rate",
-              "Fours",
-              "Sixes",
-              "Balls Per Boundary",
-              "Power Play Strike Rate",
-              "Death Strike Rate",
-              "Dot Ball Percentage",
-            ],
-          },
-          () => {
-            this.findPercentile();
-          }
-        );
+        this.setState({
+          selectedStats: [
+            "Runs",
+            "Batting Average",
+            "Batting Strike Rate",
+            "Fours",
+            "Sixes",
+            "Balls Per Boundary",
+            "Power Play Strike Rate",
+            "Death Strike Rate",
+            "Dot Ball Percentage",
+          ],
+        });
         break;
 
       case "Bowler":
-        this.setState(
-          {
-            selectedStats: [
-              "Wickets",
-              "Bowling Average",
-              "Bowling Economy Rate",
-              "Catches",
-              "Dot Ball Percentage",
-              "Power Play Economy Rate",
-              "Death Overs Economy Rate",
-            ],
-          },
-          () => {
-            this.findPercentile();
-          }
-        );
+        this.setState({
+          selectedStats: [
+            "Wickets",
+            "Bowling Average",
+            "Bowling Economy Rate",
+            "Catches",
+            "Dot Ball Percentage",
+            "Power Play Economy Rate",
+            "Death Overs Economy Rate",
+          ],
+        });
         break;
 
       case "Wicket Keeper":
-        this.setState(
-          {
-            selectedStats: [
-              "Catches",
-              "Stumpings",
-              "Run Outs",
-              "Runs",
-              "Batting Average",
-              "Batting Strike Rate",
-              "Fours",
-              "Sixes",
-              "Balls Per Boundary",
-              "Power Play Strike Rate",
-              "Death Strike Rate",
-              "Dot Ball Percentage",
-            ],
-          },
-          () => {
-            this.findPercentile();
-          }
-        );
+        this.setState({
+          selectedStats: [
+            "Catches",
+            "Stumpings",
+            "Run Outs",
+            "Runs",
+            "Batting Average",
+            "Batting Strike Rate",
+            "Fours",
+            "Sixes",
+            "Balls Per Boundary",
+            "Power Play Strike Rate",
+            "Death Strike Rate",
+            "Dot Ball Percentage",
+          ],
+        });
         break;
 
       case "All Rounder":
-        this.setState(
-          {
-            selectedStats: [
-              "Runs",
-              "Batting Average",
-              "Batting Strike Rate",
-              "Wickets",
-              "Bowling Average",
-              "Bowling Economy Rate",
-              "Catches",
-              "Fours",
-              "Sixes",
-              "Balls Per Boundary",
-              "Power Play Strike Rate",
-              "Death Strike Rate",
-              "Dot Ball Percentage",
-            ],
-          },
-          () => {
-            this.findPercentile();
-          }
-        );
+        this.setState({
+          selectedStats: [
+            "Runs",
+            "Batting Average",
+            "Batting Strike Rate",
+            "Wickets",
+            "Bowling Average",
+            "Bowling Economy Rate",
+            "Catches",
+            "Fours",
+            "Sixes",
+            "Balls Per Boundary",
+            "Power Play Strike Rate",
+            "Death Strike Rate",
+            "Dot Ball Percentage",
+          ],
+        });
         break;
     }
   };
@@ -452,7 +461,9 @@ class Home extends React.Component {
           leagueClickHandler={this.leagueClickHandler}
           passStatsToState={this.passStatsToState}
           getLeagueStats={this.getLeagueStats}
+          domesticLeagues={this.state.domesticLeagues}
         />
+        {this.goButton()}
       </Col>
     );
   };
@@ -646,7 +657,6 @@ class Home extends React.Component {
 
     this.state.selectedStats.map((stat) => {
       let newStat = stat.split(" ").join("_").toLowerCase();
-      console.log(newStat);
 
       if (this.state.player1Stats[newStat] > 0) {
         player1Percentiles.push(
@@ -690,6 +700,18 @@ class Home extends React.Component {
 
       this.setState({ radarChartData: data });
     });
+  };
+
+  goButton = () => {
+    return (
+      <button
+        onClick={() => {
+          this.findPercentile();
+        }}
+      >
+        Go
+      </button>
+    );
   };
 
   render() {

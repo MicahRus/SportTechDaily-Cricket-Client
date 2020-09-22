@@ -33,6 +33,11 @@ class Filters extends React.Component {
   componentDidMount() {
     this.props.passStatsToState(this.state.stats);
   }
+
+  componentDidUpdate() {
+    console.log(this.props);
+  }
+
   renderCheckboxes = () => {
     let stats = [
       ["Fours", "Sixes"],
@@ -159,9 +164,18 @@ class Filters extends React.Component {
   renderLeagueSelect = () => {
     let options = [];
 
-    this.props.leagues.map((league) => {
-      options.push({ label: league.league, value: league.league_id });
-    });
+    if (
+      this.props.competition.length < 2 &&
+      this.props.competition[0] === "domestic"
+    ) {
+      this.props.domesticLeagues.map((league) => {
+        options.push({ label: league.league, value: league.league_id });
+      });
+    } else {
+      this.props.leagues.map((league) => {
+        options.push({ label: league.league, value: league.league_id });
+      });
+    }
 
     return (
       <div className="control-item">
