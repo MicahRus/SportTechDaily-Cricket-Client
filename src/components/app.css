@@ -4,6 +4,7 @@
 
 .nav-link {
   color: #3cb44c !important;
+  font-size: 1rem;
 }
 
 #control-tabs {
@@ -27,7 +28,7 @@
 }
 
 .form-check-label {
-  font-size: 1.5vh;
+  font-size: 0.7rem;
 }
 
 .template-button {
@@ -85,7 +86,7 @@
 }
 
 text {
-  font-size: 15px !important;
+  font-size: 0.7em !important;
 }
 
 .card {

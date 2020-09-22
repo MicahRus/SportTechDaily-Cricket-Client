@@ -12,6 +12,16 @@ class RenderRadar extends React.Component {
         "Rohit Sharma": 36,
       },
       {
+        stat: "Batting Average",
+        "Virat Kohli": 97,
+        "Rohit Sharma": 91,
+      },
+      {
+        stat: "Batting Strike Rate",
+        "Virat Kohli": 88,
+        "Rohit Sharma": 88,
+      },
+      {
         stat: "Fours",
         "Virat Kohli": 53,
         "Rohit Sharma": 55,
@@ -22,14 +32,30 @@ class RenderRadar extends React.Component {
         "Rohit Sharma": 96,
       },
       {
-        stat: "Wickets",
+        stat: "Balls Per Boundary",
         "Virat Kohli": 0,
         "Rohit Sharma": 0,
+      },
+      {
+        stat: "Power Play Strike Rate",
+        "Virat Kohli": 0,
+        "Rohit Sharma": 0,
+      },
+
+      {
+        stat: "Death Strike Rate",
+        "Virat Kohli": 0,
+        "Rohit Sharma": 0,
+      },
+      {
+        stat: "Dot Ball Percentage",
+        "Virat Kohli": 88,
+        "Rohit Sharma": 88,
       },
     ];
 
     return (
-      <Col sm={12} lg={6} md={6} xl={6}>
+      <Col sm={12} md={12} lg={6} xl={6}>
         <div className="graph-container">
           <ResponsiveRadar
             id="radarGraph"
@@ -37,7 +63,7 @@ class RenderRadar extends React.Component {
             keys={[this.props.player1?.label, this.props.player2?.label]}
             indexBy="stat"
             maxValue="99"
-            margin={{ top: 70, right: 80, bottom: 40, left: 110 }}
+            margin={{ top: 70, right: 110, bottom: 40, left: 110 }}
             curve="linearClosed"
             borderWidth={2}
             borderColor={{ from: "color" }}
