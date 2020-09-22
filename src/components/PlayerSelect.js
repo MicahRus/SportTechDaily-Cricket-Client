@@ -15,21 +15,7 @@ class PlayerSelect extends React.Component {
 
   setPlayerOptions = () => {
     let playerOptions = [];
-    let key = null;
-    switch (this.props.options.playerType) {
-      default:
-        key = "allBatsmen";
-        break;
-      case "bowler":
-        key = "allBowlers";
-        break;
-      case "allrounder":
-        key = "allAllRounders";
-        break;
-      case "wicketkeeper":
-        key = "allWicketKeepers";
-        break;
-    }
+
     this.props.options.post2017Players.map((player) => {
       playerOptions.push({ value: player.playerid, label: player.player });
     });
