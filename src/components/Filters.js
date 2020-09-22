@@ -124,9 +124,6 @@ class Filters extends React.Component {
           options={options}
           className="basic-multi-select"
           classNamePrefix="select"
-          onMenuClose={() => {
-            console.log("hit");
-          }}
         />
       </div>
     );
@@ -195,6 +192,7 @@ class Filters extends React.Component {
             this.props.getLeagueStats();
           }}
           openMenuOnFocus={true}
+          value={this.props.selectedLeagues}
         />
       </div>
     );

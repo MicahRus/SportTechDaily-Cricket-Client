@@ -15,6 +15,7 @@ class Home extends React.Component {
     competition: ["domestic", "international"],
     selectedStats: ["Runs", "Fours", "Sixes", "Wickets"],
     selectedLeagues: [],
+    post2017LeagueStats: [],
   };
 
   componentDidMount() {
@@ -192,9 +193,17 @@ class Home extends React.Component {
   };
 
   getSelectedPlayerStats = async (playerId, playerNumStats) => {
+    let leagues = [];
+    this.state.selectedLeagues.map((league) => {
+      leagues.push(league.value);
+    });
+
+    leagues = leagues.join(", ");
+    console.log(leagues);
+
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/players/id?playerId=${playerId}`
+        `${process.env.REACT_APP_BACKEND_URL}/players/id?playerId=${playerId}&&leagues=${leagues}`
       );
       const data = await response.json();
       this.setAdditionalStats(data.rows);
@@ -203,8 +212,9 @@ class Home extends React.Component {
         ...data.rows[0],
         ...this.setAdditionalStats(data.rows[0]),
       };
-      this.setState({ [playerNumStats]: joinedData }, () => {});
+      this.setState({ [playerNumStats]: joinedData });
     } catch (err) {
+      console.log(err);
       this.setState({ failedFetch: true });
     }
   };
@@ -228,9 +238,12 @@ class Home extends React.Component {
   };
 
   getLeagueStats = async () => {
+    if (this.state.selectedLeagues.length < 1) {
+      this.setState({ competition: ["domestic", "international"] });
+    }
     let leagueArray = [];
     this.state.selectedLeagues.map((league) => {
-      leagueArray.push(league.value);
+      leagueArray.push(league.value || league.league_id);
     });
     leagueArray = leagueArray.join(", ");
     try {
@@ -259,6 +272,7 @@ class Home extends React.Component {
   };
 
   setAdditionalStats = (data) => {
+    console.log("here");
     console.log(data);
     let additionalStats = {};
     let num = 0;
@@ -286,7 +300,6 @@ class Home extends React.Component {
     num = +num.toFixed(2);
     additionalStats.bowling_economy_rate = num || 0;
 
-    console.log(additionalStats);
     return additionalStats;
   };
 
@@ -300,13 +313,25 @@ class Home extends React.Component {
 
     if (this.state.competition.includes(key)) {
       if (this.state.competition.length >= 2) {
-        if (key === "domestic") {
-          this.setState({ selectedLeagues: this.state.domesticLeagues });
+        if (key === "international") {
+          let domesticLeagues = [];
+          this.state.domesticLeagues.map((league) => {
+            domesticLeagues.push({
+              value: league.league_id,
+              label: league.league,
+            });
+          });
+          this.setState({ selectedLeagues: domesticLeagues });
         }
 
-        this.setState((prevState) => ({
-          competition: prevState.competition.filter((x) => x !== key),
-        }));
+        this.setState(
+          (prevState) => ({
+            competition: prevState.competition.filter((x) => x !== key),
+          }),
+          () => {
+            this.getLeagueStats();
+          }
+        );
       } else {
         alert("You must have at least 1 selected competition selected");
       }
@@ -423,7 +448,10 @@ class Home extends React.Component {
   };
 
   leagueClickHandler = (leagues) => {
-    this.setState({ selectedLeagues: leagues });
+    if (!leagues) {
+      this.setState({ competition: ["domestic", "international"] });
+    }
+    this.setState({ selectedLeagues: leagues || [] });
   };
 
   // This function renders all the controls for the graph
@@ -446,13 +474,14 @@ class Home extends React.Component {
           venues={this.state.allVenues}
           competition={this.state.competition}
           selectedStats={this.state.selectedStats}
+          domesticLeagues={this.state.domesticLeagues}
+          selectedLeagues={this.state.selectedLeagues}
           competitionClickHandler={this.competitionClickHandler}
           statCheckboxClickHandler={this.statCheckboxClickHandler}
           playerTemplateClickHandler={this.playerTemplateClickHandler}
           leagueClickHandler={this.leagueClickHandler}
           passStatsToState={this.passStatsToState}
           getLeagueStats={this.getLeagueStats}
-          domesticLeagues={this.state.domesticLeagues}
         />
         {this.goButton()}
       </Col>
