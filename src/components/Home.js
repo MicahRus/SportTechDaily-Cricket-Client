@@ -13,7 +13,17 @@ class Home extends React.Component {
     loaded: false,
     graphType: "radar",
     competition: ["domestic", "international"],
-    selectedStats: ["Runs", "Fours", "Sixes", "Wickets"],
+    selectedStats: [
+      "Runs",
+      "Fours",
+      "Sixes",
+      "Batting Average",
+      "Death Strike Rate",
+      "Power Play Strike Rate",
+      "Batting Strike Rate",
+      "Balls Per Boundary",
+      "Dot Ball Percentage",
+    ],
     selectedLeagues: [],
     post2017LeagueStats: [],
   };
@@ -83,6 +93,7 @@ class Home extends React.Component {
       this.getAllLeagues(),
       this.getPost2017Players(),
       this.getDomesticLeagues(),
+      this.getInternationalLeagues(),
     ]);
 
     localStorage.setItem("data", JSON.stringify(data));
@@ -271,9 +282,19 @@ class Home extends React.Component {
     }
   };
 
+  getInternationalLeagues = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/stats/post2017/international_leagues`
+      );
+      const data = await response.json();
+      this.setState({ internationalLeagues: data.rows });
+    } catch (err) {
+      this.setState({ failedFetch: true });
+    }
+  };
+
   setAdditionalStats = (data) => {
-    console.log("here");
-    console.log(data);
     let additionalStats = {};
     let num = 0;
 
@@ -324,6 +345,17 @@ class Home extends React.Component {
           this.setState({ selectedLeagues: domesticLeagues });
         }
 
+        if (key === "domestic") {
+          let internationalLeagues = [];
+          this.state.internationalLeagues.map((league) => {
+            internationalLeagues.push({
+              value: league.league_id,
+              label: league.league,
+            });
+          });
+          this.setState({ selectedLeagues: internationalLeagues });
+        }
+
         this.setState(
           (prevState) => ({
             competition: prevState.competition.filter((x) => x !== key),
@@ -338,6 +370,7 @@ class Home extends React.Component {
     } else {
       this.setState((prevState) => ({
         competition: [...prevState.competition, key],
+        selectedLeagues: [],
       }));
     }
   };
@@ -448,10 +481,10 @@ class Home extends React.Component {
   };
 
   leagueClickHandler = (leagues) => {
+    this.setState({ selectedLeagues: leagues });
     if (!leagues) {
       this.setState({ competition: ["domestic", "international"] });
     }
-    this.setState({ selectedLeagues: leagues || [] });
   };
 
   // This function renders all the controls for the graph
@@ -475,6 +508,7 @@ class Home extends React.Component {
           competition={this.state.competition}
           selectedStats={this.state.selectedStats}
           domesticLeagues={this.state.domesticLeagues}
+          internationalLeagues={this.state.internationalLeagues}
           selectedLeagues={this.state.selectedLeagues}
           competitionClickHandler={this.competitionClickHandler}
           statCheckboxClickHandler={this.statCheckboxClickHandler}
