@@ -30,6 +30,7 @@ class Home extends React.Component {
 
   componentDidMount() {
     this.getAllStats();
+    this.getManOfTheMatch();
     if (localStorage.getItem("data")) {
       this.useStoredData();
     }
@@ -230,24 +231,6 @@ class Home extends React.Component {
     }
   };
 
-  getSelectedPlayerStatsDomestic = async (playerId, playerNumStats) => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/players/domestic/id?playerId=${playerId}`
-      );
-      const data = await response.json();
-      this.setAdditionalStats(data.rows);
-
-      const joinedData = {
-        ...data.rows[0],
-        ...this.setAdditionalStats(data.rows[0]),
-      };
-      this.setState({ [playerNumStats]: joinedData });
-    } catch (err) {
-      this.setState({ failedFetch: true });
-    }
-  };
-
   getLeagueStats = async () => {
     if (this.state.selectedLeagues.length < 1) {
       this.setState({ competition: ["domestic", "international"] });
@@ -294,7 +277,20 @@ class Home extends React.Component {
     }
   };
 
+  getManOfTheMatch = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/stats/post2017/man_of_the_match`
+      );
+      const data = await response.json();
+      this.setState({ man_of_the_match: data.rows });
+    } catch (err) {
+      this.setState({ failedFetch: true });
+    }
+  };
+
   setAdditionalStats = (data) => {
+    console.log(data);
     let additionalStats = {};
     let num = 0;
 
@@ -320,6 +316,12 @@ class Home extends React.Component {
     num = (data.runs_conceded / data.balls_boweled_legal) * 6;
     num = +num.toFixed(2);
     additionalStats.bowling_economy_rate = num || 0;
+
+    this.state.man_of_the_match.map((game) => {
+      if (game.player_id === data.player_id) {
+        additionalStats.man_of_the_match = game.man_of_the_match;
+      }
+    });
 
     return additionalStats;
   };
@@ -546,9 +548,10 @@ class Home extends React.Component {
     let power_play_economy_rate = [];
     let fours = [];
     let stumpings = [];
+    let man_of_the_match = [];
 
     this.state.stats.map((stat) => {
-      key.map((item) => {
+      key.map((item, index) => {
         let num = 0;
         switch (stat) {
           case "Runs":
@@ -631,6 +634,16 @@ class Home extends React.Component {
           case "Stumpings":
             stumpings.push(item.stumpings);
             break;
+
+          case "Man Of The Match":
+            if (index > this.state.man_of_the_match.length - 1) {
+              man_of_the_match.push(0);
+            } else {
+              man_of_the_match.push(
+                this.state.man_of_the_match[index].man_of_the_match
+              );
+            }
+            break;
           default:
             array.push(item);
             break;
@@ -688,6 +701,9 @@ class Home extends React.Component {
           return a - b;
         }),
         wickets: wickets.sort((a, b) => {
+          return a - b;
+        }),
+        man_of_the_match: man_of_the_match.sort((a, b) => {
           return a - b;
         }),
       },
